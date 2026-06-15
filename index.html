@@ -3,300 +3,874 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>THE MOON</title>
+  <title>Close Flow AI — Sales on Autopilot</title>
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { background: #000; overflow: hidden; font-family: 'Georgia', serif; color: #fff; }
-    canvas { display: block; position: fixed; top: 0; left: 0; z-index: 0; }
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
-    #ui { position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 10; pointer-events: none; }
+    :root {
+      --cyan:   #00d4ff;
+      --purple: #6366f1;
+      --dark:   #050510;
+      --dark2:  #0d0d1a;
+      --text:   #e2e8f0;
+      --muted:  #64748b;
+    }
 
-    #title {
-      position: absolute;
-      top: 2rem;
-      left: 50%;
-      transform: translateX(-50%);
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--dark);
+      color: var(--text);
+      font-family: 'Inter', system-ui, sans-serif;
+      overflow-x: hidden;
+    }
+
+    /* ── Canvas ── */
+    #bg-canvas {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+    }
+
+    /* ── Nav ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.25rem 3rem;
+      background: rgba(5, 5, 16, 0.6);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(99, 102, 241, 0.12);
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      text-decoration: none;
+    }
+
+    .logo-icon {
+      width: 34px; height: 34px;
+      background: linear-gradient(135deg, var(--cyan), var(--purple));
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1rem;
+    }
+
+    .logo-text {
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: #fff;
+    }
+
+    .logo-text span { color: var(--cyan); }
+
+    nav ul {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+    }
+
+    nav ul a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.875rem;
+      letter-spacing: 0.02em;
+      transition: color 0.2s;
+    }
+
+    nav ul a:hover { color: var(--text); }
+
+    .nav-cta {
+      background: linear-gradient(135deg, var(--cyan), var(--purple));
+      color: #fff !important;
+      padding: 0.55rem 1.4rem;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.875rem;
+      text-decoration: none;
+      transition: opacity 0.2s, transform 0.2s;
+      display: inline-block;
+    }
+
+    .nav-cta:hover { opacity: 0.9; transform: translateY(-1px); }
+
+    /* ── Sections ── */
+    section {
+      position: relative;
+      z-index: 10;
+    }
+
+    /* ── Hero ── */
+    #hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
       text-align: center;
-      letter-spacing: 0.6em;
+      padding: 8rem 2rem 4rem;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: rgba(99, 102, 241, 0.15);
+      border: 1px solid rgba(99, 102, 241, 0.3);
+      color: #a5b4fc;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
       text-transform: uppercase;
-      font-size: clamp(0.7rem, 2vw, 1rem);
-      color: rgba(200, 220, 255, 0.5);
+      padding: 0.35rem 0.9rem;
+      border-radius: 100px;
+      margin-bottom: 2rem;
     }
 
-    #big-text {
-      position: absolute;
-      bottom: 6rem;
-      left: 50%;
-      transform: translateX(-50%);
+    .badge-dot {
+      width: 6px; height: 6px;
+      background: var(--cyan);
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.8); }
+    }
+
+    h1 {
+      font-size: clamp(2.8rem, 7vw, 6rem);
+      font-weight: 800;
+      line-height: 1.05;
+      letter-spacing: -0.04em;
+      max-width: 900px;
+      margin-bottom: 1.5rem;
+    }
+
+    h1 .gradient {
+      background: linear-gradient(135deg, var(--cyan) 0%, var(--purple) 60%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-sub {
+      font-size: clamp(1rem, 2vw, 1.25rem);
+      color: var(--muted);
+      max-width: 560px;
+      line-height: 1.7;
+      margin-bottom: 2.5rem;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--cyan), var(--purple));
+      color: #fff;
+      padding: 0.85rem 2rem;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      text-decoration: none;
+      transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 0 30px rgba(99, 102, 241, 0.4);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0 50px rgba(99, 102, 241, 0.6);
+    }
+
+    .btn-ghost {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: color 0.2s;
+    }
+
+    .btn-ghost:hover { color: var(--text); }
+
+    .hero-stats {
+      display: flex;
+      gap: 3rem;
+      margin-top: 4rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .stat {
       text-align: center;
+    }
+
+    .stat-num {
+      font-size: 2rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--cyan), var(--purple));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      letter-spacing: -0.03em;
+    }
+
+    .stat-label {
+      font-size: 0.8rem;
+      color: var(--muted);
+      letter-spacing: 0.05em;
+      margin-top: 0.2rem;
+    }
+
+    /* ── Features ── */
+    #features {
+      padding: 7rem 2rem;
+    }
+
+    .section-label {
+      text-align: center;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--cyan);
+      margin-bottom: 1rem;
+    }
+
+    .section-title {
+      text-align: center;
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      margin-bottom: 1rem;
+    }
+
+    .section-sub {
+      text-align: center;
+      color: var(--muted);
+      font-size: 1.05rem;
+      max-width: 500px;
+      margin: 0 auto 4rem;
+      line-height: 1.7;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .feature-card {
+      background: rgba(13, 13, 26, 0.7);
+      border: 1px solid rgba(99, 102, 241, 0.15);
+      border-radius: 16px;
+      padding: 2rem;
+      backdrop-filter: blur(10px);
+      transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
+      cursor: default;
+    }
+
+    .feature-card:hover {
+      border-color: rgba(0, 212, 255, 0.4);
+      transform: translateY(-4px);
+      box-shadow: 0 20px 60px rgba(0, 212, 255, 0.08);
+    }
+
+    .feature-icon {
+      width: 48px; height: 48px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .feature-card:nth-child(1) .feature-icon { background: rgba(0, 212, 255, 0.12); }
+    .feature-card:nth-child(2) .feature-icon { background: rgba(99, 102, 241, 0.12); }
+    .feature-card:nth-child(3) .feature-icon { background: rgba(167, 139, 250, 0.12); }
+    .feature-card:nth-child(4) .feature-icon { background: rgba(34, 197, 94, 0.12); }
+    .feature-card:nth-child(5) .feature-icon { background: rgba(251, 191, 36, 0.12); }
+    .feature-card:nth-child(6) .feature-icon { background: rgba(239, 68, 68, 0.12); }
+
+    .feature-card h3 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 0.6rem;
+      letter-spacing: -0.02em;
+    }
+
+    .feature-card p {
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.7;
+    }
+
+    /* ── Pipeline Viz ── */
+    #pipeline {
+      padding: 5rem 2rem 7rem;
+      text-align: center;
+    }
+
+    .pipeline-track {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0;
+      max-width: 900px;
+      margin: 3rem auto 0;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      padding-bottom: 1rem;
+    }
+
+    .pipe-step {
+      flex: 1;
+      min-width: 130px;
+      text-align: center;
+      position: relative;
+    }
+
+    .pipe-step:not(:last-child)::after {
+      content: '';
+      position: absolute;
+      top: 24px;
+      right: -1px;
+      width: calc(100% - 48px);
+      height: 2px;
+      background: linear-gradient(90deg, rgba(0,212,255,0.5), rgba(99,102,241,0.5));
+      z-index: 1;
+    }
+
+    .pipe-dot {
+      width: 48px; height: 48px;
+      border-radius: 50%;
+      margin: 0 auto 0.75rem;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem;
+      position: relative;
+      z-index: 2;
+      border: 2px solid transparent;
+      background-clip: padding-box;
+    }
+
+    .pipe-step:nth-child(1) .pipe-dot { background: rgba(0,212,255,0.15); border-color: rgba(0,212,255,0.4); }
+    .pipe-step:nth-child(2) .pipe-dot { background: rgba(99,102,241,0.15); border-color: rgba(99,102,241,0.4); }
+    .pipe-step:nth-child(3) .pipe-dot { background: rgba(167,139,250,0.15); border-color: rgba(167,139,250,0.4); }
+    .pipe-step:nth-child(4) .pipe-dot { background: rgba(34,197,94,0.15); border-color: rgba(34,197,94,0.4); }
+    .pipe-step:nth-child(5) .pipe-dot { background: rgba(251,191,36,0.15); border-color: rgba(251,191,36,0.4); }
+
+    .pipe-label {
+      font-size: 0.78rem;
+      color: var(--muted);
+      letter-spacing: 0.04em;
+      line-height: 1.4;
+    }
+
+    /* ── CTA ── */
+    #cta {
+      padding: 7rem 2rem;
+      text-align: center;
+    }
+
+    .cta-box {
+      max-width: 680px;
+      margin: 0 auto;
+      background: rgba(13, 13, 26, 0.8);
+      border: 1px solid rgba(99, 102, 241, 0.25);
+      border-radius: 24px;
+      padding: 4rem 3rem;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 0 120px rgba(99, 102, 241, 0.1);
+    }
+
+    .cta-box h2 {
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      margin-bottom: 1rem;
+    }
+
+    .cta-box p {
+      color: var(--muted);
+      font-size: 1.05rem;
+      margin-bottom: 2rem;
+      line-height: 1.7;
+    }
+
+    .email-form {
+      display: flex;
+      gap: 0.75rem;
+      max-width: 440px;
+      margin: 0 auto;
+    }
+
+    .email-form input {
+      flex: 1;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(99,102,241,0.2);
+      border-radius: 10px;
+      padding: 0.8rem 1.1rem;
+      color: var(--text);
+      font-size: 0.9rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .email-form input::placeholder { color: var(--muted); }
+    .email-form input:focus { border-color: var(--cyan); }
+
+    .email-form button {
+      background: linear-gradient(135deg, var(--cyan), var(--purple));
+      border: none;
+      border-radius: 10px;
+      padding: 0.8rem 1.4rem;
+      color: #fff;
+      font-weight: 700;
+      font-size: 0.9rem;
+      cursor: pointer;
       white-space: nowrap;
-    }
-    #big-text h1 {
-      font-size: clamp(3rem, 12vw, 9rem);
-      font-weight: 100;
-      letter-spacing: 0.3em;
-      color: rgba(220, 235, 255, 0.9);
-      text-shadow: 0 0 60px rgba(150, 180, 255, 0.4), 0 0 120px rgba(100, 150, 255, 0.2);
-    }
-    #big-text p {
-      font-size: clamp(0.7rem, 1.5vw, 0.9rem);
-      letter-spacing: 0.4em;
-      color: rgba(180, 200, 255, 0.35);
-      margin-top: 0.5rem;
+      transition: opacity 0.2s, transform 0.2s;
     }
 
-    #phase {
-      position: absolute;
-      top: 50%;
-      right: 2rem;
-      transform: translateY(-50%);
-      text-align: right;
-      font-size: 0.7rem;
-      letter-spacing: 0.2em;
-      color: rgba(180, 200, 255, 0.3);
-      line-height: 2.2;
+    .email-form button:hover { opacity: 0.9; transform: translateY(-1px); }
+
+    /* ── Footer ── */
+    footer {
+      position: relative;
+      z-index: 10;
+      border-top: 1px solid rgba(99,102,241,0.1);
+      padding: 2.5rem 3rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
     }
 
-    #dist {
-      position: absolute;
-      bottom: 2rem;
-      left: 2rem;
-      font-size: 0.65rem;
-      letter-spacing: 0.2em;
-      color: rgba(180,200,255,0.25);
-      line-height: 2;
+    footer .logo-text { font-size: 0.95rem; }
+
+    footer p {
+      font-size: 0.8rem;
+      color: var(--muted);
     }
 
-    #drag-hint {
-      position: absolute;
-      bottom: 2rem;
-      right: 2rem;
-      font-size: 0.65rem;
-      letter-spacing: 0.2em;
-      color: rgba(180,200,255,0.2);
+    .footer-links {
+      display: flex;
+      gap: 1.5rem;
+    }
+
+    .footer-links a {
+      font-size: 0.8rem;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .footer-links a:hover { color: var(--text); }
+
+    /* ── Scroll animations ── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: none;
+    }
+
+    @media (max-width: 700px) {
+      nav { padding: 1rem 1.25rem; }
+      nav ul { display: none; }
+      .hero-stats { gap: 1.5rem; }
+      .email-form { flex-direction: column; }
+      footer { flex-direction: column; text-align: center; }
+      .cta-box { padding: 2.5rem 1.5rem; }
     }
   </style>
 </head>
 <body>
-<div id="ui">
-  <div id="title">Earth's Only Natural Satellite</div>
 
-  <div id="big-text">
-    <h1>MOON</h1>
-    <p>384,400 km from Earth · 3,474 km diameter</p>
+<canvas id="bg-canvas"></canvas>
+
+<!-- Nav -->
+<nav>
+  <a href="#hero" class="logo">
+    <div class="logo-icon">⚡</div>
+    <span class="logo-text">Close Flow <span>AI</span></span>
+  </a>
+  <ul>
+    <li><a href="#features">Features</a></li>
+    <li><a href="#pipeline">How It Works</a></li>
+    <li><a href="#cta">Pricing</a></li>
+  </ul>
+  <a href="#cta" class="nav-cta">Get Early Access</a>
+</nav>
+
+<!-- Hero -->
+<section id="hero">
+  <div class="badge">
+    <span class="badge-dot"></span>
+    AI-Powered Sales Automation
   </div>
-
-  <div id="phase">
-    WAXING GIBBOUS<br>
-    ILLUMINATION 78%<br>
-    AGE 10.4 DAYS<br>
-    RISE 14:32<br>
-    SET 03:11
+  <h1>Close More Deals.<br><span class="gradient">On Autopilot.</span></h1>
+  <p class="hero-sub">
+    Close Flow AI automates your entire sales pipeline — from first outreach to signed contract — so your team focuses on what matters: relationships.
+  </p>
+  <div class="hero-actions">
+    <a href="#cta" class="btn-primary">Start for Free →</a>
+    <a href="#features" class="btn-ghost">See how it works ↓</a>
   </div>
-
-  <div id="dist">
-    DISTANCE · 384,400 KM<br>
-    GRAVITY · 1.62 M/S²<br>
-    ORBIT · 27.3 DAYS<br>
-    TEMP · −173 TO 127°C
+  <div class="hero-stats">
+    <div class="stat">
+      <div class="stat-num">3.4×</div>
+      <div class="stat-label">More Meetings Booked</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">68%</div>
+      <div class="stat-label">Faster Deal Cycles</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">10h+</div>
+      <div class="stat-label">Saved Per Rep / Week</div>
+    </div>
   </div>
+</section>
 
-  <div id="drag-hint">drag to rotate</div>
-</div>
+<!-- Features -->
+<section id="features">
+  <div class="reveal">
+    <p class="section-label">Features</p>
+    <h2 class="section-title">Your AI Sales Team,<br>Always On</h2>
+    <p class="section-sub">Every step of the sales process, automated with precision and personalization at scale.</p>
+  </div>
+  <div class="features-grid">
+    <div class="feature-card reveal">
+      <div class="feature-icon">🎯</div>
+      <h3>AI Prospect Scoring</h3>
+      <p>Instantly rank every inbound and outbound lead by deal potential. Focus your energy on prospects most likely to close.</p>
+    </div>
+    <div class="feature-card reveal">
+      <div class="feature-icon">✉️</div>
+      <h3>Hyper-Personalized Outreach</h3>
+      <p>AI writes and sends perfectly timed, deeply personal emails and LinkedIn messages that actually get replies.</p>
+    </div>
+    <div class="feature-card reveal">
+      <div class="feature-icon">🔄</div>
+      <h3>Smart Follow-Up Sequences</h3>
+      <p>Never let a lead go cold. Close Flow AI tracks every touchpoint and follows up at exactly the right moment.</p>
+    </div>
+    <div class="feature-card reveal">
+      <div class="feature-icon">📊</div>
+      <h3>Real-Time Pipeline Intelligence</h3>
+      <p>Live dashboards surface at-risk deals, stalled conversations, and your next best action — before it's too late.</p>
+    </div>
+    <div class="feature-card reveal">
+      <div class="feature-icon">🗓️</div>
+      <h3>Instant Meeting Scheduling</h3>
+      <p>Eliminate back-and-forth. AI books meetings directly into your calendar the moment a prospect shows intent.</p>
+    </div>
+    <div class="feature-card reveal">
+      <div class="feature-icon">🔗</div>
+      <h3>CRM Auto-Sync</h3>
+      <p>Every call, email, and note syncs automatically to Salesforce, HubSpot, or any CRM — zero manual data entry.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Pipeline Flow -->
+<section id="pipeline">
+  <div class="reveal">
+    <p class="section-label">How It Works</p>
+    <h2 class="section-title">From Prospect to Close</h2>
+    <p class="section-sub">Close Flow AI handles every stage of the deal, intelligently and automatically.</p>
+  </div>
+  <div class="pipeline-track reveal">
+    <div class="pipe-step">
+      <div class="pipe-dot">🔍</div>
+      <div class="pipe-label">Find<br>Prospects</div>
+    </div>
+    <div class="pipe-step">
+      <div class="pipe-dot">🎯</div>
+      <div class="pipe-label">Score &<br>Qualify</div>
+    </div>
+    <div class="pipe-step">
+      <div class="pipe-dot">✉️</div>
+      <div class="pipe-label">Outreach &<br>Follow-up</div>
+    </div>
+    <div class="pipe-step">
+      <div class="pipe-dot">🗓️</div>
+      <div class="pipe-label">Book<br>Meeting</div>
+    </div>
+    <div class="pipe-step">
+      <div class="pipe-dot">✅</div>
+      <div class="pipe-label">Close<br>the Deal</div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA / Waitlist -->
+<section id="cta">
+  <div class="cta-box reveal">
+    <h2>Ready to Close <span style="background:linear-gradient(135deg,var(--cyan),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Faster?</span></h2>
+    <p>Join hundreds of sales teams already on the waitlist. Early access is free.</p>
+    <div class="email-form">
+      <input type="email" placeholder="your@email.com" />
+      <button type="submit">Join Waitlist</button>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <a href="#hero" class="logo">
+    <div class="logo-icon" style="width:26px;height:26px;font-size:0.75rem;">⚡</div>
+    <span class="logo-text">Close Flow <span>AI</span></span>
+  </a>
+  <p>© 2026 Close Flow AI. All rights reserved.</p>
+  <div class="footer-links">
+    <a href="#">Privacy</a>
+    <a href="#">Terms</a>
+    <a href="#">Contact</a>
+  </div>
+</footer>
 
 <script type="importmap">
 {
   "imports": {
-    "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
-    "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+    "three": "https://unpkg.com/three@0.160.0/build/three.module.js"
   }
 }
 </script>
 <script type="module">
 import * as THREE from 'three';
-import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
-import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
-import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
 
-const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(45, innerWidth / innerHeight, 0.1, 2000);
-camera.position.set(0, 0, 5);
-
-const renderer = new THREE.WebGLRenderer({ antialias: true });
+const canvas = document.getElementById('bg-canvas');
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
 renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
 renderer.setSize(innerWidth, innerHeight);
-document.body.prepend(renderer.domElement);
+renderer.setClearColor(0x050510, 1);
 
-const composer = new EffectComposer(renderer);
-composer.addPass(new RenderPass(scene, camera));
-const bloom = new UnrealBloomPass(new THREE.Vector2(innerWidth, innerHeight), 0.4, 0.6, 0.9);
-composer.addPass(bloom);
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(60, innerWidth / innerHeight, 0.1, 2000);
+camera.position.set(0, 0, 80);
 
-const controls = new OrbitControls(camera, renderer.domElement);
-controls.enableDamping = true;
-controls.dampingFactor = 0.04;
-controls.enableZoom = false;
-controls.autoRotate = true;
-controls.autoRotateSpeed = 0.15;
+// ── Particle nodes (prospects/deals) ──────────────────────
+const nodeCount = 220;
+const nodePositions = new Float32Array(nodeCount * 3);
+const nodeSpeeds   = new Float32Array(nodeCount);
+const nodePhases   = new Float32Array(nodeCount);
 
-// ── Stars ──────────────────────────────────────────────
-const starVerts = [];
-for (let i = 0; i < 6000; i++) {
-  const theta = Math.random() * Math.PI * 2;
-  const phi = Math.acos(2 * Math.random() - 1);
-  const r = 500 + Math.random() * 300;
-  starVerts.push(
-    r * Math.sin(phi) * Math.cos(theta),
-    r * Math.sin(phi) * Math.sin(theta),
-    r * Math.cos(phi)
-  );
-}
-const starGeo = new THREE.BufferGeometry();
-starGeo.setAttribute('position', new THREE.Float32BufferAttribute(starVerts, 3));
-scene.add(new THREE.Points(starGeo, new THREE.PointsMaterial({ color: 0xddeeff, size: 0.8, sizeAttenuation: true })));
-
-// ── Moon surface procedural texture ───────────────────
-function makeMoonTexture(size = 1024) {
-  const canvas = document.createElement('canvas');
-  canvas.width = canvas.height = size;
-  const ctx = canvas.getContext('2d');
-
-  // base colour
-  const grad = ctx.createRadialGradient(size/2, size/2, 0, size/2, size/2, size/2);
-  grad.addColorStop(0,   '#d8dde8');
-  grad.addColorStop(0.5, '#b0b8c8');
-  grad.addColorStop(1,   '#8890a0');
-  ctx.fillStyle = grad;
-  ctx.fillRect(0, 0, size, size);
-
-  // noise
-  for (let i = 0; i < 60000; i++) {
-    const x = Math.random() * size;
-    const y = Math.random() * size;
-    const r = Math.random() * 2;
-    const v = Math.random() > 0.5 ? 255 : 0;
-    ctx.fillStyle = `rgba(${v},${v},${v},0.025)`;
-    ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2); ctx.fill();
-  }
-
-  // craters
-  const craters = [
-    { x: 0.3, y: 0.35, r: 0.09 }, { x: 0.65, y: 0.55, r: 0.07 },
-    { x: 0.5,  y: 0.2,  r: 0.05 }, { x: 0.2,  y: 0.65, r: 0.06 },
-    { x: 0.75, y: 0.3,  r: 0.04 }, { x: 0.4,  y: 0.7,  r: 0.035 },
-    { x: 0.6,  y: 0.75, r: 0.025 },{ x: 0.15, y: 0.4,  r: 0.03 },
-    { x: 0.8,  y: 0.6,  r: 0.02 }, { x: 0.55, y: 0.45, r: 0.015 },
-  ];
-  craters.forEach(c => {
-    const cx = c.x * size, cy = c.y * size, cr = c.r * size;
-    // shadow ring
-    const g = ctx.createRadialGradient(cx, cy, cr * 0.7, cx, cy, cr * 1.1);
-    g.addColorStop(0, 'rgba(0,0,0,0)');
-    g.addColorStop(0.7, 'rgba(0,0,0,0.35)');
-    g.addColorStop(1, 'rgba(255,255,255,0.15)');
-    ctx.fillStyle = g;
-    ctx.beginPath(); ctx.arc(cx, cy, cr * 1.1, 0, Math.PI * 2); ctx.fill();
-    // inner floor
-    const gf = ctx.createRadialGradient(cx, cy, 0, cx, cy, cr * 0.7);
-    gf.addColorStop(0, 'rgba(180,185,200,0.6)');
-    gf.addColorStop(1, 'rgba(120,125,140,0.2)');
-    ctx.fillStyle = gf;
-    ctx.beginPath(); ctx.arc(cx, cy, cr * 0.7, 0, Math.PI * 2); ctx.fill();
-  });
-
-  // mare (dark regions)
-  [
-    { x: 0.45, y: 0.48, rx: 0.22, ry: 0.15 },
-    { x: 0.6,  y: 0.3,  rx: 0.1,  ry: 0.08 },
-    { x: 0.25, y: 0.55, rx: 0.08, ry: 0.06 },
-  ].forEach(m => {
-    const g = ctx.createRadialGradient(m.x*size, m.y*size, 0, m.x*size, m.y*size, m.rx*size);
-    g.addColorStop(0, 'rgba(60,65,80,0.3)');
-    g.addColorStop(1, 'rgba(60,65,80,0)');
-    ctx.fillStyle = g;
-    ctx.save();
-    ctx.translate(m.x*size, m.y*size);
-    ctx.scale(1, m.ry/m.rx);
-    ctx.beginPath(); ctx.arc(0, 0, m.rx*size, 0, Math.PI*2); ctx.fill();
-    ctx.restore();
-  });
-
-  return new THREE.CanvasTexture(canvas);
+for (let i = 0; i < nodeCount; i++) {
+  nodePositions[i * 3]     = (Math.random() - 0.5) * 200;
+  nodePositions[i * 3 + 1] = (Math.random() - 0.5) * 120;
+  nodePositions[i * 3 + 2] = (Math.random() - 0.5) * 80;
+  nodeSpeeds[i]  = 0.3 + Math.random() * 0.5;
+  nodePhases[i]  = Math.random() * Math.PI * 2;
 }
 
-function makeMoonNormal(size = 512) {
-  const canvas = document.createElement('canvas');
-  canvas.width = canvas.height = size;
-  const ctx = canvas.getContext('2d');
-  ctx.fillStyle = '#8080ff';
-  ctx.fillRect(0, 0, size, size);
-  for (let i = 0; i < 20000; i++) {
-    const x = Math.random() * size;
-    const y = Math.random() * size;
-    const r = Math.random() * 3;
-    ctx.fillStyle = `rgba(${80 + Math.random()*60},${80 + Math.random()*60},255,0.15)`;
-    ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI*2); ctx.fill();
-  }
-  return new THREE.CanvasTexture(canvas);
+const nodeGeo = new THREE.BufferGeometry();
+nodeGeo.setAttribute('position', new THREE.BufferAttribute(nodePositions.slice(), 3));
+
+const nodeMat = new THREE.PointsMaterial({
+  color: 0x00d4ff,
+  size: 1.2,
+  sizeAttenuation: true,
+  transparent: true,
+  opacity: 0.7,
+});
+
+const nodesMesh = new THREE.Points(nodeGeo, nodeMat);
+scene.add(nodesMesh);
+
+// ── Secondary purple nodes ─────────────────────────────────
+const node2Count = 120;
+const node2Pos = new Float32Array(node2Count * 3);
+for (let i = 0; i < node2Count; i++) {
+  node2Pos[i * 3]     = (Math.random() - 0.5) * 200;
+  node2Pos[i * 3 + 1] = (Math.random() - 0.5) * 120;
+  node2Pos[i * 3 + 2] = (Math.random() - 0.5) * 80 - 20;
 }
+const node2Geo = new THREE.BufferGeometry();
+node2Geo.setAttribute('position', new THREE.BufferAttribute(node2Pos.slice(), 3));
+const node2Mesh = new THREE.Points(node2Geo, new THREE.PointsMaterial({
+  color: 0x6366f1, size: 0.9, sizeAttenuation: true, transparent: true, opacity: 0.5
+}));
+scene.add(node2Mesh);
 
-const moonTex    = makeMoonTexture(1024);
-const normalTex  = makeMoonNormal(512);
+// ── Connection lines ───────────────────────────────────────
+const maxLines = 180;
+const linePositions = new Float32Array(maxLines * 2 * 3);
+const lineGeo = new THREE.BufferGeometry();
+lineGeo.setAttribute('position', new THREE.BufferAttribute(linePositions, 3));
 
-const moon = new THREE.Mesh(
-  new THREE.SphereGeometry(1.8, 128, 128),
-  new THREE.MeshStandardMaterial({
-    map: moonTex,
-    normalMap: normalTex,
-    normalScale: new THREE.Vector2(0.6, 0.6),
-    roughness: 0.95,
-    metalness: 0.0,
-  })
-);
-scene.add(moon);
+const lineMat = new THREE.LineSegments(lineGeo, new THREE.LineBasicMaterial({
+  color: 0x00d4ff,
+  transparent: true,
+  opacity: 0.08,
+}));
+scene.add(lineMat);
 
-// atmosphere haze
-const atmo = new THREE.Mesh(
-  new THREE.SphereGeometry(1.87, 64, 64),
-  new THREE.MeshBasicMaterial({
-    color: 0x8899bb,
-    transparent: true,
-    opacity: 0.04,
-    side: THREE.BackSide,
-  })
-);
-scene.add(atmo);
+// ── Flowing data packets along lines ──────────────────────
+const packetCount = 40;
+const packetPositions = new Float32Array(packetCount * 3);
+const packetGeo = new THREE.BufferGeometry();
+packetGeo.setAttribute('position', new THREE.BufferAttribute(packetPositions, 3));
+const packetMesh = new THREE.Points(packetGeo, new THREE.PointsMaterial({
+  color: 0xffffff, size: 1.8, sizeAttenuation: true, transparent: true, opacity: 0.9
+}));
+scene.add(packetMesh);
 
-// ── Sunlight ───────────────────────────────────────────
-const sun = new THREE.DirectionalLight(0xfff5e8, 2.5);
-sun.position.set(8, 3, 5);
-scene.add(sun);
-scene.add(new THREE.AmbientLight(0x223366, 0.15));
+// Packet state
+const packetT     = new Float32Array(packetCount).fill(0).map(() => Math.random());
+const packetSpeed = new Float32Array(packetCount).fill(0).map(() => 0.004 + Math.random() * 0.006);
+const packetEdges = [];
+function pickEdge() {
+  const a = Math.floor(Math.random() * nodeCount);
+  const b = Math.floor(Math.random() * nodeCount);
+  return [a, b];
+}
+for (let i = 0; i < packetCount; i++) packetEdges.push(pickEdge());
 
-// soft fill from dark side
-const fill = new THREE.DirectionalLight(0x334488, 0.08);
-fill.position.set(-5, -2, -3);
-scene.add(fill);
+// ── Mouse influence ────────────────────────────────────────
+const mouse = { x: 0, y: 0 };
+window.addEventListener('mousemove', e => {
+  mouse.x = (e.clientX / innerWidth - 0.5) * 2;
+  mouse.y = -(e.clientY / innerHeight - 0.5) * 2;
+});
 
-// ── Resize ──────────────────────────────────────────────
+// ── Resize ─────────────────────────────────────────────────
 window.addEventListener('resize', () => {
   camera.aspect = innerWidth / innerHeight;
   camera.updateProjectionMatrix();
   renderer.setSize(innerWidth, innerHeight);
-  composer.setSize(innerWidth, innerHeight);
 });
 
-// ── Animate ─────────────────────────────────────────────
+// ── Animate ────────────────────────────────────────────────
 const clock = new THREE.Clock();
+const origPositions = nodePositions.slice();
+const orig2Positions = node2Pos.slice();
+
+function updateConnections(pos, count) {
+  let lineIdx = 0;
+  for (let a = 0; a < count && lineIdx < maxLines; a++) {
+    const ax = pos[a * 3], ay = pos[a * 3 + 1], az = pos[a * 3 + 2];
+    for (let b = a + 1; b < count && lineIdx < maxLines; b++) {
+      const dx = ax - pos[b * 3];
+      const dy = ay - pos[b * 3 + 1];
+      const dz = az - pos[b * 3 + 2];
+      const d2 = dx * dx + dy * dy + dz * dz;
+      if (d2 < 900) {
+        linePositions[lineIdx * 6]     = ax;
+        linePositions[lineIdx * 6 + 1] = ay;
+        linePositions[lineIdx * 6 + 2] = az;
+        linePositions[lineIdx * 6 + 3] = pos[b * 3];
+        linePositions[lineIdx * 6 + 4] = pos[b * 3 + 1];
+        linePositions[lineIdx * 6 + 5] = pos[b * 3 + 2];
+        lineIdx++;
+      }
+    }
+  }
+  // clear unused
+  for (let i = lineIdx; i < maxLines; i++) {
+    for (let k = 0; k < 6; k++) linePositions[i * 6 + k] = 0;
+  }
+  lineGeo.attributes.position.needsUpdate = true;
+  lineGeo.setDrawRange(0, lineIdx * 2);
+}
+
 function animate() {
   requestAnimationFrame(animate);
   const t = clock.getElapsedTime();
-  moon.rotation.y = t * 0.02;
-  controls.update();
-  composer.render();
+
+  // Gentle node drift
+  const curPos = nodesMesh.geometry.attributes.position.array;
+  for (let i = 0; i < nodeCount; i++) {
+    curPos[i * 3]     = origPositions[i * 3]     + Math.sin(t * nodeSpeeds[i] * 0.4 + nodePhases[i]) * 4;
+    curPos[i * 3 + 1] = origPositions[i * 3 + 1] + Math.cos(t * nodeSpeeds[i] * 0.3 + nodePhases[i] + 1) * 3;
+  }
+  nodesMesh.geometry.attributes.position.needsUpdate = true;
+
+  const cur2Pos = node2Mesh.geometry.attributes.position.array;
+  for (let i = 0; i < node2Count; i++) {
+    cur2Pos[i * 3]     = orig2Positions[i * 3]     + Math.sin(t * 0.25 + i * 0.5) * 5;
+    cur2Pos[i * 3 + 1] = orig2Positions[i * 3 + 1] + Math.cos(t * 0.2  + i * 0.4) * 4;
+  }
+  node2Mesh.geometry.attributes.position.needsUpdate = true;
+
+  updateConnections(curPos, nodeCount);
+
+  // Animate packets along edges
+  const pPos = packetMesh.geometry.attributes.position.array;
+  for (let i = 0; i < packetCount; i++) {
+    packetT[i] += packetSpeed[i];
+    if (packetT[i] > 1) {
+      packetT[i] = 0;
+      packetEdges[i] = pickEdge();
+    }
+    const [a, b] = packetEdges[i];
+    const tt = packetT[i];
+    pPos[i * 3]     = curPos[a * 3]     + (curPos[b * 3]     - curPos[a * 3])     * tt;
+    pPos[i * 3 + 1] = curPos[a * 3 + 1] + (curPos[b * 3 + 1] - curPos[a * 3 + 1]) * tt;
+    pPos[i * 3 + 2] = curPos[a * 3 + 2] + (curPos[b * 3 + 2] - curPos[a * 3 + 2]) * tt;
+  }
+  packetMesh.geometry.attributes.position.needsUpdate = true;
+
+  // Subtle camera drift with mouse influence
+  camera.position.x += (mouse.x * 8 - camera.position.x) * 0.015;
+  camera.position.y += (mouse.y * 5 - camera.position.y) * 0.015;
+  camera.lookAt(0, 0, 0);
+
+  renderer.render(scene, camera);
 }
 animate();
 </script>
+
+<script>
+// Scroll reveal
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+      const siblings = e.target.parentElement.querySelectorAll('.reveal');
+      siblings.forEach((el, i) => {
+        if (!el.classList.contains('visible')) {
+          setTimeout(() => el.classList.add('visible'), i * 80);
+        }
+      });
+    }
+  });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+// Waitlist form
+document.querySelector('.email-form button').addEventListener('click', () => {
+  const input = document.querySelector('.email-form input');
+  if (input.value && input.value.includes('@')) {
+    input.value = '';
+    input.placeholder = 'You\'re on the list! ✓';
+    document.querySelector('.email-form button').textContent = 'Done!';
+    document.querySelector('.email-form button').style.background = '#22c55e';
+  }
+});
+</script>
+
 </body>
 </html>
