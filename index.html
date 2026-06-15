@@ -3,144 +3,105 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>3D Universe</title>
+  <title>THE MOON</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { background: #000; overflow: hidden; font-family: 'Segoe UI', sans-serif; }
-    canvas { display: block; }
+    body { background: #000; overflow: hidden; font-family: 'Georgia', serif; color: #fff; }
+    canvas { display: block; position: fixed; top: 0; left: 0; z-index: 0; }
 
-    #ui {
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      pointer-events: none;
-      z-index: 10;
-    }
+    #ui { position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 10; pointer-events: none; }
 
-    #hero {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      text-align: center;
-      color: #fff;
-      pointer-events: auto;
-    }
-
-    #hero h1 {
-      font-size: clamp(2rem, 6vw, 6rem);
-      font-weight: 900;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      background: linear-gradient(135deg, #a78bfa, #60a5fa, #34d399, #f472b6);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      filter: drop-shadow(0 0 30px rgba(167,139,250,0.8));
-      animation: glow 3s ease-in-out infinite alternate;
-    }
-
-    @keyframes glow {
-      from { filter: drop-shadow(0 0 20px rgba(167,139,250,0.5)); }
-      to   { filter: drop-shadow(0 0 60px rgba(96,165,250,0.9)); }
-    }
-
-    #hero p {
-      margin-top: 1rem;
-      font-size: clamp(0.9rem, 2vw, 1.3rem);
-      color: rgba(255,255,255,0.6);
-      letter-spacing: 0.3em;
-      text-transform: uppercase;
-    }
-
-    #hero .btn {
-      margin-top: 2rem;
-      display: inline-block;
-      padding: 0.8em 2.5em;
-      border: 2px solid rgba(167,139,250,0.7);
-      border-radius: 50px;
-      color: #a78bfa;
-      font-size: 1rem;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      cursor: pointer;
-      background: rgba(167,139,250,0.1);
-      backdrop-filter: blur(10px);
-      transition: all 0.3s;
-    }
-    #hero .btn:hover {
-      background: rgba(167,139,250,0.3);
-      box-shadow: 0 0 30px rgba(167,139,250,0.5);
-      transform: scale(1.05);
-    }
-
-    #nav {
+    #title {
       position: absolute;
       top: 2rem;
       left: 50%;
       transform: translateX(-50%);
-      display: flex;
-      gap: 2rem;
-      pointer-events: auto;
-    }
-    #nav a {
-      color: rgba(255,255,255,0.6);
-      text-decoration: none;
-      font-size: 0.85rem;
-      letter-spacing: 0.2em;
+      text-align: center;
+      letter-spacing: 0.6em;
       text-transform: uppercase;
-      transition: color 0.3s;
+      font-size: clamp(0.7rem, 2vw, 1rem);
+      color: rgba(200, 220, 255, 0.5);
     }
-    #nav a:hover { color: #a78bfa; }
 
-    #scroll-hint {
+    #big-text {
       position: absolute;
-      bottom: 2rem;
+      bottom: 6rem;
       left: 50%;
       transform: translateX(-50%);
-      color: rgba(255,255,255,0.3);
-      font-size: 0.75rem;
-      letter-spacing: 0.3em;
-      text-transform: uppercase;
-      animation: bounce 2s ease-in-out infinite;
+      text-align: center;
+      white-space: nowrap;
     }
-    @keyframes bounce {
-      0%, 100% { transform: translateX(-50%) translateY(0); }
-      50%       { transform: translateX(-50%) translateY(-8px); }
+    #big-text h1 {
+      font-size: clamp(3rem, 12vw, 9rem);
+      font-weight: 100;
+      letter-spacing: 0.3em;
+      color: rgba(220, 235, 255, 0.9);
+      text-shadow: 0 0 60px rgba(150, 180, 255, 0.4), 0 0 120px rgba(100, 150, 255, 0.2);
+    }
+    #big-text p {
+      font-size: clamp(0.7rem, 1.5vw, 0.9rem);
+      letter-spacing: 0.4em;
+      color: rgba(180, 200, 255, 0.35);
+      margin-top: 0.5rem;
     }
 
-    #info-panel {
+    #phase {
       position: absolute;
-      bottom: 5rem;
+      top: 50%;
       right: 2rem;
-      color: rgba(255,255,255,0.4);
-      font-size: 0.7rem;
-      letter-spacing: 0.1em;
-      line-height: 1.8;
+      transform: translateY(-50%);
       text-align: right;
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      color: rgba(180, 200, 255, 0.3);
+      line-height: 2.2;
+    }
+
+    #dist {
+      position: absolute;
+      bottom: 2rem;
+      left: 2rem;
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      color: rgba(180,200,255,0.25);
+      line-height: 2;
+    }
+
+    #drag-hint {
+      position: absolute;
+      bottom: 2rem;
+      right: 2rem;
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      color: rgba(180,200,255,0.2);
     }
   </style>
 </head>
 <body>
 <div id="ui">
-  <nav id="nav">
-    <a href="#">Explore</a>
-    <a href="#">About</a>
-    <a href="#">Contact</a>
-  </nav>
+  <div id="title">Earth's Only Natural Satellite</div>
 
-  <div id="hero">
-    <h1>Universe</h1>
-    <p>Drift through infinity</p>
-    <div class="btn" id="enterBtn">Enter the void</div>
+  <div id="big-text">
+    <h1>MOON</h1>
+    <p>384,400 km from Earth · 3,474 km diameter</p>
   </div>
 
-  <div id="scroll-hint">scroll or drag to explore ↓</div>
-
-  <div id="info-panel">
-    <div>Move mouse to look around</div>
-    <div>Scroll to zoom</div>
-    <div>Click objects to interact</div>
+  <div id="phase">
+    WAXING GIBBOUS<br>
+    ILLUMINATION 78%<br>
+    AGE 10.4 DAYS<br>
+    RISE 14:32<br>
+    SET 03:11
   </div>
+
+  <div id="dist">
+    DISTANCE · 384,400 KM<br>
+    GRAVITY · 1.62 M/S²<br>
+    ORBIT · 27.3 DAYS<br>
+    TEMP · −173 TO 127°C
+  </div>
+
+  <div id="drag-hint">drag to rotate</div>
 </div>
 
 <script type="importmap">
@@ -151,7 +112,6 @@
   }
 }
 </script>
-
 <script type="module">
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
@@ -159,170 +119,167 @@ import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
 
-// Scene
 const scene = new THREE.Scene();
-scene.fog = new THREE.FogExp2(0x000010, 0.015);
-
-const camera = new THREE.PerspectiveCamera(75, innerWidth / innerHeight, 0.1, 1000);
-camera.position.set(0, 0, 30);
+const camera = new THREE.PerspectiveCamera(45, innerWidth / innerHeight, 0.1, 2000);
+camera.position.set(0, 0, 5);
 
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
 renderer.setSize(innerWidth, innerHeight);
-renderer.toneMapping = THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure = 1.2;
 document.body.prepend(renderer.domElement);
 
-// Post-processing bloom
 const composer = new EffectComposer(renderer);
 composer.addPass(new RenderPass(scene, camera));
-const bloom = new UnrealBloomPass(new THREE.Vector2(innerWidth, innerHeight), 1.5, 0.4, 0.85);
+const bloom = new UnrealBloomPass(new THREE.Vector2(innerWidth, innerHeight), 0.4, 0.6, 0.9);
 composer.addPass(bloom);
 
-// Controls
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
-controls.dampingFactor = 0.05;
-controls.minDistance = 5;
-controls.maxDistance = 80;
+controls.dampingFactor = 0.04;
+controls.enableZoom = false;
 controls.autoRotate = true;
-controls.autoRotateSpeed = 0.3;
+controls.autoRotateSpeed = 0.15;
 
 // ── Stars ──────────────────────────────────────────────
-const starGeo = new THREE.BufferGeometry();
-const starCount = 8000;
-const starPos = new Float32Array(starCount * 3);
-for (let i = 0; i < starCount * 3; i++) starPos[i] = (Math.random() - 0.5) * 600;
-starGeo.setAttribute('position', new THREE.BufferAttribute(starPos, 3));
-const starMat = new THREE.PointsMaterial({ color: 0xffffff, size: 0.4, sizeAttenuation: true });
-scene.add(new THREE.Points(starGeo, starMat));
-
-// ── Central glowing orb ────────────────────────────────
-const coreGeo = new THREE.SphereGeometry(3, 64, 64);
-const coreMat = new THREE.MeshStandardMaterial({
-  color: 0x6030ff,
-  emissive: 0x4020cc,
-  emissiveIntensity: 2,
-  roughness: 0,
-  metalness: 0.5,
-});
-const core = new THREE.Mesh(coreGeo, coreMat);
-scene.add(core);
-
-// Outer glow shell
-const glowGeo = new THREE.SphereGeometry(3.3, 32, 32);
-const glowMat = new THREE.MeshBasicMaterial({ color: 0x8060ff, transparent: true, opacity: 0.15, side: THREE.BackSide });
-scene.add(new THREE.Mesh(glowGeo, glowMat));
-
-// ── Rings ──────────────────────────────────────────────
-function makeRing(innerR, outerR, color, tiltX = 0, tiltZ = 0) {
-  const geo = new THREE.RingGeometry(innerR, outerR, 128);
-  const mat = new THREE.MeshBasicMaterial({ color, side: THREE.DoubleSide, transparent: true, opacity: 0.5 });
-  const mesh = new THREE.Mesh(geo, mat);
-  mesh.rotation.x = tiltX;
-  mesh.rotation.z = tiltZ;
-  scene.add(mesh);
-  return mesh;
-}
-const ring1 = makeRing(5, 5.4, 0xa78bfa, Math.PI / 2, 0.2);
-const ring2 = makeRing(7, 7.2, 0x60a5fa, Math.PI / 2 + 0.4, -0.3);
-const ring3 = makeRing(9, 9.1, 0x34d399, Math.PI / 2 - 0.3, 0.5);
-
-// ── Orbiting planets ───────────────────────────────────
-const planets = [];
-const planetData = [
-  { radius: 0.8, orbit: 12, speed: 0.4,  color: 0xf472b6, emissive: 0xaa3066, y: 1 },
-  { radius: 1.2, orbit: 17, speed: 0.25, color: 0x60a5fa, emissive: 0x1060aa, y: -2 },
-  { radius: 0.5, orbit: 22, speed: 0.55, color: 0x34d399, emissive: 0x0a8060, y: 3 },
-  { radius: 1.0, orbit: 28, speed: 0.15, color: 0xfbbf24, emissive: 0xaa7010, y: 0 },
-];
-
-planetData.forEach(d => {
-  const geo = new THREE.SphereGeometry(d.radius, 32, 32);
-  const mat = new THREE.MeshStandardMaterial({
-    color: d.color,
-    emissive: d.emissive,
-    emissiveIntensity: 1.5,
-    roughness: 0.3,
-    metalness: 0.4,
-  });
-  const mesh = new THREE.Mesh(geo, mat);
-  scene.add(mesh);
-  planets.push({ mesh, ...d, angle: Math.random() * Math.PI * 2 });
-
-  // Orbit trail
-  const pts = [];
-  for (let i = 0; i <= 128; i++) {
-    const a = (i / 128) * Math.PI * 2;
-    pts.push(new THREE.Vector3(Math.cos(a) * d.orbit, d.y, Math.sin(a) * d.orbit));
-  }
-  const trail = new THREE.Line(
-    new THREE.BufferGeometry().setFromPoints(pts),
-    new THREE.LineBasicMaterial({ color: d.color, transparent: true, opacity: 0.15 })
-  );
-  scene.add(trail);
-});
-
-// ── Floating crystals ──────────────────────────────────
-const crystals = [];
-for (let i = 0; i < 40; i++) {
-  const geo = new THREE.OctahedronGeometry(Math.random() * 0.4 + 0.2);
-  const hue = Math.random();
-  const mat = new THREE.MeshStandardMaterial({
-    color: new THREE.Color().setHSL(hue, 1, 0.6),
-    emissive: new THREE.Color().setHSL(hue, 1, 0.3),
-    emissiveIntensity: 2,
-    roughness: 0,
-    metalness: 1,
-  });
-  const mesh = new THREE.Mesh(geo, mat);
+const starVerts = [];
+for (let i = 0; i < 6000; i++) {
   const theta = Math.random() * Math.PI * 2;
   const phi = Math.acos(2 * Math.random() - 1);
-  const r = 10 + Math.random() * 25;
-  mesh.position.setFromSphericalCoords(r, phi, theta);
-  mesh.userData.spin = (Math.random() - 0.5) * 0.03;
-  mesh.userData.float = Math.random() * Math.PI * 2;
-  scene.add(mesh);
-  crystals.push(mesh);
+  const r = 500 + Math.random() * 300;
+  starVerts.push(
+    r * Math.sin(phi) * Math.cos(theta),
+    r * Math.sin(phi) * Math.sin(theta),
+    r * Math.cos(phi)
+  );
+}
+const starGeo = new THREE.BufferGeometry();
+starGeo.setAttribute('position', new THREE.Float32BufferAttribute(starVerts, 3));
+scene.add(new THREE.Points(starGeo, new THREE.PointsMaterial({ color: 0xddeeff, size: 0.8, sizeAttenuation: true })));
+
+// ── Moon surface procedural texture ───────────────────
+function makeMoonTexture(size = 1024) {
+  const canvas = document.createElement('canvas');
+  canvas.width = canvas.height = size;
+  const ctx = canvas.getContext('2d');
+
+  // base colour
+  const grad = ctx.createRadialGradient(size/2, size/2, 0, size/2, size/2, size/2);
+  grad.addColorStop(0,   '#d8dde8');
+  grad.addColorStop(0.5, '#b0b8c8');
+  grad.addColorStop(1,   '#8890a0');
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, size, size);
+
+  // noise
+  for (let i = 0; i < 60000; i++) {
+    const x = Math.random() * size;
+    const y = Math.random() * size;
+    const r = Math.random() * 2;
+    const v = Math.random() > 0.5 ? 255 : 0;
+    ctx.fillStyle = `rgba(${v},${v},${v},0.025)`;
+    ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2); ctx.fill();
+  }
+
+  // craters
+  const craters = [
+    { x: 0.3, y: 0.35, r: 0.09 }, { x: 0.65, y: 0.55, r: 0.07 },
+    { x: 0.5,  y: 0.2,  r: 0.05 }, { x: 0.2,  y: 0.65, r: 0.06 },
+    { x: 0.75, y: 0.3,  r: 0.04 }, { x: 0.4,  y: 0.7,  r: 0.035 },
+    { x: 0.6,  y: 0.75, r: 0.025 },{ x: 0.15, y: 0.4,  r: 0.03 },
+    { x: 0.8,  y: 0.6,  r: 0.02 }, { x: 0.55, y: 0.45, r: 0.015 },
+  ];
+  craters.forEach(c => {
+    const cx = c.x * size, cy = c.y * size, cr = c.r * size;
+    // shadow ring
+    const g = ctx.createRadialGradient(cx, cy, cr * 0.7, cx, cy, cr * 1.1);
+    g.addColorStop(0, 'rgba(0,0,0,0)');
+    g.addColorStop(0.7, 'rgba(0,0,0,0.35)');
+    g.addColorStop(1, 'rgba(255,255,255,0.15)');
+    ctx.fillStyle = g;
+    ctx.beginPath(); ctx.arc(cx, cy, cr * 1.1, 0, Math.PI * 2); ctx.fill();
+    // inner floor
+    const gf = ctx.createRadialGradient(cx, cy, 0, cx, cy, cr * 0.7);
+    gf.addColorStop(0, 'rgba(180,185,200,0.6)');
+    gf.addColorStop(1, 'rgba(120,125,140,0.2)');
+    ctx.fillStyle = gf;
+    ctx.beginPath(); ctx.arc(cx, cy, cr * 0.7, 0, Math.PI * 2); ctx.fill();
+  });
+
+  // mare (dark regions)
+  [
+    { x: 0.45, y: 0.48, rx: 0.22, ry: 0.15 },
+    { x: 0.6,  y: 0.3,  rx: 0.1,  ry: 0.08 },
+    { x: 0.25, y: 0.55, rx: 0.08, ry: 0.06 },
+  ].forEach(m => {
+    const g = ctx.createRadialGradient(m.x*size, m.y*size, 0, m.x*size, m.y*size, m.rx*size);
+    g.addColorStop(0, 'rgba(60,65,80,0.3)');
+    g.addColorStop(1, 'rgba(60,65,80,0)');
+    ctx.fillStyle = g;
+    ctx.save();
+    ctx.translate(m.x*size, m.y*size);
+    ctx.scale(1, m.ry/m.rx);
+    ctx.beginPath(); ctx.arc(0, 0, m.rx*size, 0, Math.PI*2); ctx.fill();
+    ctx.restore();
+  });
+
+  return new THREE.CanvasTexture(canvas);
 }
 
-// ── Lights ─────────────────────────────────────────────
-scene.add(new THREE.AmbientLight(0x111133, 2));
-const pt1 = new THREE.PointLight(0x8060ff, 5, 50);
-scene.add(pt1);
-const pt2 = new THREE.PointLight(0xff60a0, 3, 40);
-pt2.position.set(15, 10, 0);
-scene.add(pt2);
-const pt3 = new THREE.PointLight(0x60ffcc, 3, 40);
-pt3.position.set(-15, -10, 0);
-scene.add(pt3);
-
-// ── Raycaster for click interaction ───────────────────
-const raycaster = new THREE.Raycaster();
-const mouse = new THREE.Vector2();
-const clickables = [core, ...planets.map(p => p.mesh), ...crystals];
-
-renderer.domElement.addEventListener('click', e => {
-  mouse.x = (e.clientX / innerWidth) * 2 - 1;
-  mouse.y = -(e.clientY / innerHeight) * 2 + 1;
-  raycaster.setFromCamera(mouse, camera);
-  const hits = raycaster.intersectObjects(clickables);
-  if (hits.length) {
-    const obj = hits[0].object;
-    // pulse scale
-    obj.userData.pulse = 1;
+function makeMoonNormal(size = 512) {
+  const canvas = document.createElement('canvas');
+  canvas.width = canvas.height = size;
+  const ctx = canvas.getContext('2d');
+  ctx.fillStyle = '#8080ff';
+  ctx.fillRect(0, 0, size, size);
+  for (let i = 0; i < 20000; i++) {
+    const x = Math.random() * size;
+    const y = Math.random() * size;
+    const r = Math.random() * 3;
+    ctx.fillStyle = `rgba(${80 + Math.random()*60},${80 + Math.random()*60},255,0.15)`;
+    ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI*2); ctx.fill();
   }
-});
+  return new THREE.CanvasTexture(canvas);
+}
 
-// ── Enter button ───────────────────────────────────────
-document.getElementById('enterBtn').addEventListener('click', () => {
-  controls.autoRotateSpeed = 2;
-  setTimeout(() => { controls.autoRotateSpeed = 0.3; }, 3000);
-  bloom.strength = 3;
-  setTimeout(() => { bloom.strength = 1.5; }, 2000);
-});
+const moonTex    = makeMoonTexture(1024);
+const normalTex  = makeMoonNormal(512);
 
-// ── Resize ─────────────────────────────────────────────
+const moon = new THREE.Mesh(
+  new THREE.SphereGeometry(1.8, 128, 128),
+  new THREE.MeshStandardMaterial({
+    map: moonTex,
+    normalMap: normalTex,
+    normalScale: new THREE.Vector2(0.6, 0.6),
+    roughness: 0.95,
+    metalness: 0.0,
+  })
+);
+scene.add(moon);
+
+// atmosphere haze
+const atmo = new THREE.Mesh(
+  new THREE.SphereGeometry(1.87, 64, 64),
+  new THREE.MeshBasicMaterial({
+    color: 0x8899bb,
+    transparent: true,
+    opacity: 0.04,
+    side: THREE.BackSide,
+  })
+);
+scene.add(atmo);
+
+// ── Sunlight ───────────────────────────────────────────
+const sun = new THREE.DirectionalLight(0xfff5e8, 2.5);
+sun.position.set(8, 3, 5);
+scene.add(sun);
+scene.add(new THREE.AmbientLight(0x223366, 0.15));
+
+// soft fill from dark side
+const fill = new THREE.DirectionalLight(0x334488, 0.08);
+fill.position.set(-5, -2, -3);
+scene.add(fill);
+
+// ── Resize ──────────────────────────────────────────────
 window.addEventListener('resize', () => {
   camera.aspect = innerWidth / innerHeight;
   camera.updateProjectionMatrix();
@@ -330,53 +287,12 @@ window.addEventListener('resize', () => {
   composer.setSize(innerWidth, innerHeight);
 });
 
-// ── Animate ────────────────────────────────────────────
+// ── Animate ─────────────────────────────────────────────
 const clock = new THREE.Clock();
 function animate() {
   requestAnimationFrame(animate);
   const t = clock.getElapsedTime();
-
-  // Core pulse
-  const s = 1 + Math.sin(t * 2) * 0.03;
-  core.scale.setScalar(s);
-  coreMat.emissiveIntensity = 1.8 + Math.sin(t * 1.5) * 0.5;
-
-  // Rings slow drift
-  ring1.rotation.z = t * 0.1;
-  ring2.rotation.z = -t * 0.07;
-  ring3.rotation.z = t * 0.05;
-
-  // Planets orbit
-  planets.forEach(p => {
-    p.angle += p.speed * 0.01;
-    p.mesh.position.set(
-      Math.cos(p.angle) * p.orbit,
-      p.y + Math.sin(t * 0.5 + p.angle) * 0.5,
-      Math.sin(p.angle) * p.orbit
-    );
-    p.mesh.rotation.y += 0.02;
-  });
-
-  // Crystals float & spin
-  crystals.forEach(c => {
-    c.rotation.y += c.userData.spin;
-    c.rotation.x += c.userData.spin * 0.7;
-    c.position.y += Math.sin(t + c.userData.float) * 0.005;
-
-    if (c.userData.pulse) {
-      c.scale.setScalar(1 + c.userData.pulse * 0.5);
-      c.userData.pulse *= 0.9;
-      if (c.userData.pulse < 0.01) c.userData.pulse = 0;
-    }
-  });
-
-  // Core click pulse
-  if (core.userData.pulse) {
-    core.scale.setScalar(s + core.userData.pulse * 0.8);
-    core.userData.pulse *= 0.92;
-    if (core.userData.pulse < 0.01) core.userData.pulse = 0;
-  }
-
+  moon.rotation.y = t * 0.02;
   controls.update();
   composer.render();
 }
