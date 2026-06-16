@@ -1,876 +1,634 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Close Flow AI — Sales on Autopilot</title>
+  <title>CloseFlow AI — Sales Automation Built for D2D Companies</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            accent: '#00C2FF',
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+          },
+        }
+      }
+    }
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+
   <style>
-    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    /* ── Base ─────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { background: #09090B; }
+    body { background: #09090B; color: #FAFAFA; font-family: 'Inter', sans-serif; }
 
-    :root {
-      --cyan:   #00d4ff;
-      --purple: #6366f1;
-      --dark:   #050510;
-      --dark2:  #0d0d1a;
-      --text:   #e2e8f0;
-      --muted:  #64748b;
+    /* ── Type scale ───────────────────────────────── */
+    .hero-h1 {
+      font-size: clamp(2.75rem, 6.5vw, 5.25rem);
+      font-weight: 900;
+      letter-spacing: -0.045em;
+      line-height: 1.04;
     }
-
-    html { scroll-behavior: smooth; }
-
-    body {
-      background: var(--dark);
-      color: var(--text);
-      font-family: 'Inter', system-ui, sans-serif;
-      overflow-x: hidden;
-    }
-
-    /* ── Canvas ── */
-    #bg-canvas {
-      position: fixed;
-      inset: 0;
-      z-index: 0;
-    }
-
-    /* ── Nav ── */
-    nav {
-      position: fixed;
-      top: 0; left: 0; right: 0;
-      z-index: 100;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 1.25rem 3rem;
-      background: rgba(5, 5, 16, 0.6);
-      backdrop-filter: blur(16px);
-      border-bottom: 1px solid rgba(99, 102, 241, 0.12);
-    }
-
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: 0.6rem;
-      text-decoration: none;
-    }
-
-    .logo-icon {
-      width: 34px; height: 34px;
-      background: linear-gradient(135deg, var(--cyan), var(--purple));
-      border-radius: 8px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 1rem;
-    }
-
-    .logo-text {
-      font-size: 1.1rem;
-      font-weight: 700;
-      letter-spacing: -0.02em;
-      color: #fff;
-    }
-
-    .logo-text span { color: var(--cyan); }
-
-    nav ul {
-      display: flex;
-      gap: 2rem;
-      list-style: none;
-    }
-
-    nav ul a {
-      color: var(--muted);
-      text-decoration: none;
-      font-size: 0.875rem;
-      letter-spacing: 0.02em;
-      transition: color 0.2s;
-    }
-
-    nav ul a:hover { color: var(--text); }
-
-    .nav-cta {
-      background: linear-gradient(135deg, var(--cyan), var(--purple));
-      color: #fff !important;
-      padding: 0.55rem 1.4rem;
-      border-radius: 8px;
-      font-weight: 600;
-      font-size: 0.875rem;
-      text-decoration: none;
-      transition: opacity 0.2s, transform 0.2s;
-      display: inline-block;
-    }
-
-    .nav-cta:hover { opacity: 0.9; transform: translateY(-1px); }
-
-    /* ── Sections ── */
-    section {
-      position: relative;
-      z-index: 10;
-    }
-
-    /* ── Hero ── */
-    #hero {
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      padding: 8rem 2rem 4rem;
-    }
-
-    .badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.4rem;
-      background: rgba(99, 102, 241, 0.15);
-      border: 1px solid rgba(99, 102, 241, 0.3);
-      color: #a5b4fc;
-      font-size: 0.75rem;
-      font-weight: 600;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      padding: 0.35rem 0.9rem;
-      border-radius: 100px;
-      margin-bottom: 2rem;
-    }
-
-    .badge-dot {
-      width: 6px; height: 6px;
-      background: var(--cyan);
-      border-radius: 50%;
-      animation: pulse 2s infinite;
-    }
-
-    @keyframes pulse {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.5; transform: scale(0.8); }
-    }
-
-    h1 {
-      font-size: clamp(2.8rem, 7vw, 6rem);
+    .section-h2 {
+      font-size: clamp(2rem, 4.5vw, 3.4rem);
       font-weight: 800;
+      letter-spacing: -0.035em;
+      line-height: 1.08;
+    }
+    .closing-h2 {
+      font-size: clamp(2.4rem, 5.5vw, 4.2rem);
+      font-weight: 900;
+      letter-spacing: -0.045em;
       line-height: 1.05;
-      letter-spacing: -0.04em;
-      max-width: 900px;
-      margin-bottom: 1.5rem;
     }
 
-    h1 .gradient {
-      background: linear-gradient(135deg, var(--cyan) 0%, var(--purple) 60%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+    /* ── Accent ───────────────────────────────────── */
+    .text-accent  { color: #00C2FF; }
+    .bg-accent    { background: #00C2FF; }
+    .border-accent { border-color: #00C2FF; }
+
+    /* ── Nav ──────────────────────────────────────── */
+    #nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      background: rgba(9, 9, 11, 0.88);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid #18181B;
     }
 
-    .hero-sub {
-      font-size: clamp(1rem, 2vw, 1.25rem);
-      color: var(--muted);
-      max-width: 560px;
-      line-height: 1.7;
-      margin-bottom: 2.5rem;
+    /* ── Buttons ──────────────────────────────────── */
+    .btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-weight: 700; border-radius: 8px;
+      text-decoration: none; cursor: pointer;
+      transition: all 0.2s ease;
     }
-
-    .hero-actions {
-      display: flex;
-      gap: 1rem;
-      align-items: center;
-      flex-wrap: wrap;
-      justify-content: center;
-    }
-
     .btn-primary {
-      background: linear-gradient(135deg, var(--cyan), var(--purple));
-      color: #fff;
-      padding: 0.85rem 2rem;
-      border-radius: 10px;
-      font-weight: 700;
-      font-size: 0.95rem;
-      text-decoration: none;
-      transition: transform 0.2s, box-shadow 0.2s;
-      box-shadow: 0 0 30px rgba(99, 102, 241, 0.4);
+      background: #00C2FF; color: #09090B;
+      padding: 13px 26px; font-size: 0.925rem;
     }
-
     .btn-primary:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 0 50px rgba(99, 102, 241, 0.6);
+      background: #22CFFF;
+      transform: translateY(-1px);
+      box-shadow: 0 10px 35px rgba(0,194,255,0.28);
     }
-
     .btn-ghost {
-      color: var(--muted);
-      text-decoration: none;
-      font-size: 0.9rem;
-      display: flex;
-      align-items: center;
-      gap: 0.4rem;
-      transition: color 0.2s;
+      color: #71717A; border: 1px solid #27272A;
+      padding: 12px 22px; font-size: 0.875rem;
+    }
+    .btn-ghost:hover { border-color: #52525B; color: #A1A1AA; }
+    .btn-lg { padding: 17px 38px; font-size: 1rem; }
+
+    /* ── Cards ────────────────────────────────────── */
+    .card {
+      background: #111116;
+      border: 1px solid #222228;
+      border-radius: 14px;
+      transition: border-color 0.25s;
+    }
+    .card:hover { border-color: rgba(0,194,255,0.28); }
+
+    /* ── Eyebrow ──────────────────────────────────── */
+    .eyebrow {
+      font-size: 0.7rem; font-weight: 700;
+      letter-spacing: 0.15em; text-transform: uppercase;
+      color: #00C2FF;
     }
 
-    .btn-ghost:hover { color: var(--text); }
-
-    .hero-stats {
-      display: flex;
-      gap: 3rem;
-      margin-top: 4rem;
-      flex-wrap: wrap;
-      justify-content: center;
+    /* ── Hero background ──────────────────────────── */
+    .hero-glow {
+      position: absolute; inset: 0; pointer-events: none;
+      background: radial-gradient(ellipse 90% 55% at 50% -5%, rgba(0,194,255,0.09) 0%, transparent 65%);
+    }
+    .hero-grid {
+      position: absolute; inset: 0; pointer-events: none;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+      background-size: 56px 56px;
+      mask-image: radial-gradient(ellipse 80% 60% at 50% 40%, black 20%, transparent 80%);
     }
 
-    .stat {
-      text-align: center;
+    /* ── Pulse dot ────────────────────────────────── */
+    .pulse-dot {
+      width: 6px; height: 6px; border-radius: 50%; background: #00C2FF;
+      animation: pulsate 2.2s ease-in-out infinite;
+    }
+    @keyframes pulsate {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.25; }
     }
 
-    .stat-num {
-      font-size: 2rem;
-      font-weight: 800;
-      background: linear-gradient(135deg, var(--cyan), var(--purple));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      letter-spacing: -0.03em;
+    /* ── Divider ──────────────────────────────────── */
+    .hr {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, #222228 30%, #222228 70%, transparent);
     }
 
-    .stat-label {
-      font-size: 0.8rem;
-      color: var(--muted);
-      letter-spacing: 0.05em;
-      margin-top: 0.2rem;
+    /* ── System flow (horizontal desktop) ────────── */
+    .flow-scroll { overflow-x: auto; padding-bottom: 8px; }
+    .flow-row {
+      display: flex; align-items: stretch; gap: 0;
+      min-width: 840px;
     }
-
-    /* ── Features ── */
-    #features {
-      padding: 7rem 2rem;
+    .flow-card {
+      flex: 1; background: #111116;
+      border-top: 1px solid #222228;
+      border-bottom: 1px solid #222228;
+      padding: 1.75rem 1.5rem;
+      transition: background 0.25s;
     }
-
-    .section-label {
-      text-align: center;
-      font-size: 0.75rem;
-      font-weight: 700;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: var(--cyan);
-      margin-bottom: 1rem;
-    }
-
-    .section-title {
-      text-align: center;
-      font-size: clamp(2rem, 4vw, 3rem);
-      font-weight: 800;
-      letter-spacing: -0.03em;
-      margin-bottom: 1rem;
-    }
-
-    .section-sub {
-      text-align: center;
-      color: var(--muted);
-      font-size: 1.05rem;
-      max-width: 500px;
-      margin: 0 auto 4rem;
-      line-height: 1.7;
-    }
-
-    .features-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 1.5rem;
-      max-width: 1100px;
-      margin: 0 auto;
-    }
-
-    .feature-card {
-      background: rgba(13, 13, 26, 0.7);
-      border: 1px solid rgba(99, 102, 241, 0.15);
-      border-radius: 16px;
-      padding: 2rem;
-      backdrop-filter: blur(10px);
-      transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
-      cursor: default;
-    }
-
-    .feature-card:hover {
-      border-color: rgba(0, 212, 255, 0.4);
-      transform: translateY(-4px);
-      box-shadow: 0 20px 60px rgba(0, 212, 255, 0.08);
-    }
-
-    .feature-icon {
-      width: 48px; height: 48px;
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.4rem;
-      margin-bottom: 1.25rem;
-    }
-
-    .feature-card:nth-child(1) .feature-icon { background: rgba(0, 212, 255, 0.12); }
-    .feature-card:nth-child(2) .feature-icon { background: rgba(99, 102, 241, 0.12); }
-    .feature-card:nth-child(3) .feature-icon { background: rgba(167, 139, 250, 0.12); }
-    .feature-card:nth-child(4) .feature-icon { background: rgba(34, 197, 94, 0.12); }
-    .feature-card:nth-child(5) .feature-icon { background: rgba(251, 191, 36, 0.12); }
-    .feature-card:nth-child(6) .feature-icon { background: rgba(239, 68, 68, 0.12); }
-
-    .feature-card h3 {
-      font-size: 1.1rem;
-      font-weight: 700;
-      margin-bottom: 0.6rem;
-      letter-spacing: -0.02em;
-    }
-
-    .feature-card p {
-      color: var(--muted);
-      font-size: 0.9rem;
-      line-height: 1.7;
-    }
-
-    /* ── Pipeline Viz ── */
-    #pipeline {
-      padding: 5rem 2rem 7rem;
-      text-align: center;
-    }
-
-    .pipeline-track {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0;
-      max-width: 900px;
-      margin: 3rem auto 0;
-      flex-wrap: nowrap;
-      overflow-x: auto;
-      padding-bottom: 1rem;
-    }
-
-    .pipe-step {
-      flex: 1;
-      min-width: 130px;
-      text-align: center;
-      position: relative;
-    }
-
-    .pipe-step:not(:last-child)::after {
-      content: '';
-      position: absolute;
-      top: 24px;
-      right: -1px;
-      width: calc(100% - 48px);
-      height: 2px;
-      background: linear-gradient(90deg, rgba(0,212,255,0.5), rgba(99,102,241,0.5));
-      z-index: 1;
-    }
-
-    .pipe-dot {
-      width: 48px; height: 48px;
-      border-radius: 50%;
-      margin: 0 auto 0.75rem;
+    .flow-card:first-child { border-left: 1px solid #222228; border-radius: 14px 0 0 14px; }
+    .flow-card:last-child  { border-right: 1px solid #222228; border-radius: 0 14px 14px 0; }
+    .flow-card:hover { background: #15151B; }
+    .flow-divider {
+      width: 1px; background: #222228; flex-shrink: 0;
       display: flex; align-items: center; justify-content: center;
-      font-size: 1.1rem;
-      position: relative;
-      z-index: 2;
-      border: 2px solid transparent;
-      background-clip: padding-box;
+    }
+    .flow-divider::before {
+      content: ''; display: block;
+      width: 20px; height: 20px; flex-shrink: 0;
+      border: 1px solid #333339; border-radius: 50%;
+      background: #09090B;
+      background-image: url("data:image/svg+xml,%3Csvg width='10' height='10' viewBox='0 0 10 10' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M2 5h6M6 3l2 2-2 2' stroke='%23444' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: center;
     }
 
-    .pipe-step:nth-child(1) .pipe-dot { background: rgba(0,212,255,0.15); border-color: rgba(0,212,255,0.4); }
-    .pipe-step:nth-child(2) .pipe-dot { background: rgba(99,102,241,0.15); border-color: rgba(99,102,241,0.4); }
-    .pipe-step:nth-child(3) .pipe-dot { background: rgba(167,139,250,0.15); border-color: rgba(167,139,250,0.4); }
-    .pipe-step:nth-child(4) .pipe-dot { background: rgba(34,197,94,0.15); border-color: rgba(34,197,94,0.4); }
-    .pipe-step:nth-child(5) .pipe-dot { background: rgba(251,191,36,0.15); border-color: rgba(251,191,36,0.4); }
-
-    .pipe-label {
-      font-size: 0.78rem;
-      color: var(--muted);
-      letter-spacing: 0.04em;
-      line-height: 1.4;
+    /* ── Step icon ────────────────────────────────── */
+    .step-icon {
+      width: 42px; height: 42px; border-radius: 10px; flex-shrink: 0;
+      background: rgba(0,194,255,0.08);
+      border: 1px solid rgba(0,194,255,0.18);
+      display: flex; align-items: center; justify-content: center;
     }
 
-    /* ── CTA ── */
-    #cta {
-      padding: 7rem 2rem;
-      text-align: center;
+    /* ── Founding badge ───────────────────────────── */
+    .founding-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(0,194,255,0.07);
+      border: 1px solid rgba(0,194,255,0.2);
+      border-radius: 100px;
+      padding: 7px 16px;
+      font-size: 0.75rem; font-weight: 700;
+      letter-spacing: 0.06em; text-transform: uppercase;
+      color: #00C2FF;
     }
 
-    .cta-box {
-      max-width: 680px;
-      margin: 0 auto;
-      background: rgba(13, 13, 26, 0.8);
-      border: 1px solid rgba(99, 102, 241, 0.25);
-      border-radius: 24px;
-      padding: 4rem 3rem;
-      backdrop-filter: blur(12px);
-      box-shadow: 0 0 120px rgba(99, 102, 241, 0.1);
+    /* ── Founding card ────────────────────────────── */
+    .founding-card {
+      background: linear-gradient(135deg, rgba(0,194,255,0.04) 0%, rgba(0,0,0,0) 60%);
+      border: 1px solid rgba(0,194,255,0.16);
+      border-radius: 20px;
     }
 
-    .cta-box h2 {
-      font-size: clamp(1.8rem, 4vw, 2.8rem);
-      font-weight: 800;
-      letter-spacing: -0.04em;
-      margin-bottom: 1rem;
+    /* ── Contact info card ────────────────────────── */
+    .contact-label {
+      font-size: 0.65rem; font-weight: 700;
+      letter-spacing: 0.14em; text-transform: uppercase;
+      color: #52525B; margin-bottom: 4px;
     }
 
-    .cta-box p {
-      color: var(--muted);
-      font-size: 1.05rem;
-      margin-bottom: 2rem;
-      line-height: 1.7;
-    }
-
-    .email-form {
-      display: flex;
-      gap: 0.75rem;
-      max-width: 440px;
-      margin: 0 auto;
-    }
-
-    .email-form input {
-      flex: 1;
-      background: rgba(255,255,255,0.06);
-      border: 1px solid rgba(99,102,241,0.2);
-      border-radius: 10px;
-      padding: 0.8rem 1.1rem;
-      color: var(--text);
-      font-size: 0.9rem;
-      outline: none;
-      transition: border-color 0.2s;
-    }
-
-    .email-form input::placeholder { color: var(--muted); }
-    .email-form input:focus { border-color: var(--cyan); }
-
-    .email-form button {
-      background: linear-gradient(135deg, var(--cyan), var(--purple));
-      border: none;
-      border-radius: 10px;
-      padding: 0.8rem 1.4rem;
-      color: #fff;
-      font-weight: 700;
-      font-size: 0.9rem;
-      cursor: pointer;
-      white-space: nowrap;
-      transition: opacity 0.2s, transform 0.2s;
-    }
-
-    .email-form button:hover { opacity: 0.9; transform: translateY(-1px); }
-
-    /* ── Footer ── */
-    footer {
-      position: relative;
-      z-index: 10;
-      border-top: 1px solid rgba(99,102,241,0.1);
-      padding: 2.5rem 3rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 1rem;
-    }
-
-    footer .logo-text { font-size: 0.95rem; }
-
-    footer p {
-      font-size: 0.8rem;
-      color: var(--muted);
-    }
-
-    .footer-links {
-      display: flex;
-      gap: 1.5rem;
-    }
-
-    .footer-links a {
-      font-size: 0.8rem;
-      color: var(--muted);
-      text-decoration: none;
-      transition: color 0.2s;
-    }
-
-    .footer-links a:hover { color: var(--text); }
-
-    /* ── Scroll animations ── */
-    .reveal {
+    /* ── Scroll animations ────────────────────────── */
+    .fade-up {
       opacity: 0;
-      transform: translateY(30px);
-      transition: opacity 0.7s ease, transform 0.7s ease;
+      transform: translateY(26px);
+      transition: opacity 0.65s ease, transform 0.65s ease;
     }
-    .reveal.visible {
-      opacity: 1;
-      transform: none;
+    .fade-up.in { opacity: 1; transform: none; }
+    .d1 { transition-delay: 0.08s; }
+    .d2 { transition-delay: 0.16s; }
+    .d3 { transition-delay: 0.24s; }
+    .d4 { transition-delay: 0.32s; }
+
+    /* ── Hero loads on page open ──────────────────── */
+    .h-anim-1 { animation: heroFade 0.75s ease both; }
+    .h-anim-2 { animation: heroFade 0.75s ease 0.14s both; }
+    .h-anim-3 { animation: heroFade 0.75s ease 0.28s both; }
+    @keyframes heroFade {
+      from { opacity: 0; transform: translateY(22px); }
+      to   { opacity: 1; transform: none; }
     }
 
-    @media (max-width: 700px) {
-      nav { padding: 1rem 1.25rem; }
-      nav ul { display: none; }
-      .hero-stats { gap: 1.5rem; }
-      .email-form { flex-direction: column; }
-      footer { flex-direction: column; text-align: center; }
-      .cta-box { padding: 2.5rem 1.5rem; }
+    /* ── Mobile nav ───────────────────────────────── */
+    @media (max-width: 640px) {
+      .nav-links { display: none; }
     }
   </style>
 </head>
-<body>
+<body class="antialiased">
 
-<canvas id="bg-canvas"></canvas>
+<!-- ───────────────────── NAV ───────────────────────────── -->
+<nav id="nav">
+  <div class="max-w-6xl mx-auto px-6 h-[66px] flex items-center justify-between gap-8">
+    <!-- Logo -->
+    <a href="#" class="flex items-center gap-2.5 shrink-0">
+      <div class="bg-accent flex items-center justify-center shrink-0" style="width:33px;height:33px;border-radius:7px;">
+        <svg width="17" height="17" viewBox="0 0 20 20" fill="none">
+          <path d="M4 10C4 6.7 6.7 4 10 4c1.9 0 3.6.9 4.7 2.2" stroke="#09090B" stroke-width="2.3" stroke-linecap="round"/>
+          <path d="M7 13.5h9" stroke="#09090B" stroke-width="2.3" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <span style="font-weight:800;font-size:1.05rem;letter-spacing:-0.025em;">CloseFlow <span class="text-accent">AI</span></span>
+    </a>
 
-<!-- Nav -->
-<nav>
-  <a href="#hero" class="logo">
-    <div class="logo-icon">⚡</div>
-    <span class="logo-text">Close Flow <span>AI</span></span>
-  </a>
-  <ul>
-    <li><a href="#features">Features</a></li>
-    <li><a href="#pipeline">How It Works</a></li>
-    <li><a href="#cta">Pricing</a></li>
-  </ul>
-  <a href="#cta" class="nav-cta">Get Early Access</a>
+    <!-- Links -->
+    <div class="nav-links flex items-center gap-7">
+      <a href="#problem" class="text-sm text-zinc-400 hover:text-white transition-colors font-medium">The Problem</a>
+      <a href="#system"  class="text-sm text-zinc-400 hover:text-white transition-colors font-medium">The System</a>
+      <a href="#why"     class="text-sm text-zinc-400 hover:text-white transition-colors font-medium">Why Us</a>
+    </div>
+
+    <!-- CTA — REPLACE href with Calendly or booking link -->
+    <a href="#book" class="btn btn-primary shrink-0" style="padding:10px 20px;font-size:0.85rem;">Book a Call</a>
+  </div>
 </nav>
 
-<!-- Hero -->
-<section id="hero">
-  <div class="badge">
-    <span class="badge-dot"></span>
-    AI-Powered Sales Automation
-  </div>
-  <h1>Close More Deals.<br><span class="gradient">On Autopilot.</span></h1>
-  <p class="hero-sub">
-    Close Flow AI automates your entire sales pipeline — from first outreach to signed contract — so your team focuses on what matters: relationships.
-  </p>
-  <div class="hero-actions">
-    <a href="#cta" class="btn-primary">Start for Free →</a>
-    <a href="#features" class="btn-ghost">See how it works ↓</a>
-  </div>
-  <div class="hero-stats">
-    <div class="stat">
-      <div class="stat-num">3.4×</div>
-      <div class="stat-label">More Meetings Booked</div>
+
+<!-- ───────────────────── HERO ──────────────────────────── -->
+<section id="hero" class="relative min-h-screen flex flex-col items-center justify-center text-center px-6 pt-28 pb-24" style="overflow:hidden;">
+  <div class="hero-glow"></div>
+  <div class="hero-grid"></div>
+
+  <div class="relative max-w-4xl mx-auto">
+    <!-- Badge -->
+    <div class="h-anim-1 inline-flex items-center gap-2.5 mb-9 founding-badge" style="text-transform:none;font-size:0.78rem;letter-spacing:0.04em;">
+      <span class="pulse-dot"></span>
+      D2D &amp; Home Services Sales Automation
     </div>
-    <div class="stat">
-      <div class="stat-num">68%</div>
-      <div class="stat-label">Faster Deal Cycles</div>
+
+    <!-- Headline -->
+    <h1 class="hero-h1 h-anim-2 text-white mb-6">
+      Your Reps Should Be<br>Knocking.
+      <span class="text-accent"> Not Chasing Leads.</span>
+    </h1>
+
+    <!-- Sub -->
+    <p class="h-anim-3 text-zinc-400 mb-10 mx-auto" style="font-size:1.12rem;line-height:1.78;max-width:530px;">
+      CloseFlow AI automates your recruiting, lead follow-up, content, and reporting — so your team does the one thing that actually moves money.
+    </p>
+
+    <!-- Actions -->
+    <div class="h-anim-3 flex flex-col sm:flex-row items-center justify-center gap-3">
+      <!-- REPLACE href with Calendly or booking link -->
+      <a href="#book" class="btn btn-primary">
+        Book a Call
+        <svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="#09090B" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+      <a href="#system" class="btn btn-ghost">See how it works</a>
     </div>
-    <div class="stat">
-      <div class="stat-num">10h+</div>
-      <div class="stat-label">Saved Per Rep / Week</div>
+  </div>
+
+  <!-- Bottom fade into page -->
+  <div style="position:absolute;bottom:0;left:0;right:0;height:140px;background:linear-gradient(to bottom,transparent,#09090B);pointer-events:none;"></div>
+</section>
+
+
+<!-- ───────────────────── THE PROBLEM ───────────────────── -->
+<section id="problem" class="px-6 py-28">
+  <div class="max-w-5xl mx-auto">
+
+    <div class="text-center mb-16 fade-up">
+      <p class="eyebrow mb-4">The Problem</p>
+      <h2 class="section-h2 text-white mb-5">Running a D2D Team Is a Full-Time Job<br class="hidden md:block"> on Top of a Full-Time Job</h2>
+      <p class="text-zinc-500 mx-auto" style="font-size:0.95rem;line-height:1.78;max-width:440px;">
+        If you're the owner and you're still doing all of this manually — you're not running a business. You're running a hamster wheel.
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+      <div class="card p-8 fade-up">
+        <p class="eyebrow mb-3" style="color:#71717A;letter-spacing:0.1em;">01</p>
+        <h3 class="text-white font-bold mb-3" style="font-size:1.15rem;letter-spacing:-0.025em;line-height:1.3;">Recruiting eats your entire week.</h3>
+        <p class="text-zinc-500" style="font-size:0.9rem;line-height:1.78;">Post. Screen. Schedule. Get ghosted. Re-post. You're burning 15+ hours a week finding people instead of developing the ones already on your team.</p>
+      </div>
+
+      <div class="card p-8 fade-up d1">
+        <p class="eyebrow mb-3" style="color:#71717A;letter-spacing:0.1em;">02</p>
+        <h3 class="text-white font-bold mb-3" style="font-size:1.15rem;letter-spacing:-0.025em;line-height:1.3;">Hot leads go cold in the first 6 minutes.</h3>
+        <p class="text-zinc-500" style="font-size:0.9rem;line-height:1.78;">The homeowner filled out a form at 11 AM. Your rep followed up at 2 PM. That deal was dead before lunch. Speed to lead isn't an advantage — it's the baseline requirement.</p>
+      </div>
+
+      <div class="card p-8 fade-up d2">
+        <p class="eyebrow mb-3" style="color:#71717A;letter-spacing:0.1em;">03</p>
+        <h3 class="text-white font-bold mb-3" style="font-size:1.15rem;letter-spacing:-0.025em;line-height:1.3;">Your content is sporadic or nonexistent.</h3>
+        <p class="text-zinc-500" style="font-size:0.9rem;line-height:1.78;">You know you should be posting. But between managing the team and chasing numbers, it never happens consistently. Every competitor posting daily is quietly building trust you're not.</p>
+      </div>
+
+      <div class="card p-8 fade-up d3">
+        <p class="eyebrow mb-3" style="color:#71717A;letter-spacing:0.1em;">04</p>
+        <h3 class="text-white font-bold mb-3" style="font-size:1.15rem;letter-spacing:-0.025em;line-height:1.3;">Nothing talks to everything else.</h3>
+        <p class="text-zinc-500" style="font-size:0.9rem;line-height:1.78;">CRM over here. Group chat over there. A spreadsheet. Someone's personal phone. No real system, no real visibility — just you holding all of it together and hoping nothing breaks.</p>
+      </div>
+
     </div>
   </div>
 </section>
 
-<!-- Features -->
-<section id="features">
-  <div class="reveal">
-    <p class="section-label">Features</p>
-    <h2 class="section-title">Your AI Sales Team,<br>Always On</h2>
-    <p class="section-sub">Every step of the sales process, automated with precision and personalization at scale.</p>
+<div class="hr"></div>
+
+
+<!-- ───────────────────── THE SYSTEM ────────────────────── -->
+<section id="system" class="px-6 py-28">
+  <div class="max-w-6xl mx-auto">
+
+    <div class="text-center mb-14 fade-up">
+      <p class="eyebrow mb-4">The System</p>
+      <h2 class="section-h2 text-white mb-5">One Automated Machine.<br>Built for Your Industry.</h2>
+      <p class="text-zinc-500 mx-auto" style="font-size:0.925rem;line-height:1.78;max-width:400px;">
+        AI handles the volume. A human team reviews everything before it goes out. You get scale without losing control.
+      </p>
+    </div>
+
+    <!-- Horizontally scrollable on mobile, row on desktop -->
+    <div class="flow-scroll fade-up">
+      <div class="flow-row">
+
+        <!-- 1: Recruiting -->
+        <div class="flow-card">
+          <div class="step-icon mb-5">
+            <!-- Funnel -->
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style="color:#00C2FF;">
+              <path d="M2 3h16l-6 7.5V17l-4-2V10.5L2 3z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <p class="eyebrow mb-2" style="font-size:0.62rem;">01 — Recruiting</p>
+          <h3 class="text-white font-bold mb-2" style="font-size:0.975rem;letter-spacing:-0.02em;line-height:1.3;">Recruiting Funnel</h3>
+          <p class="text-zinc-500" style="font-size:0.825rem;line-height:1.7;">AI screens applicants, filters for fit, and books interviews. You show up for people already worth your time.</p>
+        </div>
+
+        <div class="flow-divider" style="position:relative;width:40px;"></div>
+
+        <!-- 2: Lead Gen -->
+        <div class="flow-card">
+          <div class="step-icon mb-5">
+            <!-- Target -->
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style="color:#00C2FF;">
+              <circle cx="10" cy="10" r="7.5" stroke="currentColor" stroke-width="1.7"/>
+              <circle cx="10" cy="10" r="4" stroke="currentColor" stroke-width="1.7"/>
+              <circle cx="10" cy="10" r="1.4" fill="currentColor"/>
+            </svg>
+          </div>
+          <p class="eyebrow mb-2" style="font-size:0.62rem;">02 — Pipeline</p>
+          <h3 class="text-white font-bold mb-2" style="font-size:0.975rem;letter-spacing:-0.02em;line-height:1.3;">Lead Generation</h3>
+          <p class="text-zinc-500" style="font-size:0.825rem;line-height:1.7;">Targeted outreach that fills your pipeline with homeowners who are actually in-market and ready.</p>
+        </div>
+
+        <div class="flow-divider" style="position:relative;width:40px;"></div>
+
+        <!-- 3: Content -->
+        <div class="flow-card">
+          <div class="step-icon mb-5">
+            <!-- Pen / edit -->
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style="color:#00C2FF;">
+              <path d="M13.5 2.5l4 4-9.5 9.5H4v-4l9.5-9.5z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <p class="eyebrow mb-2" style="font-size:0.62rem;">03 — Content</p>
+          <h3 class="text-white font-bold mb-2" style="font-size:0.975rem;letter-spacing:-0.02em;line-height:1.3;">Content Engine</h3>
+          <p class="text-zinc-500" style="font-size:0.825rem;line-height:1.7;">Consistent, on-brand posts across every platform — automated on a schedule that never slips.</p>
+        </div>
+
+        <div class="flow-divider" style="position:relative;width:40px;"></div>
+
+        <!-- 4: Follow-Up -->
+        <div class="flow-card">
+          <div class="step-icon mb-5">
+            <!-- Lightning -->
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style="color:#00C2FF;">
+              <path d="M11 2L4 11.5h7l-2 6.5 9-10.5H11L13 2h-2z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <p class="eyebrow mb-2" style="font-size:0.62rem;">04 — Follow-Up</p>
+          <h3 class="text-white font-bold mb-2" style="font-size:0.975rem;letter-spacing:-0.02em;line-height:1.3;">Instant Follow-Up</h3>
+          <p class="text-zinc-500" style="font-size:0.825rem;line-height:1.7;">Every lead touched within 60 seconds. Every time. No human required to trigger it.</p>
+        </div>
+
+        <div class="flow-divider" style="position:relative;width:40px;"></div>
+
+        <!-- 5: Reporting -->
+        <div class="flow-card">
+          <div class="step-icon mb-5">
+            <!-- Chart -->
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style="color:#00C2FF;">
+              <path d="M3 14.5l4.5-5.5 3.5 2.5 4.5-6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M3 17h14" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <p class="eyebrow mb-2" style="font-size:0.62rem;">05 — Visibility</p>
+          <h3 class="text-white font-bold mb-2" style="font-size:0.975rem;letter-spacing:-0.02em;line-height:1.3;">Reporting Dashboard</h3>
+          <p class="text-zinc-500" style="font-size:0.825rem;line-height:1.7;">Daily and weekly visibility into what's working. Stop running blind. Stop guessing where deals stall.</p>
+        </div>
+
+      </div>
+    </div>
+
+    <p class="text-center text-zinc-600 mt-5 fade-up" style="font-size:0.8rem;letter-spacing:0.02em;">
+      <span class="text-accent font-semibold">AI-powered.</span>&nbsp; Human-reviewed. Every output checked before it goes out.
+    </p>
   </div>
-  <div class="features-grid">
-    <div class="feature-card reveal">
-      <div class="feature-icon">🎯</div>
-      <h3>AI Prospect Scoring</h3>
-      <p>Instantly rank every inbound and outbound lead by deal potential. Focus your energy on prospects most likely to close.</p>
+</section>
+
+<div class="hr"></div>
+
+
+<!-- ───────────────────── WHY CLOSEFLOW ─────────────────── -->
+<section id="why" class="px-6 py-28">
+  <div class="max-w-5xl mx-auto">
+
+    <div class="text-center mb-16 fade-up">
+      <p class="eyebrow mb-4">Why CloseFlow</p>
+      <h2 class="section-h2 text-white mb-5">We've Been on the Sales Floor.<br class="hidden md:block"> Not in a Conference Room.</h2>
+      <p class="text-zinc-500 mx-auto" style="font-size:0.925rem;line-height:1.78;max-width:430px;">
+        There are a hundred "AI marketing agencies." None of them have knocked a door. We have.
+      </p>
     </div>
-    <div class="feature-card reveal">
-      <div class="feature-icon">✉️</div>
-      <h3>Hyper-Personalized Outreach</h3>
-      <p>AI writes and sends perfectly timed, deeply personal emails and LinkedIn messages that actually get replies.</p>
-    </div>
-    <div class="feature-card reveal">
-      <div class="feature-icon">🔄</div>
-      <h3>Smart Follow-Up Sequences</h3>
-      <p>Never let a lead go cold. Close Flow AI tracks every touchpoint and follows up at exactly the right moment.</p>
-    </div>
-    <div class="feature-card reveal">
-      <div class="feature-icon">📊</div>
-      <h3>Real-Time Pipeline Intelligence</h3>
-      <p>Live dashboards surface at-risk deals, stalled conversations, and your next best action — before it's too late.</p>
-    </div>
-    <div class="feature-card reveal">
-      <div class="feature-icon">🗓️</div>
-      <h3>Instant Meeting Scheduling</h3>
-      <p>Eliminate back-and-forth. AI books meetings directly into your calendar the moment a prospect shows intent.</p>
-    </div>
-    <div class="feature-card reveal">
-      <div class="feature-icon">🔗</div>
-      <h3>CRM Auto-Sync</h3>
-      <p>Every call, email, and note syncs automatically to Salesforce, HubSpot, or any CRM — zero manual data entry.</p>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+
+      <div class="card p-8 fade-up">
+        <div class="step-icon mb-6">
+          <!-- Operator / people -->
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style="color:#00C2FF;">
+            <circle cx="7" cy="6" r="2.8" stroke="currentColor" stroke-width="1.7"/>
+            <path d="M2 17c0-2.8 2.2-5 5-5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+            <circle cx="14" cy="6" r="2.8" stroke="currentColor" stroke-width="1.7"/>
+            <path d="M12 17c0-2.8.8-4.4 2-5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <h3 class="text-white font-bold mb-3" style="font-size:1.075rem;letter-spacing:-0.025em;line-height:1.3;">Built by D2D operators.</h3>
+        <p class="text-zinc-500" style="font-size:0.875rem;line-height:1.78;">We've knocked doors, hired and fired reps, done ride-alongs, and managed producing teams. We built CloseFlow because we needed it ourselves — and couldn't find it anywhere.</p>
+      </div>
+
+      <div class="card p-8 fade-up d1">
+        <div class="step-icon mb-6">
+          <!-- Wrench / tools -->
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style="color:#00C2FF;">
+            <path d="M13 2.5c-1.8 0-3.2 1.4-3.2 3.2 0 .4.1.8.2 1.1L2.8 14c-.8.8-.8 2 0 2.8s2 .8 2.8 0l7.2-7.2c.3.1.7.2 1.1.2 1.8 0 3.2-1.4 3.2-3.2 0-.7-.2-1.4-.5-1.9L14.5 6.8l-1.2-.5-.5-1.2 2-2A3.1 3.1 0 0013 2.5z" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <h3 class="text-white font-bold mb-3" style="font-size:1.075rem;letter-spacing:-0.025em;line-height:1.3;">Industry-specific, not repurposed.</h3>
+        <p class="text-zinc-500" style="font-size:0.875rem;line-height:1.78;">Roofing isn't HVAC. HVAC isn't solar. Every workflow, every script, every automation is built around how your specific industry closes — not a copy-paste template we use for every client.</p>
+      </div>
+
+      <div class="card p-8 fade-up d2">
+        <div class="step-icon mb-6">
+          <!-- Chip / AI + human -->
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style="color:#00C2FF;">
+            <rect x="6" y="6" width="8" height="8" rx="1.5" stroke="currentColor" stroke-width="1.7"/>
+            <path d="M9 6V3M11 6V3M9 17v-3M11 17v-3M6 9H3M6 11H3M17 9h-3M17 11h-3" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <h3 class="text-white font-bold mb-3" style="font-size:1.075rem;letter-spacing:-0.025em;line-height:1.3;">AI does the labor. Humans keep it honest.</h3>
+        <p class="text-zinc-500" style="font-size:0.875rem;line-height:1.78;">Automation handles the volume. A real team reviews outputs, manages the systems, and makes sure nothing goes out that shouldn't. You get scale without losing your brand or your reputation.</p>
+      </div>
+
     </div>
   </div>
 </section>
 
-<!-- Pipeline Flow -->
-<section id="pipeline">
-  <div class="reveal">
-    <p class="section-label">How It Works</p>
-    <h2 class="section-title">From Prospect to Close</h2>
-    <p class="section-sub">Close Flow AI handles every stage of the deal, intelligently and automatically.</p>
-  </div>
-  <div class="pipeline-track reveal">
-    <div class="pipe-step">
-      <div class="pipe-dot">🔍</div>
-      <div class="pipe-label">Find<br>Prospects</div>
+<div class="hr"></div>
+
+
+<!-- ───────────────────── FOUNDING OFFER ────────────────── -->
+<section id="offer" class="px-6 py-28">
+  <div class="max-w-2xl mx-auto text-center fade-up">
+
+    <div class="founding-badge mb-9 mx-auto">
+      <span class="pulse-dot"></span>
+      2 spots remaining this quarter
     </div>
-    <div class="pipe-step">
-      <div class="pipe-dot">🎯</div>
-      <div class="pipe-label">Score &<br>Qualify</div>
-    </div>
-    <div class="pipe-step">
-      <div class="pipe-dot">✉️</div>
-      <div class="pipe-label">Outreach &<br>Follow-up</div>
-    </div>
-    <div class="pipe-step">
-      <div class="pipe-dot">🗓️</div>
-      <div class="pipe-label">Book<br>Meeting</div>
-    </div>
-    <div class="pipe-step">
-      <div class="pipe-dot">✅</div>
-      <div class="pipe-label">Close<br>the Deal</div>
-    </div>
+
+    <h2 class="section-h2 text-white mb-6">We're Taking 2 Founding Clients<br class="hidden sm:block"> This Quarter.</h2>
+
+    <p class="text-zinc-400 mb-5 mx-auto" style="font-size:1.025rem;line-height:1.82;max-width:520px;">
+      We're selective on purpose. To do this right, we go deep — not wide. The founding rate covers full onboarding, complete build-out, and ongoing monthly management. It's locked in permanently at where we are now, not where we're going.
+    </p>
+
+    <p class="text-zinc-600 mb-10 mx-auto" style="font-size:0.9rem;line-height:1.78;max-width:480px;">
+      This isn't a pitch deck. It's a straight conversation about whether CloseFlow makes sense for your team size, your volume, and where you want to be in 90 days.
+    </p>
+
+    <!-- REPLACE href with Calendly or booking link -->
+    <a href="#book" class="btn btn-primary btn-lg">
+      Book a Call
+      <svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="#09090B" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </a>
+
   </div>
 </section>
 
-<!-- CTA / Waitlist -->
-<section id="cta">
-  <div class="cta-box reveal">
-    <h2>Ready to Close <span style="background:linear-gradient(135deg,var(--cyan),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Faster?</span></h2>
-    <p>Join hundreds of sales teams already on the waitlist. Early access is free.</p>
-    <div class="email-form">
-      <input type="email" placeholder="your@email.com" />
-      <button type="submit">Join Waitlist</button>
+<div class="hr"></div>
+
+
+<!-- ───────────────────── FINAL CTA ─────────────────────── -->
+<section id="book" class="px-6 py-32" style="background:radial-gradient(ellipse 70% 50% at 50% 100%,rgba(0,194,255,0.06) 0%,transparent 65%);">
+  <div class="max-w-xl mx-auto text-center fade-up">
+
+    <p class="eyebrow mb-5">Book a Call</p>
+
+    <h2 class="closing-h2 text-white mb-6">
+      Stop Running the<br><span class="text-accent">Whole Machine Yourself.</span>
+    </h2>
+
+    <p class="text-zinc-500 mb-12 mx-auto" style="font-size:0.975rem;line-height:1.78;max-width:400px;">
+      20 minutes. Tell us about your team and where things are breaking down. We'll tell you honestly whether CloseFlow is the right fit.
+    </p>
+
+    <!-- Contact / booking card — FILL IN your real info below -->
+    <div class="card p-8 text-left mb-8">
+      <p class="text-zinc-500 text-sm mb-7" style="line-height:1.6;">To book a call or ask a question, reach out directly:</p>
+      <div style="display:flex;flex-direction:column;gap:1.25rem;">
+
+        <div>
+          <p class="contact-label">Email</p>
+          <!-- REPLACE with your real email address -->
+          <a href="mailto:contact@closeflow.ai" class="text-white font-semibold hover:text-accent transition-colors" style="font-size:0.95rem;">contact@closeflow.ai</a>
+        </div>
+
+        <div style="height:1px;background:#1C1C22;"></div>
+
+        <div>
+          <p class="contact-label">Phone / Text</p>
+          <!-- REPLACE with your real phone number -->
+          <a href="tel:+10000000000" class="text-white font-semibold hover:text-accent transition-colors" style="font-size:0.95rem;">+1 (000) 000-0000</a>
+        </div>
+
+        <div style="height:1px;background:#1C1C22;"></div>
+
+        <div>
+          <p class="contact-label">Booking Link</p>
+          <!-- REPLACE href with your Calendly / cal.com link -->
+          <a href="#" class="text-accent font-semibold hover:underline" style="font-size:0.95rem;">calendly.com/closeflow</a>
+          <span class="text-zinc-600 text-sm ml-2">(coming soon)</span>
+        </div>
+
+      </div>
     </div>
+
+    <!-- REPLACE href with Calendly or booking link -->
+    <a href="#" class="btn btn-primary btn-lg w-full justify-center" style="font-size:1rem;">
+      Book a Call — It's Free
+      <svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="#09090B" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </a>
+
   </div>
 </section>
 
-<!-- Footer -->
-<footer>
-  <a href="#hero" class="logo">
-    <div class="logo-icon" style="width:26px;height:26px;font-size:0.75rem;">⚡</div>
-    <span class="logo-text">Close Flow <span>AI</span></span>
-  </a>
-  <p>© 2026 Close Flow AI. All rights reserved.</p>
-  <div class="footer-links">
-    <a href="#">Privacy</a>
-    <a href="#">Terms</a>
-    <a href="#">Contact</a>
+
+<!-- ───────────────────── FOOTER ─────────────────────────── -->
+<footer style="border-top:1px solid #18181B;background:#09090B;padding:1.75rem 1.5rem;">
+  <div class="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-5">
+
+    <a href="#" class="flex items-center gap-2">
+      <div class="bg-accent flex items-center justify-center" style="width:28px;height:28px;border-radius:6px;">
+        <svg width="14" height="14" viewBox="0 0 20 20" fill="none">
+          <path d="M4 10C4 6.7 6.7 4 10 4c1.9 0 3.6.9 4.7 2.2" stroke="#09090B" stroke-width="2.3" stroke-linecap="round"/>
+          <path d="M7 13.5h9" stroke="#09090B" stroke-width="2.3" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <span style="font-weight:800;font-size:0.92rem;letter-spacing:-0.02em;">CloseFlow <span class="text-accent">AI</span></span>
+    </a>
+
+    <nav class="flex items-center gap-6">
+      <a href="#problem" class="text-zinc-500 hover:text-white text-sm transition-colors">The Problem</a>
+      <a href="#system"  class="text-zinc-500 hover:text-white text-sm transition-colors">The System</a>
+      <a href="#why"     class="text-zinc-500 hover:text-white text-sm transition-colors">Why Us</a>
+      <a href="#book"    class="text-zinc-500 hover:text-white text-sm transition-colors">Book a Call</a>
+    </nav>
+
+    <p class="text-zinc-600 text-sm">© 2026 CloseFlow AI</p>
   </div>
 </footer>
 
-<script type="importmap">
-{
-  "imports": {
-    "three": "https://unpkg.com/three@0.160.0/build/three.module.js"
-  }
-}
-</script>
-<script type="module">
-import * as THREE from 'three';
 
-const canvas = document.getElementById('bg-canvas');
-const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
-renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
-renderer.setSize(innerWidth, innerHeight);
-renderer.setClearColor(0x050510, 1);
-
-const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(60, innerWidth / innerHeight, 0.1, 2000);
-camera.position.set(0, 0, 80);
-
-// ── Particle nodes (prospects/deals) ──────────────────────
-const nodeCount = 220;
-const nodePositions = new Float32Array(nodeCount * 3);
-const nodeSpeeds   = new Float32Array(nodeCount);
-const nodePhases   = new Float32Array(nodeCount);
-
-for (let i = 0; i < nodeCount; i++) {
-  nodePositions[i * 3]     = (Math.random() - 0.5) * 200;
-  nodePositions[i * 3 + 1] = (Math.random() - 0.5) * 120;
-  nodePositions[i * 3 + 2] = (Math.random() - 0.5) * 80;
-  nodeSpeeds[i]  = 0.3 + Math.random() * 0.5;
-  nodePhases[i]  = Math.random() * Math.PI * 2;
-}
-
-const nodeGeo = new THREE.BufferGeometry();
-nodeGeo.setAttribute('position', new THREE.BufferAttribute(nodePositions.slice(), 3));
-
-const nodeMat = new THREE.PointsMaterial({
-  color: 0x00d4ff,
-  size: 1.2,
-  sizeAttenuation: true,
-  transparent: true,
-  opacity: 0.7,
-});
-
-const nodesMesh = new THREE.Points(nodeGeo, nodeMat);
-scene.add(nodesMesh);
-
-// ── Secondary purple nodes ─────────────────────────────────
-const node2Count = 120;
-const node2Pos = new Float32Array(node2Count * 3);
-for (let i = 0; i < node2Count; i++) {
-  node2Pos[i * 3]     = (Math.random() - 0.5) * 200;
-  node2Pos[i * 3 + 1] = (Math.random() - 0.5) * 120;
-  node2Pos[i * 3 + 2] = (Math.random() - 0.5) * 80 - 20;
-}
-const node2Geo = new THREE.BufferGeometry();
-node2Geo.setAttribute('position', new THREE.BufferAttribute(node2Pos.slice(), 3));
-const node2Mesh = new THREE.Points(node2Geo, new THREE.PointsMaterial({
-  color: 0x6366f1, size: 0.9, sizeAttenuation: true, transparent: true, opacity: 0.5
-}));
-scene.add(node2Mesh);
-
-// ── Connection lines ───────────────────────────────────────
-const maxLines = 180;
-const linePositions = new Float32Array(maxLines * 2 * 3);
-const lineGeo = new THREE.BufferGeometry();
-lineGeo.setAttribute('position', new THREE.BufferAttribute(linePositions, 3));
-
-const lineMat = new THREE.LineSegments(lineGeo, new THREE.LineBasicMaterial({
-  color: 0x00d4ff,
-  transparent: true,
-  opacity: 0.08,
-}));
-scene.add(lineMat);
-
-// ── Flowing data packets along lines ──────────────────────
-const packetCount = 40;
-const packetPositions = new Float32Array(packetCount * 3);
-const packetGeo = new THREE.BufferGeometry();
-packetGeo.setAttribute('position', new THREE.BufferAttribute(packetPositions, 3));
-const packetMesh = new THREE.Points(packetGeo, new THREE.PointsMaterial({
-  color: 0xffffff, size: 1.8, sizeAttenuation: true, transparent: true, opacity: 0.9
-}));
-scene.add(packetMesh);
-
-// Packet state
-const packetT     = new Float32Array(packetCount).fill(0).map(() => Math.random());
-const packetSpeed = new Float32Array(packetCount).fill(0).map(() => 0.004 + Math.random() * 0.006);
-const packetEdges = [];
-function pickEdge() {
-  const a = Math.floor(Math.random() * nodeCount);
-  const b = Math.floor(Math.random() * nodeCount);
-  return [a, b];
-}
-for (let i = 0; i < packetCount; i++) packetEdges.push(pickEdge());
-
-// ── Mouse influence ────────────────────────────────────────
-const mouse = { x: 0, y: 0 };
-window.addEventListener('mousemove', e => {
-  mouse.x = (e.clientX / innerWidth - 0.5) * 2;
-  mouse.y = -(e.clientY / innerHeight - 0.5) * 2;
-});
-
-// ── Resize ─────────────────────────────────────────────────
-window.addEventListener('resize', () => {
-  camera.aspect = innerWidth / innerHeight;
-  camera.updateProjectionMatrix();
-  renderer.setSize(innerWidth, innerHeight);
-});
-
-// ── Animate ────────────────────────────────────────────────
-const clock = new THREE.Clock();
-const origPositions = nodePositions.slice();
-const orig2Positions = node2Pos.slice();
-
-function updateConnections(pos, count) {
-  let lineIdx = 0;
-  for (let a = 0; a < count && lineIdx < maxLines; a++) {
-    const ax = pos[a * 3], ay = pos[a * 3 + 1], az = pos[a * 3 + 2];
-    for (let b = a + 1; b < count && lineIdx < maxLines; b++) {
-      const dx = ax - pos[b * 3];
-      const dy = ay - pos[b * 3 + 1];
-      const dz = az - pos[b * 3 + 2];
-      const d2 = dx * dx + dy * dy + dz * dz;
-      if (d2 < 900) {
-        linePositions[lineIdx * 6]     = ax;
-        linePositions[lineIdx * 6 + 1] = ay;
-        linePositions[lineIdx * 6 + 2] = az;
-        linePositions[lineIdx * 6 + 3] = pos[b * 3];
-        linePositions[lineIdx * 6 + 4] = pos[b * 3 + 1];
-        linePositions[lineIdx * 6 + 5] = pos[b * 3 + 2];
-        lineIdx++;
-      }
-    }
-  }
-  // clear unused
-  for (let i = lineIdx; i < maxLines; i++) {
-    for (let k = 0; k < 6; k++) linePositions[i * 6 + k] = 0;
-  }
-  lineGeo.attributes.position.needsUpdate = true;
-  lineGeo.setDrawRange(0, lineIdx * 2);
-}
-
-function animate() {
-  requestAnimationFrame(animate);
-  const t = clock.getElapsedTime();
-
-  // Gentle node drift
-  const curPos = nodesMesh.geometry.attributes.position.array;
-  for (let i = 0; i < nodeCount; i++) {
-    curPos[i * 3]     = origPositions[i * 3]     + Math.sin(t * nodeSpeeds[i] * 0.4 + nodePhases[i]) * 4;
-    curPos[i * 3 + 1] = origPositions[i * 3 + 1] + Math.cos(t * nodeSpeeds[i] * 0.3 + nodePhases[i] + 1) * 3;
-  }
-  nodesMesh.geometry.attributes.position.needsUpdate = true;
-
-  const cur2Pos = node2Mesh.geometry.attributes.position.array;
-  for (let i = 0; i < node2Count; i++) {
-    cur2Pos[i * 3]     = orig2Positions[i * 3]     + Math.sin(t * 0.25 + i * 0.5) * 5;
-    cur2Pos[i * 3 + 1] = orig2Positions[i * 3 + 1] + Math.cos(t * 0.2  + i * 0.4) * 4;
-  }
-  node2Mesh.geometry.attributes.position.needsUpdate = true;
-
-  updateConnections(curPos, nodeCount);
-
-  // Animate packets along edges
-  const pPos = packetMesh.geometry.attributes.position.array;
-  for (let i = 0; i < packetCount; i++) {
-    packetT[i] += packetSpeed[i];
-    if (packetT[i] > 1) {
-      packetT[i] = 0;
-      packetEdges[i] = pickEdge();
-    }
-    const [a, b] = packetEdges[i];
-    const tt = packetT[i];
-    pPos[i * 3]     = curPos[a * 3]     + (curPos[b * 3]     - curPos[a * 3])     * tt;
-    pPos[i * 3 + 1] = curPos[a * 3 + 1] + (curPos[b * 3 + 1] - curPos[a * 3 + 1]) * tt;
-    pPos[i * 3 + 2] = curPos[a * 3 + 2] + (curPos[b * 3 + 2] - curPos[a * 3 + 2]) * tt;
-  }
-  packetMesh.geometry.attributes.position.needsUpdate = true;
-
-  // Subtle camera drift with mouse influence
-  camera.position.x += (mouse.x * 8 - camera.position.x) * 0.015;
-  camera.position.y += (mouse.y * 5 - camera.position.y) * 0.015;
-  camera.lookAt(0, 0, 0);
-
-  renderer.render(scene, camera);
-}
-animate();
-</script>
-
+<!-- ───────────────────── JS ──────────────────────────────── -->
 <script>
-// Scroll reveal
-const observer = new IntersectionObserver(entries => {
-  entries.forEach(e => {
-    if (e.isIntersecting) {
-      e.target.classList.add('visible');
-      const siblings = e.target.parentElement.querySelectorAll('.reveal');
-      siblings.forEach((el, i) => {
-        if (!el.classList.contains('visible')) {
-          setTimeout(() => el.classList.add('visible'), i * 80);
-        }
+  // Scroll-triggered fade-up
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) return;
+      const el = entry.target;
+      el.classList.add('in');
+      // Cascade siblings
+      const siblings = el.parentElement.querySelectorAll('.fade-up:not(.in)');
+      siblings.forEach((sib, i) => {
+        setTimeout(() => sib.classList.add('in'), (i + 1) * 90);
       });
-    }
-  });
-}, { threshold: 0.1 });
+      observer.unobserve(el);
+    });
+  }, { threshold: 0.1 });
 
-document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-
-// Waitlist form
-document.querySelector('.email-form button').addEventListener('click', () => {
-  const input = document.querySelector('.email-form input');
-  if (input.value && input.value.includes('@')) {
-    input.value = '';
-    input.placeholder = 'You\'re on the list! ✓';
-    document.querySelector('.email-form button').textContent = 'Done!';
-    document.querySelector('.email-form button').style.background = '#22c55e';
-  }
-});
+  document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
 </script>
-
 </body>
 </html>
