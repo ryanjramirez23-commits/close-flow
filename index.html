@@ -10,523 +10,340 @@
     tailwind.config = {
       theme: {
         extend: {
-          colors: { accent: '#00C2FF' },
           fontFamily: {
-            sans:    ['Inter', 'system-ui', 'sans-serif'],
-            display: ['"Plus Jakarta Sans"', 'Inter', 'system-ui', 'sans-serif'],
-          },
+            display: ['"Plus Jakarta Sans"', 'sans-serif'],
+            sans: ['Inter', 'sans-serif'],
+          }
         }
       }
     }
   </script>
-
-  <!-- Premium font pairing: Plus Jakarta Sans (display) + Inter (body) -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@700;800;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
 
   <style>
-    /* ─── Design Tokens ──────────────────────────────── */
     :root {
-      --bg:           #09090B;
-      --surface-1:    #0E0E12;
-      --surface-2:    #111116;
-      --surface-3:    #16161C;
-      --border-1:     #1C1C22;
-      --border-2:     #27272A;
-      --text-1:       #FAFAFA;
-      --text-2:       #A1A1AA;
-      --text-3:       #71717A;
-      --text-4:       #52525B;
-      --accent:       #00C2FF;
-      --accent-glow:  rgba(0,194,255,0.18);
-      --accent-dim:   rgba(0,194,255,0.08);
-      --r-sm:  8px;
-      --r-md:  12px;
-      --r-lg:  16px;
-      --r-xl:  22px;
-      --t-fast: 150ms;
-      --t-med:  250ms;
-      --t-slow: 600ms;
+      --accent: #00C2FF;
+      --purple: #7B8CFF;
+      --bg:     #06060A;
+      --s1:     #0C0C12;
+      --s2:     #101018;
+      --b1:     #1A1A24;
+      --b2:     #252530;
+      --t1:     #F8F8FA;
+      --t2:     #A0A0B0;
+      --t3:     #606078;
+      --t4:     #404055;
     }
-
-    /* ─── Base ───────────────────────────────────────── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { background: var(--bg); }
-    body {
-      background: var(--bg);
-      color: var(--text-1);
-      font-family: 'Inter', system-ui, sans-serif;
-      -webkit-font-smoothing: antialiased;
+    html { background: var(--bg); scroll-behavior: smooth; }
+    body { background: var(--bg); color: var(--t1); font-family: 'Inter', sans-serif; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+
+    /* ── 3D Canvas ── */
+    #scene-canvas {
+      position: fixed; inset: 0; z-index: 0;
+      width: 100%; height: 100%;
     }
 
-    /* ─── Type Scale ─────────────────────────────────── */
+    /* ── All content above canvas ── */
+    #page { position: relative; z-index: 10; }
+
+    /* ── Type ── */
     .t-display {
       font-family: 'Plus Jakarta Sans', sans-serif;
-      font-size: clamp(2.75rem, 6.5vw, 5.4rem);
       font-weight: 900;
       letter-spacing: -0.05em;
       line-height: 1.02;
     }
     .t-h2 {
       font-family: 'Plus Jakarta Sans', sans-serif;
-      font-size: clamp(1.9rem, 4vw, 3.2rem);
       font-weight: 800;
       letter-spacing: -0.04em;
       line-height: 1.08;
     }
     .t-h3 {
       font-family: 'Plus Jakarta Sans', sans-serif;
-      font-size: 1.05rem;
       font-weight: 700;
       letter-spacing: -0.025em;
       line-height: 1.3;
     }
-    .t-closing {
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      font-size: clamp(2.4rem, 5.5vw, 4.4rem);
-      font-weight: 900;
-      letter-spacing: -0.05em;
-      line-height: 1.03;
-    }
     .eyebrow {
-      font-size: 0.68rem;
-      font-weight: 700;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
+      font-size: 0.67rem; font-weight: 700;
+      letter-spacing: 0.18em; text-transform: uppercase;
       color: var(--accent);
     }
 
-    /* ─── Accent utilities ───────────────────────────── */
-    .text-accent   { color: var(--accent); }
-    .bg-accent     { background: var(--accent); }
+    /* ── Gradient text ── */
+    .grad { background: linear-gradient(130deg, var(--accent) 0%, var(--purple) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .grad2 { background: linear-gradient(130deg, #fff 0%, rgba(255,255,255,0.5) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
 
-    /* ─── Gradient text ──────────────────────────────── */
-    .grad-text {
-      background: linear-gradient(135deg, var(--accent) 0%, #7B8CFF 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-
-    /* ─── Nav ────────────────────────────────────────── */
+    /* ── Nav ── */
     #nav {
-      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-      background: rgba(9,9,11,0.75);
+      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+      background: rgba(6,6,10,0.7);
       backdrop-filter: blur(24px);
-      -webkit-backdrop-filter: blur(24px);
-      border-bottom: 1px solid var(--border-1);
-      transition: border-color var(--t-med), box-shadow var(--t-med);
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      transition: border-color 0.25s, box-shadow 0.25s;
     }
-    #nav.scrolled {
-      border-bottom-color: var(--border-2);
-      box-shadow: 0 1px 40px rgba(0,0,0,0.5);
-    }
-    @media (max-width: 640px) { .nav-links { display: none; } }
+    #nav.scrolled { border-bottom-color: var(--b1); box-shadow: 0 1px 40px rgba(0,0,0,0.6); }
+    @media(max-width:640px){ .nav-links { display:none; } }
 
-    /* ─── Buttons ────────────────────────────────────── */
-    .btn {
-      display: inline-flex; align-items: center; gap: 6px;
-      font-weight: 700; border-radius: var(--r-sm);
-      text-decoration: none; cursor: pointer;
-      transition: all var(--t-med) ease;
-      position: relative; overflow: hidden;
-    }
-    .btn-primary {
-      background: var(--accent); color: #09090B;
-      padding: 13px 26px; font-size: 0.925rem;
-    }
-    /* Shimmer sweep on primary button */
-    .btn-primary::after {
-      content: '';
-      position: absolute; inset: 0;
-      background: linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.25) 50%, transparent 60%);
-      transform: translateX(-100%);
-      transition: transform 0.5s ease;
-    }
-    .btn-primary:hover::after { transform: translateX(100%); }
-    .btn-primary:hover {
-      background: #1ACEFF;
-      transform: translateY(-2px);
-      box-shadow: 0 12px 40px rgba(0,194,255,0.35);
-    }
-    .btn-ghost {
-      color: var(--text-3);
-      border: 1px solid var(--border-2);
-      padding: 12px 22px; font-size: 0.875rem;
-    }
-    .btn-ghost:hover { border-color: var(--text-4); color: var(--text-2); }
-    .btn-lg { padding: 16px 36px; font-size: 1rem; }
+    /* ── Buttons ── */
+    .btn { display:inline-flex; align-items:center; gap:6px; font-weight:700; border-radius:9px; text-decoration:none; cursor:pointer; transition:all 0.22s; position:relative; overflow:hidden; }
+    .btn-primary { background:var(--accent); color:#06060A; padding:13px 26px; font-size:0.925rem; }
+    .btn-primary::after { content:''; position:absolute; inset:0; background:linear-gradient(105deg,transparent 40%,rgba(255,255,255,0.3) 50%,transparent 60%); transform:translateX(-100%); transition:transform 0.5s ease; }
+    .btn-primary:hover::after { transform:translateX(100%); }
+    .btn-primary:hover { background:#1ACEFF; transform:translateY(-2px); box-shadow:0 12px 40px rgba(0,194,255,0.4); }
+    .btn-ghost { color:var(--t3); border:1px solid var(--b2); padding:12px 22px; font-size:0.875rem; }
+    .btn-ghost:hover { border-color:var(--t4); color:var(--t2); }
+    .btn-lg { padding:16px 36px; font-size:1rem; }
 
-    /* ─── Cards ──────────────────────────────────────── */
+    /* ── Hero section (mostly transparent so 3D shows) ── */
+    #hero {
+      min-height: 100vh;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center;
+      padding: 7rem 1.5rem 4rem;
+    }
+
+    /* ── Hero badge ── */
+    .badge {
+      display:inline-flex; align-items:center; gap:10px;
+      background:linear-gradient(135deg,rgba(0,194,255,0.12),rgba(123,140,255,0.08));
+      border:1px solid rgba(0,194,255,0.28);
+      border-radius:100px; padding:8px 20px;
+      font-size:0.76rem; font-weight:600; letter-spacing:0.05em;
+      color:rgba(200,240,255,0.9);
+    }
+    .pulse { width:6px; height:6px; border-radius:50%; background:var(--accent); animation:pulse 2.2s ease-in-out infinite; }
+    @keyframes pulse { 0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(0,194,255,0.5);} 50%{opacity:0.6;box-shadow:0 0 0 5px rgba(0,194,255,0);} }
+
+    /* ── Frosted sections ── */
+    .section-frosted {
+      background: rgba(6,6,10,0.82);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-top: 1px solid rgba(255,255,255,0.04);
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+    }
+
+    /* ── Cards ── */
     .card {
-      background: var(--surface-2);
-      border: 1px solid var(--border-1);
-      border-radius: var(--r-lg);
-      transition: border-color var(--t-med), box-shadow var(--t-med), transform var(--t-med);
+      background: rgba(16,16,24,0.85);
+      border: 1px solid var(--b1);
+      border-radius: 14px;
+      backdrop-filter: blur(12px);
+      transition: border-color 0.25s, transform 0.25s, box-shadow 0.25s;
     }
-    .card:hover {
-      border-color: var(--accent-glow);
-      box-shadow: 0 0 0 1px var(--accent-glow), 0 20px 60px rgba(0,0,0,0.3);
-      transform: translateY(-2px);
-    }
+    .card:hover { border-color: rgba(0,194,255,0.3); transform:translateY(-3px); box-shadow:0 20px 60px rgba(0,0,0,0.4),0 0 0 1px rgba(0,194,255,0.1); }
 
-    /* Problem cards: left-border accent on hover */
-    .problem-card {
-      background: var(--surface-2);
-      border: 1px solid var(--border-1);
-      border-radius: var(--r-lg);
-      position: relative;
-      overflow: hidden;
-      transition: border-color var(--t-med), transform var(--t-med);
+    /* ── Problem cards ── */
+    .pcard {
+      background: rgba(16,16,24,0.85);
+      border: 1px solid var(--b1);
+      border-radius: 14px;
+      position: relative; overflow: hidden;
+      backdrop-filter: blur(12px);
+      transition: transform 0.25s, border-color 0.25s;
     }
-    .problem-card::before {
-      content: '';
-      position: absolute; top: 0; left: 0; bottom: 0;
-      width: 3px;
-      background: linear-gradient(to bottom, var(--accent), #7B8CFF);
-      opacity: 0;
-      transition: opacity var(--t-med);
-    }
-    .problem-card:hover { border-color: var(--border-2); transform: translateY(-2px); }
-    .problem-card:hover::before { opacity: 1; }
+    .pcard::before { content:''; position:absolute; top:0; left:0; bottom:0; width:3px; background:linear-gradient(to bottom,var(--accent),var(--purple)); opacity:0; transition:opacity 0.25s; }
+    .pcard:hover { transform:translateY(-3px); border-color:var(--b2); }
+    .pcard:hover::before { opacity:1; }
 
-    /* Why cards: gradient corner glow */
-    .why-card {
-      background: var(--surface-2);
-      border: 1px solid var(--border-1);
-      border-radius: var(--r-lg);
-      position: relative;
-      overflow: hidden;
-      transition: border-color var(--t-med), transform var(--t-med);
+    /* ── Why cards ── */
+    .wcard {
+      background: rgba(16,16,24,0.85);
+      border: 1px solid var(--b1);
+      border-radius: 14px;
+      position: relative; overflow: hidden;
+      backdrop-filter: blur(12px);
+      transition: transform 0.25s, border-color 0.25s;
     }
-    .why-card::before {
-      content: '';
-      position: absolute; top: -60px; left: -60px;
-      width: 180px; height: 180px;
-      background: radial-gradient(circle, rgba(0,194,255,0.07) 0%, transparent 70%);
+    .wcard::after { content:''; position:absolute; top:-50px; left:-50px; width:160px; height:160px; background:radial-gradient(circle,rgba(0,194,255,0.08),transparent 70%); opacity:0; pointer-events:none; transition:opacity 0.4s; }
+    .wcard:hover { transform:translateY(-3px); border-color:rgba(0,194,255,0.2); }
+    .wcard:hover::after { opacity:1; }
+
+    /* ── Step icon ── */
+    .sicon { width:44px; height:44px; border-radius:11px; flex-shrink:0; background:rgba(0,194,255,0.08); border:1px solid rgba(0,194,255,0.2); display:flex; align-items:center; justify-content:center; }
+
+    /* ── Flow system ── */
+    .flow-scroll { overflow-x:auto; padding-bottom:8px; }
+    .flow-row { display:flex; align-items:stretch; min-width:860px; }
+    .fcard { flex:1; background:rgba(16,16,24,0.88); border-top:1px solid var(--b1); border-bottom:1px solid var(--b1); padding:1.75rem 1.4rem; transition:background 0.2s; backdrop-filter:blur(12px); }
+    .fcard:first-child { border-left:1px solid var(--b1); border-radius:14px 0 0 14px; }
+    .fcard:last-child  { border-right:1px solid var(--b1); border-radius:0 14px 14px 0; }
+    .fcard:hover { background:rgba(22,22,32,0.9); }
+    .fdiv { width:40px; background:var(--b1); flex-shrink:0; display:flex; align-items:center; justify-content:center; }
+    .fdiv::before { content:''; width:22px; height:22px; border:1px solid var(--b2); border-radius:50%; background:var(--bg); background-image:url("data:image/svg+xml,%3Csvg width='10' height='10' viewBox='0 0 10 10' fill='none'%3E%3Cpath d='M2 5h6M6 3l2 2-2 2' stroke='%23444' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:center; display:block; }
+
+    /* ── Stats ── */
+    .stat-num { font-family:'Plus Jakarta Sans',sans-serif; font-size:2.2rem; font-weight:900; letter-spacing:-0.04em; background:linear-gradient(130deg,var(--accent),var(--purple)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+
+    /* ── Founding ── */
+    .fbadge { display:inline-flex; align-items:center; gap:8px; background:rgba(0,194,255,0.07); border:1px solid rgba(0,194,255,0.22); border-radius:100px; padding:7px 16px; font-size:0.72rem; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--accent); }
+    .fbox { border-radius:20px; background:linear-gradient(145deg,rgba(0,194,255,0.05),transparent 60%); border:1px solid rgba(0,194,255,0.16); padding:3rem 2.5rem; }
+
+    /* ── Contact ── */
+    .clabel { font-size:0.63rem; font-weight:700; letter-spacing:0.16em; text-transform:uppercase; color:var(--t4); margin-bottom:4px; }
+
+    /* ── Dividers ── */
+    .hr { height:1px; background:linear-gradient(90deg,transparent,var(--b2) 30%,var(--b2) 70%,transparent); }
+
+    /* ── Scroll animation ── */
+    .fu { opacity:0; transform:translateY(28px); transition:opacity 0.65s ease,transform 0.65s ease; }
+    .fu.in { opacity:1; transform:none; }
+    .d1{transition-delay:.08s} .d2{transition-delay:.16s} .d3{transition-delay:.24s} .d4{transition-delay:.32s}
+
+    /* Hero loads on open */
+    .ha1{animation:hIn .8s ease both}
+    .ha2{animation:hIn .8s ease .12s both}
+    .ha3{animation:hIn .8s ease .24s both}
+    .ha4{animation:hIn .8s ease .38s both}
+    @keyframes hIn { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:none} }
+
+    /* ── 3D label hint ── */
+    #drag-hint {
+      position: fixed;
+      bottom: 2rem; left: 50%;
+      transform: translateX(-50%);
+      z-index: 20;
+      font-size: 0.7rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: rgba(0,194,255,0.35);
       pointer-events: none;
-      transition: opacity var(--t-slow);
-      opacity: 0;
+      transition: opacity 0.5s;
     }
-    .why-card:hover { border-color: rgba(0,194,255,0.2); transform: translateY(-2px); }
-    .why-card:hover::before { opacity: 1; }
-
-    /* ─── Step icon ──────────────────────────────────── */
-    .step-icon {
-      width: 44px; height: 44px; border-radius: 11px; flex-shrink: 0;
-      background: var(--accent-dim);
-      border: 1px solid rgba(0,194,255,0.2);
-      display: flex; align-items: center; justify-content: center;
-    }
-
-    /* ─── Hero background ────────────────────────────── */
-    .hero-glow {
-      position: absolute; inset: 0; pointer-events: none;
-      background: radial-gradient(ellipse 85% 55% at 50% -5%, rgba(0,194,255,0.1) 0%, transparent 65%);
-    }
-    .hero-grid {
-      position: absolute; inset: 0; pointer-events: none;
-      background-image:
-        linear-gradient(rgba(255,255,255,0.022) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,0.022) 1px, transparent 1px);
-      background-size: 56px 56px;
-      -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 40%, black 20%, transparent 80%);
-      mask-image: radial-gradient(ellipse 80% 60% at 50% 40%, black 20%, transparent 80%);
-    }
-
-    /* ─── Hero badge ─────────────────────────────────── */
-    .hero-badge {
-      display: inline-flex; align-items: center; gap: 10px;
-      background: linear-gradient(135deg, rgba(0,194,255,0.1), rgba(123,140,255,0.07));
-      border: 1px solid rgba(0,194,255,0.25);
-      border-radius: 100px;
-      padding: 8px 18px;
-      font-size: 0.77rem; font-weight: 600;
-      letter-spacing: 0.04em;
-      color: rgba(200,235,255,0.9);
-    }
-
-    /* ─── Pulse dot ──────────────────────────────────── */
-    .pulse-dot {
-      width: 6px; height: 6px; border-radius: 50%; background: var(--accent);
-      animation: pulsate 2.2s ease-in-out infinite;
-    }
-    @keyframes pulsate {
-      0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(0,194,255,0.4); }
-      50% { opacity: 0.6; box-shadow: 0 0 0 4px rgba(0,194,255,0); }
-    }
-
-    /* ─── Industries strip ───────────────────────────── */
-    .industry {
-      font-size: 1rem; font-weight: 700; letter-spacing: -0.01em;
-      color: var(--text-3);
-      transition: color var(--t-med);
-      cursor: default;
-    }
-    .industry:hover { color: var(--text-1); }
-    .ind-dot {
-      width: 4px; height: 4px; border-radius: 50%;
-      background: var(--accent); opacity: 0.4; flex-shrink: 0;
-    }
-
-    /* ─── Stats row ──────────────────────────────────── */
-    .stat-num {
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      font-size: 2.25rem; font-weight: 900;
-      letter-spacing: -0.04em;
-      background: linear-gradient(135deg, var(--accent) 0%, #7B8CFF 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-
-    /* ─── System flow ────────────────────────────────── */
-    .flow-scroll { overflow-x: auto; padding-bottom: 8px; }
-    .flow-row {
-      display: flex; align-items: stretch; gap: 0;
-      min-width: 860px;
-    }
-    .flow-card {
-      flex: 1; background: var(--surface-2);
-      border-top: 1px solid var(--border-1);
-      border-bottom: 1px solid var(--border-1);
-      padding: 1.75rem 1.5rem;
-      transition: background var(--t-med);
-    }
-    .flow-card:first-child { border-left: 1px solid var(--border-1); border-radius: var(--r-lg) 0 0 var(--r-lg); }
-    .flow-card:last-child  { border-right: 1px solid var(--border-1); border-radius: 0 var(--r-lg) var(--r-lg) 0; }
-    .flow-card:hover { background: var(--surface-3); }
-    .flow-divider {
-      width: 40px; background: var(--border-1); flex-shrink: 0;
-      display: flex; align-items: center; justify-content: center;
-    }
-    .flow-divider::before {
-      content: ''; display: block;
-      width: 22px; height: 22px;
-      border: 1px solid var(--border-2); border-radius: 50%;
-      background: var(--bg);
-      background-image: url("data:image/svg+xml,%3Csvg width='10' height='10' viewBox='0 0 10 10' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M2 5h6M6 3l2 2-2 2' stroke='%23444' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-      background-repeat: no-repeat;
-      background-position: center;
-    }
-
-    /* ─── Founding section ───────────────────────────── */
-    .founding-badge {
-      display: inline-flex; align-items: center; gap: 8px;
-      background: var(--accent-dim);
-      border: 1px solid rgba(0,194,255,0.22);
-      border-radius: 100px;
-      padding: 7px 16px;
-      font-size: 0.72rem; font-weight: 700;
-      letter-spacing: 0.08em; text-transform: uppercase;
-      color: var(--accent);
-    }
-    .founding-box {
-      border-radius: var(--r-xl);
-      border: 1px solid rgba(0,194,255,0.15);
-      background: linear-gradient(145deg, rgba(0,194,255,0.04) 0%, transparent 50%);
-      padding: 3rem 2.5rem;
-      position: relative;
-      overflow: hidden;
-    }
-    .founding-box::before {
-      content: '';
-      position: absolute; inset: -1px;
-      border-radius: inherit;
-      background: linear-gradient(135deg, rgba(0,194,255,0.25), transparent 50%, rgba(123,140,255,0.15));
-      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-      mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-      -webkit-mask-composite: xor;
-      mask-composite: exclude;
-      pointer-events: none;
-      animation: border-spin 6s linear infinite;
-    }
-    @keyframes border-spin {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
-    }
-
-    /* ─── Contact card ───────────────────────────────── */
-    .contact-label {
-      font-size: 0.64rem; font-weight: 700;
-      letter-spacing: 0.15em; text-transform: uppercase;
-      color: var(--text-4); margin-bottom: 4px;
-    }
-
-    /* ─── Dividers ───────────────────────────────────── */
-    .hr {
-      height: 1px;
-      background: linear-gradient(90deg, transparent, var(--border-2) 30%, var(--border-2) 70%, transparent);
-    }
-
-    /* ─── Scroll animations ──────────────────────────── */
-    .fade-up {
-      opacity: 0; transform: translateY(28px);
-      transition: opacity var(--t-slow) ease, transform var(--t-slow) ease;
-    }
-    .fade-up.in { opacity: 1; transform: none; }
-    .d1 { transition-delay: 0.08s; }
-    .d2 { transition-delay: 0.16s; }
-    .d3 { transition-delay: 0.24s; }
-    .d4 { transition-delay: 0.32s; }
-
-    /* Hero items load on open */
-    .h1 { animation: heroIn 0.8s ease both; }
-    .h2 { animation: heroIn 0.8s ease 0.12s both; }
-    .h3 { animation: heroIn 0.8s ease 0.24s both; }
-    .h4 { animation: heroIn 0.8s ease 0.36s both; }
-    @keyframes heroIn {
-      from { opacity: 0; transform: translateY(24px); }
-      to   { opacity: 1; transform: none; }
-    }
+    #drag-hint.hide { opacity: 0; }
   </style>
 </head>
 <body>
 
-<!-- ──────────────────────── NAV ──────────────────────────── -->
+<!-- ── 3D Canvas (fixed background) ── -->
+<canvas id="scene-canvas"></canvas>
+
+<!-- ── Drag hint ── -->
+<div id="drag-hint">drag to rotate · scroll to explore</div>
+
+<!-- ── All page content ── -->
+<div id="page">
+
+<!-- NAV -->
 <nav id="nav">
   <div class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between gap-8">
-    <a href="#" class="flex items-center gap-2.5 shrink-0">
-      <div class="bg-accent flex items-center justify-center shrink-0" style="width:32px;height:32px;border-radius:7px;">
-        <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
-          <path d="M4 10C4 6.7 6.7 4 10 4c1.9 0 3.6.9 4.7 2.2" stroke="#09090B" stroke-width="2.4" stroke-linecap="round"/>
-          <path d="M7 13.5h9" stroke="#09090B" stroke-width="2.4" stroke-linecap="round"/>
-        </svg>
+    <a href="#" class="flex items-center gap-2.5 shrink-0" style="text-decoration:none;">
+      <div style="width:32px;height:32px;background:var(--accent);border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+        <svg width="16" height="16" viewBox="0 0 20 20" fill="none"><path d="M4 10C4 6.7 6.7 4 10 4c1.9 0 3.6.9 4.7 2.2" stroke="#06060A" stroke-width="2.4" stroke-linecap="round"/><path d="M7 13.5h9" stroke="#06060A" stroke-width="2.4" stroke-linecap="round"/></svg>
       </div>
-      <span style="font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:1.05rem;letter-spacing:-0.03em;">
-        CloseFlow <span class="text-accent">AI</span>
-      </span>
+      <span style="font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:1.05rem;letter-spacing:-0.03em;color:var(--t1);">CloseFlow <span style="color:var(--accent);">AI</span></span>
     </a>
-
     <div class="nav-links flex items-center gap-7">
-      <a href="#problem" class="text-sm font-medium transition-colors" style="color:var(--text-3);" onmouseover="this.style.color='var(--text-1)'" onmouseout="this.style.color='var(--text-3)'">The Problem</a>
-      <a href="#system"  class="text-sm font-medium transition-colors" style="color:var(--text-3);" onmouseover="this.style.color='var(--text-1)'" onmouseout="this.style.color='var(--text-3)'">The System</a>
-      <a href="#why"     class="text-sm font-medium transition-colors" style="color:var(--text-3);" onmouseover="this.style.color='var(--text-1)'" onmouseout="this.style.color='var(--text-3)'">Why Us</a>
+      <a href="#problem" style="font-size:.875rem;font-weight:500;color:var(--t3);text-decoration:none;transition:color .2s;" onmouseover="this.style.color='var(--t1)'" onmouseout="this.style.color='var(--t3)'">The Problem</a>
+      <a href="#system"  style="font-size:.875rem;font-weight:500;color:var(--t3);text-decoration:none;transition:color .2s;" onmouseover="this.style.color='var(--t1)'" onmouseout="this.style.color='var(--t3)'">The System</a>
+      <a href="#why"     style="font-size:.875rem;font-weight:500;color:var(--t3);text-decoration:none;transition:color .2s;" onmouseover="this.style.color='var(--t1)'" onmouseout="this.style.color='var(--t3)'">Why Us</a>
     </div>
-
-    <!-- REPLACE href with your Calendly / booking link -->
-    <a href="#book" class="btn btn-primary shrink-0" style="padding:10px 20px;font-size:0.85rem;">Book a Call</a>
+    <a href="#book" class="btn btn-primary shrink-0" style="padding:10px 20px;font-size:.85rem;">Book a Call</a>
   </div>
 </nav>
 
 
-<!-- ──────────────────────── HERO ─────────────────────────── -->
-<section id="hero" class="relative min-h-screen flex flex-col items-center justify-center text-center px-6 pt-28 pb-20" style="overflow:hidden;">
-  <div class="hero-glow"></div>
-  <div class="hero-grid"></div>
-
-  <div class="relative max-w-4xl mx-auto">
-    <div class="hero-badge h1 mb-10 mx-auto" style="width:fit-content;">
-      <span class="pulse-dot"></span>
+<!-- HERO (transparent — 3D shows through) -->
+<section id="hero">
+  <div class="max-w-4xl mx-auto relative">
+    <div class="badge ha1 mb-10 mx-auto" style="width:fit-content;">
+      <span class="pulse"></span>
       D2D &amp; Home Services Sales Automation
     </div>
 
-    <h1 class="t-display h2 text-white mb-2">
+    <h1 class="t-display ha2 text-white mb-3" style="font-size:clamp(2.8rem,7vw,5.6rem);">
       Your Reps Should Be
     </h1>
-    <h1 class="t-display h3 mb-7">
-      Knocking. <span class="grad-text">Not Chasing Leads.</span>
+    <h1 class="t-display ha3 mb-8" style="font-size:clamp(2.8rem,7vw,5.6rem);">
+      Knocking. <span class="grad">Not Chasing Leads.</span>
     </h1>
 
-    <p class="h4 mb-10 mx-auto" style="font-size:1.1rem;line-height:1.8;max-width:520px;color:var(--text-3);">
+    <p class="ha4 mx-auto mb-10" style="font-size:1.1rem;line-height:1.82;max-width:510px;color:var(--t3);">
       CloseFlow AI automates your recruiting, lead follow-up, content, and reporting — so your team does the one thing that actually moves money.
     </p>
 
-    <div class="h4 flex flex-col sm:flex-row items-center justify-center gap-3">
-      <!-- REPLACE href with your Calendly / booking link -->
+    <div class="ha4 flex flex-col sm:flex-row items-center justify-center gap-3">
       <a href="#book" class="btn btn-primary">
         Book a Call
-        <svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="#09090B" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="#06060A" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </a>
-      <a href="#system" class="btn btn-ghost">See how it works</a>
+      <a href="#problem" class="btn btn-ghost">See how it works</a>
     </div>
-  </div>
 
-  <div style="position:absolute;bottom:0;left:0;right:0;height:160px;background:linear-gradient(to bottom,transparent,var(--bg));pointer-events:none;"></div>
-</section>
-
-
-<!-- ─────────────────── INDUSTRIES STRIP ──────────────────── -->
-<section class="px-6 pb-20 -mt-4">
-  <div class="max-w-4xl mx-auto fade-up">
-    <p class="text-center mb-8" style="font-size:0.66rem;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:var(--text-4);">
-      Built specifically for
-    </p>
-    <div class="flex flex-wrap items-center justify-center gap-x-8 gap-y-4">
-      <span class="industry">Roofing</span>
-      <span class="ind-dot"></span>
-      <span class="industry">HVAC</span>
-      <span class="ind-dot"></span>
-      <span class="industry">Solar</span>
-      <span class="ind-dot"></span>
-      <span class="industry">Home Security</span>
-      <span class="ind-dot"></span>
-      <span class="industry">Pest Control</span>
+    <!-- Industries -->
+    <div class="ha4 mt-16">
+      <p style="font-size:.65rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--t4);margin-bottom:1rem;">Built specifically for</p>
+      <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:1.5rem 2rem;">
+        <span style="font-weight:700;color:var(--t3);font-size:.95rem;letter-spacing:-.01em;">Roofing</span>
+        <span style="width:4px;height:4px;border-radius:50%;background:var(--accent);opacity:.4;flex-shrink:0;"></span>
+        <span style="font-weight:700;color:var(--t3);font-size:.95rem;letter-spacing:-.01em;">HVAC</span>
+        <span style="width:4px;height:4px;border-radius:50%;background:var(--accent);opacity:.4;flex-shrink:0;"></span>
+        <span style="font-weight:700;color:var(--t3);font-size:.95rem;letter-spacing:-.01em;">Solar</span>
+        <span style="width:4px;height:4px;border-radius:50%;background:var(--accent);opacity:.4;flex-shrink:0;"></span>
+        <span style="font-weight:700;color:var(--t3);font-size:.95rem;letter-spacing:-.01em;">Home Security</span>
+        <span style="width:4px;height:4px;border-radius:50%;background:var(--accent);opacity:.4;flex-shrink:0;"></span>
+        <span style="font-weight:700;color:var(--t3);font-size:.95rem;letter-spacing:-.01em;">Pest Control</span>
+      </div>
     </div>
   </div>
 </section>
 
 
-<!-- ─────────────────── RESULTS STRIP ─────────────────────── -->
-<section class="px-6 pb-28">
-  <div class="max-w-3xl mx-auto">
-    <div class="fade-up" style="display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border-1);border-radius:var(--r-lg);overflow:hidden;">
-      <div style="background:var(--surface-2);padding:2rem 1.5rem;text-align:center;">
+<!-- STATS STRIP -->
+<div class="section-frosted py-1">
+  <div class="max-w-3xl mx-auto px-6">
+    <div class="fu" style="display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--b1);border-radius:14px;overflow:hidden;margin:2.5rem 0;">
+      <div style="background:var(--s2);padding:2rem 1.5rem;text-align:center;">
         <div class="stat-num">3.4×</div>
-        <p style="font-size:0.8rem;color:var(--text-4);margin-top:6px;letter-spacing:0.02em;">More Meetings Booked</p>
+        <p style="font-size:.78rem;color:var(--t4);margin-top:5px;letter-spacing:.03em;">More Meetings Booked</p>
       </div>
-      <div style="background:var(--surface-2);padding:2rem 1.5rem;text-align:center;">
+      <div style="background:var(--s2);padding:2rem 1.5rem;text-align:center;">
         <div class="stat-num">&lt;60s</div>
-        <p style="font-size:0.8rem;color:var(--text-4);margin-top:6px;letter-spacing:0.02em;">Lead Response Time</p>
+        <p style="font-size:.78rem;color:var(--t4);margin-top:5px;letter-spacing:.03em;">Lead Response Time</p>
       </div>
-      <div style="background:var(--surface-2);padding:2rem 1.5rem;text-align:center;">
+      <div style="background:var(--s2);padding:2rem 1.5rem;text-align:center;">
         <div class="stat-num">15h+</div>
-        <p style="font-size:0.8rem;color:var(--text-4);margin-top:6px;letter-spacing:0.02em;">Saved Per Owner / Week</p>
+        <p style="font-size:.78rem;color:var(--t4);margin-top:5px;letter-spacing:.03em;">Saved Per Owner / Week</p>
       </div>
     </div>
   </div>
-</section>
+</div>
 
 
-<!-- ──────────────────── THE PROBLEM ──────────────────────── -->
-<section id="problem" class="px-6 py-28" style="background:var(--surface-1);">
+<!-- THE PROBLEM -->
+<section id="problem" class="section-frosted px-6 py-28">
   <div class="max-w-5xl mx-auto">
-
-    <div class="text-center mb-16 fade-up">
+    <div class="text-center mb-16 fu">
       <p class="eyebrow mb-4">The Problem</p>
-      <h2 class="t-h2 text-white mb-5">Running a D2D Team Is a Full-Time Job<br class="hidden md:block"> on Top of a Full-Time Job</h2>
-      <p style="font-size:0.95rem;line-height:1.78;max-width:440px;margin:0 auto;color:var(--text-3);">
-        If you're the owner and you're still doing all of this manually — you're not running a business. You're running a hamster wheel.
-      </p>
+      <h2 class="t-h2 text-white mb-5" style="font-size:clamp(1.9rem,4vw,3.2rem);">Running a D2D Team Is a Full-Time Job<br class="hidden md:block"> on Top of a Full-Time Job</h2>
+      <p style="font-size:.95rem;line-height:1.8;max-width:440px;margin:0 auto;color:var(--t3);">If you're the owner and you're still doing all of this manually — you're not running a business. You're running a hamster wheel.</p>
     </div>
-
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-
-      <div class="problem-card p-8 fade-up">
-        <p class="eyebrow mb-4" style="color:var(--text-4);letter-spacing:0.12em;">01</p>
+      <div class="pcard p-8 fu">
+        <p class="eyebrow mb-4" style="color:var(--t4);letter-spacing:.12em;">01</p>
         <h3 class="t-h3 text-white mb-3">Recruiting eats your entire week.</h3>
-        <p style="font-size:0.9rem;line-height:1.8;color:var(--text-3);">Post. Screen. Schedule. Get ghosted. Re-post. You're burning 15+ hours a week finding people instead of developing the ones already on your team.</p>
+        <p style="font-size:.9rem;line-height:1.8;color:var(--t3);">Post. Screen. Schedule. Get ghosted. Re-post. You're burning 15+ hours a week finding people instead of developing the ones already on your team.</p>
       </div>
-
-      <div class="problem-card p-8 fade-up d1">
-        <p class="eyebrow mb-4" style="color:var(--text-4);letter-spacing:0.12em;">02</p>
+      <div class="pcard p-8 fu d1">
+        <p class="eyebrow mb-4" style="color:var(--t4);letter-spacing:.12em;">02</p>
         <h3 class="t-h3 text-white mb-3">Hot leads go cold in the first 6 minutes.</h3>
-        <p style="font-size:0.9rem;line-height:1.8;color:var(--text-3);">The homeowner filled out a form at 11 AM. Your rep followed up at 2 PM. That deal was dead before lunch. Speed to lead isn't an advantage — it's the baseline requirement.</p>
+        <p style="font-size:.9rem;line-height:1.8;color:var(--t3);">The homeowner filled out a form at 11 AM. Your rep followed up at 2 PM. That deal was dead before lunch. Speed to lead isn't an advantage — it's the baseline requirement.</p>
       </div>
-
-      <div class="problem-card p-8 fade-up d2">
-        <p class="eyebrow mb-4" style="color:var(--text-4);letter-spacing:0.12em;">03</p>
+      <div class="pcard p-8 fu d2">
+        <p class="eyebrow mb-4" style="color:var(--t4);letter-spacing:.12em;">03</p>
         <h3 class="t-h3 text-white mb-3">Your content is sporadic or nonexistent.</h3>
-        <p style="font-size:0.9rem;line-height:1.8;color:var(--text-3);">You know you should be posting. But between managing the team and chasing numbers, it never happens consistently. Every competitor posting daily is quietly building trust you're not.</p>
+        <p style="font-size:.9rem;line-height:1.8;color:var(--t3);">You know you should be posting. But between managing the team and chasing numbers, it never happens consistently. Every competitor posting daily is quietly building trust you're not.</p>
       </div>
-
-      <div class="problem-card p-8 fade-up d3">
-        <p class="eyebrow mb-4" style="color:var(--text-4);letter-spacing:0.12em;">04</p>
+      <div class="pcard p-8 fu d3">
+        <p class="eyebrow mb-4" style="color:var(--t4);letter-spacing:.12em;">04</p>
         <h3 class="t-h3 text-white mb-3">Nothing talks to everything else.</h3>
-        <p style="font-size:0.9rem;line-height:1.8;color:var(--text-3);">CRM over here. Group chat over there. A spreadsheet. Someone's personal phone. No real system, no real visibility — just you holding all of it together and hoping nothing breaks.</p>
+        <p style="font-size:.9rem;line-height:1.8;color:var(--t3);">CRM over here. Group chat over there. A spreadsheet. Someone's personal phone. No real system, no real visibility — just you holding all of it together and hoping nothing breaks.</p>
       </div>
-
     </div>
   </div>
 </section>
@@ -534,147 +351,83 @@
 <div class="hr"></div>
 
 
-<!-- ──────────────────── THE SYSTEM ───────────────────────── -->
-<section id="system" class="px-6 py-28">
+<!-- THE SYSTEM -->
+<section id="system" class="section-frosted px-6 py-28">
   <div class="max-w-6xl mx-auto">
-
-    <div class="text-center mb-14 fade-up">
+    <div class="text-center mb-14 fu">
       <p class="eyebrow mb-4">The System</p>
-      <h2 class="t-h2 text-white mb-5">One Automated Machine.<br>Built for Your Industry.</h2>
-      <p style="font-size:0.925rem;line-height:1.78;max-width:390px;margin:0 auto;color:var(--text-3);">
-        AI handles the volume. A human team reviews everything before it goes out. You get scale without losing control.
-      </p>
+      <h2 class="t-h2 text-white mb-5" style="font-size:clamp(1.9rem,4vw,3.2rem);">One Automated Machine.<br>Built for Your Industry.</h2>
+      <p style="font-size:.925rem;line-height:1.8;max-width:390px;margin:0 auto;color:var(--t3);">AI handles the volume. A human team reviews everything before it goes out. Scale without losing control.</p>
     </div>
-
-    <div class="flow-scroll fade-up">
+    <div class="flow-scroll fu">
       <div class="flow-row">
-
-        <div class="flow-card">
-          <div class="step-icon mb-5">
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style="color:var(--accent);">
-              <path d="M2 3h16l-6 7.5V17l-4-2V10.5L2 3z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
-            </svg>
-          </div>
-          <p class="eyebrow mb-2" style="font-size:0.6rem;">01 — Recruiting</p>
-          <h3 class="t-h3 text-white mb-2">Recruiting Funnel</h3>
-          <p style="font-size:0.825rem;line-height:1.72;color:var(--text-3);">AI screens applicants, filters for fit, and books interviews. You show up for people already worth your time.</p>
+        <div class="fcard">
+          <div class="sicon mb-5"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" style="color:var(--accent);"><path d="M2 3h16l-6 7.5V17l-4-2V10.5L2 3z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg></div>
+          <p class="eyebrow mb-2" style="font-size:.6rem;">01 — Recruiting</p>
+          <h3 class="t-h3 text-white mb-2" style="font-size:.975rem;">Recruiting Funnel</h3>
+          <p style="font-size:.825rem;line-height:1.72;color:var(--t3);">AI screens applicants, filters for fit, and books interviews. You show up for people already worth your time.</p>
         </div>
-
-        <div class="flow-divider"></div>
-
-        <div class="flow-card">
-          <div class="step-icon mb-5">
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style="color:var(--accent);">
-              <circle cx="10" cy="10" r="7.5" stroke="currentColor" stroke-width="1.7"/>
-              <circle cx="10" cy="10" r="4" stroke="currentColor" stroke-width="1.7"/>
-              <circle cx="10" cy="10" r="1.4" fill="currentColor"/>
-            </svg>
-          </div>
-          <p class="eyebrow mb-2" style="font-size:0.6rem;">02 — Pipeline</p>
-          <h3 class="t-h3 text-white mb-2">Lead Generation</h3>
-          <p style="font-size:0.825rem;line-height:1.72;color:var(--text-3);">Targeted outreach that fills your pipeline with homeowners who are actually in-market and ready.</p>
+        <div class="fdiv"></div>
+        <div class="fcard">
+          <div class="sicon mb-5"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" style="color:var(--accent);"><circle cx="10" cy="10" r="7.5" stroke="currentColor" stroke-width="1.7"/><circle cx="10" cy="10" r="4" stroke="currentColor" stroke-width="1.7"/><circle cx="10" cy="10" r="1.4" fill="currentColor"/></svg></div>
+          <p class="eyebrow mb-2" style="font-size:.6rem;">02 — Pipeline</p>
+          <h3 class="t-h3 text-white mb-2" style="font-size:.975rem;">Lead Generation</h3>
+          <p style="font-size:.825rem;line-height:1.72;color:var(--t3);">Targeted outreach that fills your pipeline with homeowners who are actually in-market and ready.</p>
         </div>
-
-        <div class="flow-divider"></div>
-
-        <div class="flow-card">
-          <div class="step-icon mb-5">
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style="color:var(--accent);">
-              <path d="M13.5 2.5l4 4-9.5 9.5H4v-4l9.5-9.5z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
-            </svg>
-          </div>
-          <p class="eyebrow mb-2" style="font-size:0.6rem;">03 — Content</p>
-          <h3 class="t-h3 text-white mb-2">Content Engine</h3>
-          <p style="font-size:0.825rem;line-height:1.72;color:var(--text-3);">Consistent, on-brand posts across every platform — automated on a schedule that never slips.</p>
+        <div class="fdiv"></div>
+        <div class="fcard">
+          <div class="sicon mb-5"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" style="color:var(--accent);"><path d="M13.5 2.5l4 4-9.5 9.5H4v-4l9.5-9.5z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg></div>
+          <p class="eyebrow mb-2" style="font-size:.6rem;">03 — Content</p>
+          <h3 class="t-h3 text-white mb-2" style="font-size:.975rem;">Content Engine</h3>
+          <p style="font-size:.825rem;line-height:1.72;color:var(--t3);">Consistent, on-brand posts across every platform — automated on a schedule that never slips.</p>
         </div>
-
-        <div class="flow-divider"></div>
-
-        <div class="flow-card">
-          <div class="step-icon mb-5">
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style="color:var(--accent);">
-              <path d="M11 2L4 11.5h7l-2 6.5 9-10.5H11L13 2h-2z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
-            </svg>
-          </div>
-          <p class="eyebrow mb-2" style="font-size:0.6rem;">04 — Follow-Up</p>
-          <h3 class="t-h3 text-white mb-2">Instant Follow-Up</h3>
-          <p style="font-size:0.825rem;line-height:1.72;color:var(--text-3);">Every lead touched within 60 seconds. Every time. No human required to trigger it.</p>
+        <div class="fdiv"></div>
+        <div class="fcard">
+          <div class="sicon mb-5"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" style="color:var(--accent);"><path d="M11 2L4 11.5h7l-2 6.5 9-10.5H11L13 2h-2z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg></div>
+          <p class="eyebrow mb-2" style="font-size:.6rem;">04 — Follow-Up</p>
+          <h3 class="t-h3 text-white mb-2" style="font-size:.975rem;">Instant Follow-Up</h3>
+          <p style="font-size:.825rem;line-height:1.72;color:var(--t3);">Every lead touched within 60 seconds. Every time. No human required to trigger it.</p>
         </div>
-
-        <div class="flow-divider"></div>
-
-        <div class="flow-card">
-          <div class="step-icon mb-5">
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style="color:var(--accent);">
-              <path d="M3 14.5l4.5-5.5 3.5 2.5 4.5-6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
-              <path d="M3 17h14" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
-            </svg>
-          </div>
-          <p class="eyebrow mb-2" style="font-size:0.6rem;">05 — Visibility</p>
-          <h3 class="t-h3 text-white mb-2">Reporting Dashboard</h3>
-          <p style="font-size:0.825rem;line-height:1.72;color:var(--text-3);">Daily and weekly visibility into what's working. Stop running blind. Stop guessing where deals stall.</p>
+        <div class="fdiv"></div>
+        <div class="fcard">
+          <div class="sicon mb-5"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" style="color:var(--accent);"><path d="M3 14.5l4.5-5.5 3.5 2.5 4.5-6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><path d="M3 17h14" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></div>
+          <p class="eyebrow mb-2" style="font-size:.6rem;">05 — Visibility</p>
+          <h3 class="t-h3 text-white mb-2" style="font-size:.975rem;">Reporting Dashboard</h3>
+          <p style="font-size:.825rem;line-height:1.72;color:var(--t3);">Daily and weekly visibility into what's working. Stop running blind. Stop guessing where deals stall.</p>
         </div>
-
       </div>
     </div>
-
-    <p class="text-center mt-5 fade-up" style="font-size:0.78rem;letter-spacing:0.02em;color:var(--text-4);">
-      <span class="text-accent font-semibold">AI-powered.</span>&nbsp; Human-reviewed. Every output checked before it goes out.
-    </p>
+    <p class="text-center mt-5 fu" style="font-size:.78rem;letter-spacing:.02em;color:var(--t4);"><span style="color:var(--accent);font-weight:600;">AI-powered.</span>&nbsp;Human-reviewed. Every output checked before it goes out.</p>
   </div>
 </section>
 
 <div class="hr"></div>
 
 
-<!-- ──────────────────── WHY CLOSEFLOW ────────────────────── -->
-<section id="why" class="px-6 py-28" style="background:var(--surface-1);">
+<!-- WHY -->
+<section id="why" class="section-frosted px-6 py-28">
   <div class="max-w-5xl mx-auto">
-
-    <div class="text-center mb-16 fade-up">
+    <div class="text-center mb-16 fu">
       <p class="eyebrow mb-4">Why CloseFlow</p>
-      <h2 class="t-h2 text-white mb-5">We've Been on the Sales Floor.<br class="hidden md:block"> Not in a Conference Room.</h2>
-      <p style="font-size:0.925rem;line-height:1.78;max-width:420px;margin:0 auto;color:var(--text-3);">
-        There are a hundred "AI marketing agencies." None of them have knocked a door. We have.
-      </p>
+      <h2 class="t-h2 text-white mb-5" style="font-size:clamp(1.9rem,4vw,3.2rem);">We've Been on the Sales Floor.<br class="hidden md:block"> Not in a Conference Room.</h2>
+      <p style="font-size:.925rem;line-height:1.8;max-width:420px;margin:0 auto;color:var(--t3);">There are a hundred "AI marketing agencies." None of them have knocked a door. We have.</p>
     </div>
-
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-
-      <div class="why-card p-8 fade-up">
-        <div class="step-icon mb-6">
-          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style="color:var(--accent);">
-            <circle cx="7" cy="6" r="2.8" stroke="currentColor" stroke-width="1.7"/>
-            <path d="M2 17c0-2.8 2.2-5 5-5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
-            <circle cx="14" cy="6" r="2.8" stroke="currentColor" stroke-width="1.7"/>
-            <path d="M12 17c0-2.8.8-4.4 2-5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
-          </svg>
-        </div>
+      <div class="wcard p-8 fu">
+        <div class="sicon mb-6"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" style="color:var(--accent);"><circle cx="7" cy="6" r="2.8" stroke="currentColor" stroke-width="1.7"/><path d="M2 17c0-2.8 2.2-5 5-5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><circle cx="14" cy="6" r="2.8" stroke="currentColor" stroke-width="1.7"/><path d="M12 17c0-2.8.8-4.4 2-5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></div>
         <h3 class="t-h3 text-white mb-3">Built by D2D operators.</h3>
-        <p style="font-size:0.875rem;line-height:1.8;color:var(--text-3);">We've knocked doors, hired and fired reps, done ride-alongs, and managed producing teams. We built CloseFlow because we needed it ourselves — and couldn't find it anywhere.</p>
+        <p style="font-size:.875rem;line-height:1.8;color:var(--t3);">We've knocked doors, hired and fired reps, done ride-alongs, and managed producing teams. We built CloseFlow because we needed it ourselves — and couldn't find it anywhere.</p>
       </div>
-
-      <div class="why-card p-8 fade-up d1">
-        <div class="step-icon mb-6">
-          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style="color:var(--accent);">
-            <path d="M13 2.5c-1.8 0-3.2 1.4-3.2 3.2 0 .4.1.8.2 1.1L2.8 14c-.8.8-.8 2 0 2.8s2 .8 2.8 0l7.2-7.2c.3.1.7.2 1.1.2 1.8 0 3.2-1.4 3.2-3.2 0-.7-.2-1.4-.5-1.9L14.5 6.8l-1.2-.5-.5-1.2 2-2A3.1 3.1 0 0013 2.5z" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </div>
+      <div class="wcard p-8 fu d1">
+        <div class="sicon mb-6"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" style="color:var(--accent);"><path d="M13 2.5c-1.8 0-3.2 1.4-3.2 3.2 0 .4.1.8.2 1.1L2.8 14c-.8.8-.8 2 0 2.8s2 .8 2.8 0l7.2-7.2c.3.1.7.2 1.1.2 1.8 0 3.2-1.4 3.2-3.2 0-.7-.2-1.4-.5-1.9L14.5 6.8l-1.2-.5-.5-1.2 2-2A3.1 3.1 0 0013 2.5z" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
         <h3 class="t-h3 text-white mb-3">Industry-specific, not repurposed.</h3>
-        <p style="font-size:0.875rem;line-height:1.8;color:var(--text-3);">Roofing isn't HVAC. HVAC isn't solar. Every workflow, every script, every automation is built around how your specific industry closes — not a template we use for every client.</p>
+        <p style="font-size:.875rem;line-height:1.8;color:var(--t3);">Roofing isn't HVAC. HVAC isn't solar. Every workflow, every script, every automation is built around how your specific industry closes — not a template we use for every client.</p>
       </div>
-
-      <div class="why-card p-8 fade-up d2">
-        <div class="step-icon mb-6">
-          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style="color:var(--accent);">
-            <rect x="6" y="6" width="8" height="8" rx="1.5" stroke="currentColor" stroke-width="1.7"/>
-            <path d="M9 6V3M11 6V3M9 17v-3M11 17v-3M6 9H3M6 11H3M17 9h-3M17 11h-3" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
-          </svg>
-        </div>
+      <div class="wcard p-8 fu d2">
+        <div class="sicon mb-6"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" style="color:var(--accent);"><rect x="6" y="6" width="8" height="8" rx="1.5" stroke="currentColor" stroke-width="1.7"/><path d="M9 6V3M11 6V3M9 17v-3M11 17v-3M6 9H3M6 11H3M17 9h-3M17 11h-3" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></div>
         <h3 class="t-h3 text-white mb-3">AI does the labor. Humans keep it honest.</h3>
-        <p style="font-size:0.875rem;line-height:1.8;color:var(--text-3);">Automation handles the volume. A real team reviews outputs, manages the systems, and makes sure nothing goes out that shouldn't. Scale without losing your brand or your reputation.</p>
+        <p style="font-size:.875rem;line-height:1.8;color:var(--t3);">Automation handles the volume. A real team reviews outputs, manages the systems, and makes sure nothing goes out that shouldn't. Scale without losing your brand or reputation.</p>
       </div>
-
     </div>
   </div>
 </section>
@@ -682,139 +435,410 @@
 <div class="hr"></div>
 
 
-<!-- ──────────────────── FOUNDING OFFER ───────────────────── -->
-<section id="offer" class="px-6 py-28">
-  <div class="max-w-2xl mx-auto text-center fade-up">
-
-    <div class="founding-badge mb-9 mx-auto" style="width:fit-content;">
-      <span class="pulse-dot"></span>
-      2 spots remaining this quarter
+<!-- FOUNDING -->
+<section id="offer" class="section-frosted px-6 py-28">
+  <div class="max-w-2xl mx-auto text-center fu">
+    <div class="fbadge mb-9 mx-auto" style="width:fit-content;"><span class="pulse"></span>2 spots remaining this quarter</div>
+    <h2 class="t-h2 text-white mb-6" style="font-size:clamp(1.9rem,4vw,3.2rem);">We're Taking 2 Founding Clients<br class="hidden sm:block"> This Quarter.</h2>
+    <div class="fbox mb-10">
+      <p style="font-size:1rem;line-height:1.85;color:var(--t2);margin-bottom:1.25rem;">We're selective on purpose. To do this right, we go deep — not wide. The founding rate covers full onboarding, complete build-out, and ongoing monthly management. Locked in permanently at where we are now, not where we're going.</p>
+      <p style="font-size:.9rem;line-height:1.8;color:var(--t3);">This isn't a pitch deck. It's a straight conversation about whether CloseFlow makes sense for your team size, your volume, and where you want to be in 90 days.</p>
     </div>
-
-    <h2 class="t-h2 text-white mb-6">We're Taking 2 Founding Clients<br class="hidden sm:block"> This Quarter.</h2>
-
-    <div class="founding-box mb-10">
-      <p style="font-size:1.025rem;line-height:1.85;color:var(--text-2);margin-bottom:1.25rem;">
-        We're selective on purpose. To do this right, we go deep — not wide. The founding rate covers full onboarding, complete build-out, and ongoing monthly management. It's locked in permanently at where we are now, not where we're going.
-      </p>
-      <p style="font-size:0.9rem;line-height:1.8;color:var(--text-3);">
-        This isn't a pitch deck. It's a straight conversation about whether CloseFlow makes sense for your team size, your volume, and where you want to be in 90 days.
-      </p>
-    </div>
-
-    <!-- REPLACE href with Calendly or booking link -->
-    <a href="#book" class="btn btn-primary btn-lg">
-      Book a Call
-      <svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="#09090B" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/></svg>
-    </a>
+    <a href="#book" class="btn btn-primary btn-lg">Book a Call <svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="#06060A" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
   </div>
 </section>
 
 <div class="hr"></div>
 
 
-<!-- ──────────────────── FINAL CTA ────────────────────────── -->
-<section id="book" class="px-6 py-32" style="background:radial-gradient(ellipse 70% 50% at 50% 100%,rgba(0,194,255,0.06) 0%,transparent 65%);">
-  <div class="max-w-xl mx-auto text-center fade-up">
-
+<!-- FINAL CTA -->
+<section id="book" class="section-frosted px-6 py-32">
+  <div class="max-w-xl mx-auto text-center fu">
     <p class="eyebrow mb-5">Book a Call</p>
+    <h2 class="t-display text-white mb-6" style="font-size:clamp(2.4rem,5.5vw,4.4rem);">Stop Running the<br><span class="grad">Whole Machine Yourself.</span></h2>
+    <p style="font-size:.975rem;line-height:1.8;max-width:380px;margin:0 auto 3rem;color:var(--t3);">20 minutes. Tell us about your team and where things are breaking down. We'll tell you honestly whether CloseFlow is the right fit.</p>
 
-    <h2 class="t-closing text-white mb-6">
-      Stop Running the<br><span class="grad-text">Whole Machine Yourself.</span>
-    </h2>
-
-    <p style="font-size:0.975rem;line-height:1.8;max-width:390px;margin:0 auto 3rem;color:var(--text-3);">
-      20 minutes. Tell us about your team and where things are breaking down. We'll tell you honestly whether CloseFlow is the right fit.
-    </p>
-
-    <!-- Contact card — FILL IN your real info -->
     <div class="card p-8 text-left mb-6">
-      <p style="font-size:0.875rem;line-height:1.65;margin-bottom:1.75rem;color:var(--text-3);">Reach out directly to get on the calendar:</p>
+      <p style="font-size:.875rem;line-height:1.65;margin-bottom:1.75rem;color:var(--t3);">Reach out directly to get on the calendar:</p>
       <div style="display:flex;flex-direction:column;gap:1.25rem;">
-
         <div>
-          <p class="contact-label">Email</p>
+          <p class="clabel">Email</p>
           <!-- REPLACE with your real email -->
-          <a href="mailto:contact@closeflow.ai" class="text-white font-semibold" style="font-size:0.95rem;text-decoration:none;transition:color var(--t-med);" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--text-1)'">contact@closeflow.ai</a>
+          <a href="mailto:contact@closeflow.ai" style="font-size:.95rem;font-weight:600;color:var(--t1);text-decoration:none;transition:color .2s;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--t1)'">contact@closeflow.ai</a>
         </div>
-
-        <div style="height:1px;background:var(--border-1);"></div>
-
+        <div style="height:1px;background:var(--b1);"></div>
         <div>
-          <p class="contact-label">Phone / Text</p>
-          <!-- REPLACE with your real phone number -->
-          <a href="tel:+10000000000" class="text-white font-semibold" style="font-size:0.95rem;text-decoration:none;transition:color var(--t-med);" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--text-1)'">+1 (000) 000-0000</a>
+          <p class="clabel">Phone / Text</p>
+          <!-- REPLACE with your real phone -->
+          <a href="tel:+10000000000" style="font-size:.95rem;font-weight:600;color:var(--t1);text-decoration:none;transition:color .2s;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--t1)'">+1 (000) 000-0000</a>
         </div>
-
-        <div style="height:1px;background:var(--border-1);"></div>
-
+        <div style="height:1px;background:var(--b1);"></div>
         <div>
-          <p class="contact-label">Booking Link</p>
-          <!-- REPLACE href with your Calendly / cal.com link -->
-          <a href="#" class="font-semibold" style="font-size:0.95rem;color:var(--accent);text-decoration:none;">calendly.com/closeflow</a>
-          <span style="font-size:0.82rem;color:var(--text-4);margin-left:8px;">(coming soon)</span>
+          <p class="clabel">Booking Link</p>
+          <!-- REPLACE with your Calendly / cal.com link -->
+          <a href="#" style="font-size:.95rem;font-weight:600;color:var(--accent);text-decoration:none;">calendly.com/closeflow</a>
+          <span style="font-size:.8rem;color:var(--t4);margin-left:8px;">(coming soon)</span>
         </div>
-
       </div>
     </div>
 
-    <!-- REPLACE href with Calendly or booking link -->
-    <a href="#" class="btn btn-primary btn-lg w-full justify-center" style="font-size:0.975rem;">
-      Book a Call — It's Free
-      <svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="#09090B" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/></svg>
-    </a>
+    <!-- REPLACE href with your booking link -->
+    <a href="#" class="btn btn-primary btn-lg w-full justify-center" style="font-size:.975rem;">Book a Call — It's Free <svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="#06060A" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
   </div>
 </section>
 
 
-<!-- ──────────────────── FOOTER ───────────────────────────── -->
-<footer style="border-top:1px solid var(--border-1);background:var(--bg);padding:2rem 1.5rem;">
+<!-- FOOTER -->
+<footer style="background:rgba(6,6,10,0.95);border-top:1px solid var(--b1);padding:2rem 1.5rem;">
   <div class="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-5">
-
     <a href="#" class="flex items-center gap-2" style="text-decoration:none;">
-      <div class="bg-accent flex items-center justify-center" style="width:28px;height:28px;border-radius:6px;">
-        <svg width="13" height="13" viewBox="0 0 20 20" fill="none">
-          <path d="M4 10C4 6.7 6.7 4 10 4c1.9 0 3.6.9 4.7 2.2" stroke="#09090B" stroke-width="2.4" stroke-linecap="round"/>
-          <path d="M7 13.5h9" stroke="#09090B" stroke-width="2.4" stroke-linecap="round"/>
-        </svg>
+      <div style="width:28px;height:28px;background:var(--accent);border-radius:6px;display:flex;align-items:center;justify-content:center;">
+        <svg width="13" height="13" viewBox="0 0 20 20" fill="none"><path d="M4 10C4 6.7 6.7 4 10 4c1.9 0 3.6.9 4.7 2.2" stroke="#06060A" stroke-width="2.4" stroke-linecap="round"/><path d="M7 13.5h9" stroke="#06060A" stroke-width="2.4" stroke-linecap="round"/></svg>
       </div>
-      <span style="font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:0.9rem;letter-spacing:-0.025em;color:var(--text-1);">
-        CloseFlow <span class="text-accent">AI</span>
-      </span>
+      <span style="font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:.9rem;letter-spacing:-.025em;color:var(--t1);">CloseFlow <span style="color:var(--accent);">AI</span></span>
     </a>
-
     <nav style="display:flex;align-items:center;gap:1.5rem;">
-      <a href="#problem" style="font-size:0.82rem;color:var(--text-3);text-decoration:none;transition:color var(--t-med);" onmouseover="this.style.color='var(--text-1)'" onmouseout="this.style.color='var(--text-3)'">The Problem</a>
-      <a href="#system"  style="font-size:0.82rem;color:var(--text-3);text-decoration:none;transition:color var(--t-med);" onmouseover="this.style.color='var(--text-1)'" onmouseout="this.style.color='var(--text-3)'">The System</a>
-      <a href="#why"     style="font-size:0.82rem;color:var(--text-3);text-decoration:none;transition:color var(--t-med);" onmouseover="this.style.color='var(--text-1)'" onmouseout="this.style.color='var(--text-3)'">Why Us</a>
-      <a href="#book"    style="font-size:0.82rem;color:var(--text-3);text-decoration:none;transition:color var(--t-med);" onmouseover="this.style.color='var(--text-1)'" onmouseout="this.style.color='var(--text-3)'">Book a Call</a>
+      <a href="#problem" style="font-size:.82rem;color:var(--t3);text-decoration:none;transition:color .2s;" onmouseover="this.style.color='var(--t1)'" onmouseout="this.style.color='var(--t3)'">The Problem</a>
+      <a href="#system"  style="font-size:.82rem;color:var(--t3);text-decoration:none;transition:color .2s;" onmouseover="this.style.color='var(--t1)'" onmouseout="this.style.color='var(--t3)'">The System</a>
+      <a href="#why"     style="font-size:.82rem;color:var(--t3);text-decoration:none;transition:color .2s;" onmouseover="this.style.color='var(--t1)'" onmouseout="this.style.color='var(--t3)'">Why Us</a>
+      <a href="#book"    style="font-size:.82rem;color:var(--t3);text-decoration:none;transition:color .2s;" onmouseover="this.style.color='var(--t1)'" onmouseout="this.style.color='var(--t3)'">Book a Call</a>
     </nav>
-
-    <p style="font-size:0.78rem;color:var(--text-4);">© 2026 CloseFlow AI</p>
+    <p style="font-size:.78rem;color:var(--t4);">© 2026 CloseFlow AI</p>
   </div>
 </footer>
 
+</div><!-- /page -->
 
-<!-- ──────────────────── JS ────────────────────────────────── -->
+
+<!-- ─────────────────── THREE.JS 3D SCENE ────────────────── -->
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+  }
+}
+</script>
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+
+const canvas = document.getElementById('scene-canvas');
+const W = () => window.innerWidth;
+const H = () => window.innerHeight;
+
+// ── Renderer ──────────────────────────────────────────────
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.setSize(W(), H());
+renderer.setClearColor(0x06060A, 1);
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.1;
+
+// ── Scene / Camera ────────────────────────────────────────
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(55, W() / H(), 0.1, 2000);
+camera.position.set(0, 8, 28);
+
+// ── Post-processing: Bloom ─────────────────────────────────
+const composer = new EffectComposer(renderer);
+composer.addPass(new RenderPass(scene, camera));
+const bloom = new UnrealBloomPass(new THREE.Vector2(W(), H()), 1.4, 0.5, 0.75);
+composer.addPass(bloom);
+
+// ── Orbit Controls ─────────────────────────────────────────
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;
+controls.dampingFactor = 0.05;
+controls.autoRotate = true;
+controls.autoRotateSpeed = 0.35;
+controls.enableZoom = true;
+controls.minDistance = 10;
+controls.maxDistance = 60;
+controls.maxPolarAngle = Math.PI * 0.75;
+
+// ── Lights ─────────────────────────────────────────────────
+scene.add(new THREE.AmbientLight(0x112233, 0.5));
+const sunLight = new THREE.DirectionalLight(0xffffff, 1.2);
+sunLight.position.set(10, 20, 10);
+scene.add(sunLight);
+
+// Point lights for glow
+const pl1 = new THREE.PointLight(0x00C2FF, 3, 25); pl1.position.set(0,0,0); scene.add(pl1);
+const pl2 = new THREE.PointLight(0x7B8CFF, 2, 20); pl2.position.set(8,5,0); scene.add(pl2);
+const pl3 = new THREE.PointLight(0x00C2FF, 1.5, 18); pl3.position.set(-8,-3,5); scene.add(pl3);
+
+// ── Materials ──────────────────────────────────────────────
+const matHub = new THREE.MeshStandardMaterial({
+  color: 0x00C2FF, emissive: 0x00C2FF, emissiveIntensity: 0.9,
+  roughness: 0.1, metalness: 0.9,
+});
+const matRing = new THREE.MeshStandardMaterial({
+  color: 0x00C2FF, emissive: 0x00C2FF, emissiveIntensity: 0.6,
+  roughness: 0.2, metalness: 0.8, wireframe: false, transparent: true, opacity: 0.35,
+});
+
+const nodeColors = [0x00C2FF, 0x2AABEE, 0x7B8CFF, 0x9B6AFF, 0x6366F1];
+const nodeMats = nodeColors.map(c => new THREE.MeshStandardMaterial({
+  color: c, emissive: c, emissiveIntensity: 0.7, roughness: 0.15, metalness: 0.85,
+}));
+
+const lineMat = new THREE.LineBasicMaterial({ color: 0x00C2FF, transparent: true, opacity: 0.12 });
+const lineMat2 = new THREE.LineBasicMaterial({ color: 0x7B8CFF, transparent: true, opacity: 0.08 });
+
+// ── Central Hub ────────────────────────────────────────────
+const hub = new THREE.Mesh(new THREE.SphereGeometry(1.6, 64, 64), matHub);
+scene.add(hub);
+
+// Hub rings (like Saturn)
+for (let i = 0; i < 3; i++) {
+  const r = 2.5 + i * 0.7;
+  const ring = new THREE.Mesh(
+    new THREE.TorusGeometry(r, 0.04 - i * 0.01, 6, 80),
+    new THREE.MeshStandardMaterial({ color: 0x00C2FF, emissive: 0x00C2FF, emissiveIntensity: 0.5 - i * 0.1, transparent: true, opacity: 0.4 - i * 0.1 })
+  );
+  ring.rotation.x = Math.PI / 2 + i * 0.15;
+  ring.rotation.y = i * 0.4;
+  scene.add(ring);
+}
+
+// ── 5 System Orbital Nodes ────────────────────────────────
+const orbitRadius = 9;
+const systemNodes = [];
+const labels = ['Recruiting', 'Lead Gen', 'Content', 'Follow-Up', 'Reports'];
+
+for (let i = 0; i < 5; i++) {
+  const angle = (i / 5) * Math.PI * 2;
+  const yOff = Math.sin(angle * 1.5) * 2;
+  const node = new THREE.Mesh(new THREE.SphereGeometry(0.65, 32, 32), nodeMats[i]);
+  node.position.set(
+    Math.cos(angle) * orbitRadius,
+    yOff,
+    Math.sin(angle) * orbitRadius
+  );
+  scene.add(node);
+
+  // Halo around each node
+  const halo = new THREE.Mesh(
+    new THREE.SphereGeometry(0.95, 16, 16),
+    new THREE.MeshBasicMaterial({ color: nodeColors[i], transparent: true, opacity: 0.06, side: THREE.BackSide })
+  );
+  node.add(halo);
+
+  systemNodes.push({ mesh: node, baseAngle: angle, yOff, orbitSpeed: 0.0015 + i * 0.0003 });
+}
+
+// ── Outer Cluster Nodes (leads/reps) ──────────────────────
+const outerNodes = [];
+const outerCount = 60;
+for (let i = 0; i < outerCount; i++) {
+  const theta = Math.random() * Math.PI * 2;
+  const phi   = Math.acos(2 * Math.random() - 1);
+  const r = 14 + Math.random() * 8;
+  const size  = 0.08 + Math.random() * 0.18;
+  const colorIdx = Math.floor(Math.random() * nodeColors.length);
+  const node = new THREE.Mesh(
+    new THREE.SphereGeometry(size, 8, 8),
+    new THREE.MeshStandardMaterial({ color: nodeColors[colorIdx], emissive: nodeColors[colorIdx], emissiveIntensity: 0.8, roughness: 0.2, metalness: 0.8 })
+  );
+  node.position.set(
+    r * Math.sin(phi) * Math.cos(theta),
+    r * Math.sin(phi) * Math.sin(theta),
+    r * Math.cos(phi)
+  );
+  scene.add(node);
+  outerNodes.push({ mesh: node, basePos: node.position.clone(), phase: Math.random() * Math.PI * 2, speed: 0.3 + Math.random() * 0.5 });
+}
+
+// ── Connection Lines: Hub → System Nodes ──────────────────
+function makeLine(a, b, mat) {
+  const geo = new THREE.BufferGeometry().setFromPoints([a, b]);
+  return new THREE.Line(geo, mat);
+}
+
+systemNodes.forEach(n => {
+  scene.add(makeLine(new THREE.Vector3(0,0,0), n.mesh.position, lineMat));
+});
+
+// ── Connection Lines: System Nodes → random outer nodes ───
+systemNodes.forEach((sn, si) => {
+  for (let k = 0; k < 6; k++) {
+    const on = outerNodes[si * 12 + k];
+    if (!on) return;
+    scene.add(makeLine(sn.mesh.position, on.mesh.position, lineMat2));
+  }
+});
+
+// ── Some outer-to-outer connections ───────────────────────
+for (let i = 0; i < 30; i++) {
+  const a = outerNodes[Math.floor(Math.random() * outerCount)];
+  const b = outerNodes[Math.floor(Math.random() * outerCount)];
+  if (a !== b && a.mesh.position.distanceTo(b.mesh.position) < 10) {
+    scene.add(makeLine(a.mesh.position, b.mesh.position, lineMat2));
+  }
+}
+
+// ── Flowing Particles along Hub→System paths ──────────────
+const PACKET_COUNT = 80;
+const packetGeo = new THREE.BufferGeometry();
+const packetPos = new Float32Array(PACKET_COUNT * 3);
+packetGeo.setAttribute('position', new THREE.BufferAttribute(packetPos, 3));
+const packets = new THREE.Points(packetGeo, new THREE.PointsMaterial({
+  color: 0xffffff, size: 0.22, sizeAttenuation: true, transparent: true, opacity: 0.95
+}));
+scene.add(packets);
+
+const packetT = Array.from({ length: PACKET_COUNT }, () => Math.random());
+const packetEdges = Array.from({ length: PACKET_COUNT }, (_, i) => ({
+  from: new THREE.Vector3(0, 0, 0),
+  to: systemNodes[i % 5].mesh.position,
+  speed: 0.005 + Math.random() * 0.008,
+  reverse: Math.random() > 0.5,
+}));
+
+// ── Background stars ───────────────────────────────────────
+const starCount = 3000;
+const starPos = new Float32Array(starCount * 3);
+for (let i = 0; i < starCount; i++) {
+  const r = 300 + Math.random() * 200;
+  const theta = Math.random() * Math.PI * 2;
+  const phi = Math.acos(2 * Math.random() - 1);
+  starPos[i*3]   = r * Math.sin(phi) * Math.cos(theta);
+  starPos[i*3+1] = r * Math.sin(phi) * Math.sin(theta);
+  starPos[i*3+2] = r * Math.cos(phi);
+}
+const starGeo = new THREE.BufferGeometry();
+starGeo.setAttribute('position', new THREE.BufferAttribute(starPos, 3));
+scene.add(new THREE.Points(starGeo, new THREE.PointsMaterial({
+  color: 0xC0D0FF, size: 0.5, sizeAttenuation: true, transparent: true, opacity: 0.45,
+})));
+
+// ── Resize ─────────────────────────────────────────────────
+window.addEventListener('resize', () => {
+  camera.aspect = W() / H();
+  camera.updateProjectionMatrix();
+  renderer.setSize(W(), H());
+  composer.setSize(W(), H());
+});
+
+// ── Animate ────────────────────────────────────────────────
+const clock = new THREE.Clock();
+
+function animate() {
+  requestAnimationFrame(animate);
+  const t = clock.getElapsedTime();
+
+  // Hub pulse
+  const s = 1 + Math.sin(t * 1.8) * 0.04;
+  hub.scale.set(s, s, s);
+  hub.material.emissiveIntensity = 0.8 + Math.sin(t * 2) * 0.2;
+
+  // Hub rings sway
+  hub.children.length === 0 && null; // hub has no direct children (rings added to scene)
+  scene.children
+    .filter(c => c.geometry && c.geometry.type === 'TorusGeometry')
+    .forEach((ring, i) => {
+      ring.rotation.z = t * (0.12 + i * 0.05);
+      ring.rotation.x = Math.PI / 2 + Math.sin(t * 0.3 + i) * 0.15;
+    });
+
+  // Orbit system nodes
+  systemNodes.forEach((n, i) => {
+    const angle = n.baseAngle + t * n.orbitSpeed * 60;
+    n.mesh.position.x = Math.cos(angle) * orbitRadius;
+    n.mesh.position.z = Math.sin(angle) * orbitRadius;
+    n.mesh.position.y = n.yOff + Math.sin(t * 0.5 + i) * 0.5;
+    n.mesh.material.emissiveIntensity = 0.6 + Math.sin(t * 1.5 + i) * 0.2;
+  });
+
+  // Outer nodes drift
+  outerNodes.forEach(n => {
+    n.mesh.position.x = n.basePos.x + Math.sin(t * n.speed + n.phase) * 0.8;
+    n.mesh.position.y = n.basePos.y + Math.cos(t * n.speed * 0.7 + n.phase) * 0.6;
+    n.mesh.position.z = n.basePos.z + Math.sin(t * n.speed * 0.5 + n.phase + 1) * 0.6;
+  });
+
+  // Update connection lines to match moving system nodes
+  let lineIdx = 0;
+  scene.children.forEach(c => {
+    if (c instanceof THREE.Line) {
+      if (lineIdx < 5) {
+        // Hub → system node lines
+        const pts = c.geometry.attributes.position;
+        pts.setXYZ(1, systemNodes[lineIdx].mesh.position.x, systemNodes[lineIdx].mesh.position.y, systemNodes[lineIdx].mesh.position.z);
+        pts.needsUpdate = true;
+      }
+      lineIdx++;
+    }
+  });
+
+  // Animate packets
+  const pPos = packets.geometry.attributes.position;
+  for (let i = 0; i < PACKET_COUNT; i++) {
+    packetT[i] += packetEdges[i].speed;
+    if (packetT[i] > 1) {
+      packetT[i] = 0;
+      // Reassign edge: hub→system or system→outer
+      const si = i % 5;
+      if (Math.random() > 0.4) {
+        packetEdges[i].from = new THREE.Vector3(0, 0, 0);
+        packetEdges[i].to = systemNodes[si].mesh.position.clone();
+      } else {
+        packetEdges[i].from = systemNodes[si].mesh.position.clone();
+        const oi = outerNodes[si * 10 + Math.floor(Math.random() * 10)];
+        packetEdges[i].to = oi ? oi.mesh.position.clone() : new THREE.Vector3(0,0,0);
+      }
+    }
+    const tt = packetEdges[i].reverse ? 1 - packetT[i] : packetT[i];
+    const x = packetEdges[i].from.x + (packetEdges[i].to.x - packetEdges[i].from.x) * tt;
+    const y = packetEdges[i].from.y + (packetEdges[i].to.y - packetEdges[i].from.y) * tt;
+    const z = packetEdges[i].from.z + (packetEdges[i].to.z - packetEdges[i].from.z) * tt;
+    pPos.setXYZ(i, x, y, z);
+  }
+  pPos.needsUpdate = true;
+
+  // Point light follows hub pulse
+  pl1.intensity = 3 + Math.sin(t * 2) * 0.8;
+
+  controls.update();
+  composer.render();
+}
+
+animate();
+</script>
+
+
+<!-- ── Page JS ── -->
 <script>
-  // Scroll-triggered fade-up
+  // Scroll fade-up
   const io = new IntersectionObserver(entries => {
-    entries.forEach(entry => {
-      if (!entry.isIntersecting) return;
-      const el = entry.target;
-      el.classList.add('in');
-      el.parentElement.querySelectorAll('.fade-up:not(.in)').forEach((sib, i) => {
-        setTimeout(() => sib.classList.add('in'), (i + 1) * 85);
+    entries.forEach(e => {
+      if (!e.isIntersecting) return;
+      e.target.classList.add('in');
+      e.target.parentElement.querySelectorAll('.fu:not(.in)').forEach((el, i) => {
+        setTimeout(() => el.classList.add('in'), (i+1)*85);
       });
-      io.unobserve(el);
+      io.unobserve(e.target);
     });
   }, { threshold: 0.1 });
-  document.querySelectorAll('.fade-up').forEach(el => io.observe(el));
+  document.querySelectorAll('.fu').forEach(el => io.observe(el));
 
   // Nav scroll state
   const nav = document.getElementById('nav');
-  const onScroll = () => nav.classList.toggle('scrolled', window.scrollY > 20);
-  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('scroll', () => nav.classList.toggle('scrolled', scrollY > 20), { passive: true });
+
+  // Hide drag hint after first interaction
+  const hint = document.getElementById('drag-hint');
+  let hintHidden = false;
+  window.addEventListener('scroll', () => {
+    if (!hintHidden && scrollY > 100) { hint.classList.add('hide'); hintHidden = true; }
+  }, { passive: true });
+  document.getElementById('scene-canvas').addEventListener('pointerdown', () => {
+    hint.classList.add('hide'); hintHidden = true;
+  }, { once: true });
 </script>
 </body>
 </html>
