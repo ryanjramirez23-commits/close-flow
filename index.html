@@ -218,9 +218,26 @@
       to   { opacity: 1; transform: none; }
     }
 
+    /* ── Industries strip ─────────────────────────── */
+    .industry {
+      font-size: 1.05rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      color: #71717A;
+      transition: color 0.25s;
+      cursor: default;
+    }
+    .industry:hover { color: #FAFAFA; }
+    .ind-dot {
+      width: 4px; height: 4px; border-radius: 50%;
+      background: #00C2FF; opacity: 0.55;
+      flex-shrink: 0;
+    }
+
     /* ── Mobile nav ───────────────────────────────── */
     @media (max-width: 640px) {
       .nav-links { display: none; }
+      .industry { font-size: 0.95rem; }
     }
   </style>
 </head>
@@ -289,6 +306,27 @@
 
   <!-- Bottom fade into page -->
   <div style="position:absolute;bottom:0;left:0;right:0;height:140px;background:linear-gradient(to bottom,transparent,#09090B);pointer-events:none;"></div>
+</section>
+
+
+<!-- ───────────────── INDUSTRIES STRIP ───────────────────── -->
+<section id="industries" class="px-6 pb-24 -mt-8">
+  <div class="max-w-4xl mx-auto fade-up">
+    <p class="text-center mb-9" style="font-size:0.7rem;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:#52525B;">
+      Built specifically for
+    </p>
+    <div class="flex flex-wrap items-center justify-center gap-x-9 gap-y-5">
+      <span class="industry">Roofing</span>
+      <span class="ind-dot"></span>
+      <span class="industry">HVAC</span>
+      <span class="ind-dot"></span>
+      <span class="industry">Solar</span>
+      <span class="ind-dot"></span>
+      <span class="industry">Home Security</span>
+      <span class="ind-dot"></span>
+      <span class="industry">Pest Control</span>
+    </div>
+  </div>
 </section>
 
 
