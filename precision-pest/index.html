@@ -52,8 +52,8 @@
 
     .grad { background: linear-gradient(130deg, var(--red) 0%, #FF7B7B 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
 
-    #nav { position: fixed; top: 0; left: 0; right: 0; z-index: 200; background: rgba(8,8,8,0.82); backdrop-filter: blur(24px); border-bottom: 1px solid rgba(255,255,255,0.04); transition: border-color .25s, box-shadow .25s; }
-    #nav.scrolled { border-bottom-color: var(--b1); box-shadow: 0 1px 40px rgba(0,0,0,0.7); }
+    #nav { position: fixed; top: 0; left: 0; right: 0; z-index: 200; background: rgba(255,255,255,0.94); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); border-bottom: 1px solid rgba(0,0,0,0.07); transition: border-color .25s, box-shadow .25s; }
+    #nav.scrolled { border-bottom-color: rgba(0,0,0,0.1); box-shadow: 0 2px 30px rgba(0,0,0,0.16); }
     @media(max-width:640px){ .nav-links{display:none;} }
 
     .btn { display:inline-flex; align-items:center; gap:6px; font-weight:700; border-radius:9px; text-decoration:none; cursor:pointer; transition:all .22s; position:relative; overflow:hidden; }
@@ -133,13 +133,13 @@
             <path d="M10 3V1M10 19v-2M3 10H1M19 10h-2" stroke="#F9F9F9" stroke-width="1.8" stroke-linecap="round"/>
           </svg>
         </span>
-        <span style="font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:1.05rem;letter-spacing:-.03em;color:var(--t1);">Precision <span style="color:var(--red);">Pest</span></span>
+        <span style="font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:1.05rem;letter-spacing:-.03em;color:#111;">Precision <span style="color:var(--red);">Pest</span></span>
       </span>
     </a>
     <div class="nav-links flex items-center gap-7">
-      <a href="#services" style="font-size:.875rem;font-weight:500;color:var(--t3);text-decoration:none;transition:color .2s;" onmouseover="this.style.color='var(--t1)'" onmouseout="this.style.color='var(--t3)'">Services</a>
-      <a href="#why" style="font-size:.875rem;font-weight:500;color:var(--t3);text-decoration:none;transition:color .2s;" onmouseover="this.style.color='var(--t1)'" onmouseout="this.style.color='var(--t3)'">Why Us</a>
-      <a href="#areas" style="font-size:.875rem;font-weight:500;color:var(--t3);text-decoration:none;transition:color .2s;" onmouseover="this.style.color='var(--t1)'" onmouseout="this.style.color='var(--t3)'">Service Areas</a>
+      <a href="#services" style="font-size:.875rem;font-weight:500;color:#3D3D3D;text-decoration:none;transition:color .2s;" onmouseover="this.style.color='#D42B2B'" onmouseout="this.style.color='#3D3D3D'">Services</a>
+      <a href="#why" style="font-size:.875rem;font-weight:500;color:#3D3D3D;text-decoration:none;transition:color .2s;" onmouseover="this.style.color='#D42B2B'" onmouseout="this.style.color='#3D3D3D'">Why Us</a>
+      <a href="#areas" style="font-size:.875rem;font-weight:500;color:#3D3D3D;text-decoration:none;transition:color .2s;" onmouseover="this.style.color='#D42B2B'" onmouseout="this.style.color='#3D3D3D'">Service Areas</a>
     </div>
     <a href="tel:3617297722" class="btn btn-primary shrink-0" style="padding:10px 20px;font-size:.85rem;">
       <svg width="14" height="14" viewBox="0 0 20 20" fill="none"><path d="M6.5 3.5c.5 1.5 1 2.5 1.5 3L6 8c1 2 3.5 4.5 5.5 5.5l1.5-2c.5.5 1.5 1 3 1.5 0 2.5-1.5 4-4 3C8 15 5 12 3.5 8.5c-1-2.5.5-5 3-5z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -152,9 +152,6 @@
 <!-- HERO -->
 <section id="hero">
   <div class="max-w-4xl mx-auto">
-    <img src="./images/logo.png" alt="Precision Pest Control" class="ha1 mx-auto mb-7"
-         style="height:92px;width:auto;display:block;filter:drop-shadow(0 8px 30px rgba(212,43,43,0.25));"
-         onerror="this.style.display='none';">
     <div class="badge ha1 mb-6 mx-auto" style="width:fit-content;">
       <span class="pulse"></span>
       Veteran-Owned &amp; Operated · Rockport, TX Since 2014
@@ -228,7 +225,7 @@
     </div>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 fu">
       <div style="position:relative;border-radius:16px;overflow:hidden;border:1px solid var(--b1);min-height:340px;background:linear-gradient(135deg,var(--s2),var(--s1));display:flex;align-items:center;justify-content:center;">
-        <img src="./images/team.jpg" alt="Precision Pest Control team with truck and American flag"
+        <img src="./images/team.png" alt="Precision Pest Control team with truck and American flag"
              style="width:100%;height:340px;object-fit:cover;display:block;position:absolute;inset:0;"
              onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
         <div style="display:none;flex-direction:column;align-items:center;gap:12px;color:var(--t3);text-align:center;padding:1.5rem;">
@@ -272,49 +269,49 @@
 
       <!-- Cockroach -->
       <div style="border-radius:12px;overflow:hidden;border:1px solid var(--b1);background:var(--s1);text-align:center;">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/3/3b/American-cockroach.jpg" alt="Cockroach" style="width:100%;height:140px;object-fit:cover;display:block;">
+        <img class="bugimg" src="https://upload.wikimedia.org/wikipedia/commons/3/3b/American-cockroach.jpg" alt="Cockroach" style="width:100%;height:140px;object-fit:cover;display:block;">
         <p style="padding:.6rem;font-size:.82rem;font-weight:700;color:var(--t1);">Cockroaches</p>
       </div>
 
       <!-- Termite -->
       <div style="border-radius:12px;overflow:hidden;border:1px solid var(--b1);background:var(--s1);text-align:center;">
-        <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Coptotermes_formosanus_shiraki_USGov_k8204-7.jpg" alt="Termite" style="width:100%;height:140px;object-fit:cover;display:block;">
+        <img class="bugimg" src="https://upload.wikimedia.org/wikipedia/commons/d/d3/Coptotermes_formosanus_shiraki_USGov_k8204-7.jpg" alt="Termite" style="width:100%;height:140px;object-fit:cover;display:block;">
         <p style="padding:.6rem;font-size:.82rem;font-weight:700;color:var(--t1);">Termites</p>
       </div>
 
       <!-- Mosquito -->
       <div style="border-radius:12px;overflow:hidden;border:1px solid var(--b1);background:var(--s1);text-align:center;">
-        <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Aedes_aegypti_CDC-Gathany.jpg" alt="Mosquito" style="width:100%;height:140px;object-fit:cover;display:block;">
+        <img class="bugimg" src="https://upload.wikimedia.org/wikipedia/commons/2/2c/Aedes_aegypti_CDC-Gathany.jpg" alt="Mosquito" style="width:100%;height:140px;object-fit:cover;display:block;">
         <p style="padding:.6rem;font-size:.82rem;font-weight:700;color:var(--t1);">Mosquitoes</p>
       </div>
 
       <!-- Rodent -->
       <div style="border-radius:12px;overflow:hidden;border:1px solid var(--b1);background:var(--s1);text-align:center;">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/5/5a/Rattus_norvegicus_1.jpg" alt="Rodent" style="width:100%;height:140px;object-fit:cover;display:block;">
+        <img class="bugimg" src="https://upload.wikimedia.org/wikipedia/commons/0/01/Rattus_norvegicus_1.jpg" alt="Rodent" style="width:100%;height:140px;object-fit:cover;display:block;">
         <p style="padding:.6rem;font-size:.82rem;font-weight:700;color:var(--t1);">Rodents</p>
       </div>
 
       <!-- Bed Bug -->
       <div style="border-radius:12px;overflow:hidden;border:1px solid var(--b1);background:var(--s1);text-align:center;">
-        <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Bed_bug%2C_Cimex_lectularius.jpg" alt="Bed Bug" style="width:100%;height:140px;object-fit:cover;display:block;">
+        <img class="bugimg" src="https://upload.wikimedia.org/wikipedia/commons/8/87/Bed_bug%2C_Cimex_lectularius.jpg" alt="Bed Bug" style="width:100%;height:140px;object-fit:cover;display:block;">
         <p style="padding:.6rem;font-size:.82rem;font-weight:700;color:var(--t1);">Bed Bugs</p>
       </div>
 
       <!-- Ant -->
       <div style="border-radius:12px;overflow:hidden;border:1px solid var(--b1);background:var(--s1);text-align:center;">
-        <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Camponotus_flavomarginatus_ant.jpg" alt="Ants" style="width:100%;height:140px;object-fit:cover;display:block;">
+        <img class="bugimg" src="https://upload.wikimedia.org/wikipedia/commons/a/a7/Camponotus_flavomarginatus_ant.jpg" alt="Ants" style="width:100%;height:140px;object-fit:cover;display:block;">
         <p style="padding:.6rem;font-size:.82rem;font-weight:700;color:var(--t1);">Ants</p>
       </div>
 
       <!-- Bee/Wasp -->
       <div style="border-radius:12px;overflow:hidden;border:1px solid var(--b1);background:var(--s1);text-align:center;">
-        <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Vespula_squamosa_worker_2.jpg" alt="Bees & Wasps" style="width:100%;height:140px;object-fit:cover;display:block;">
+        <img class="bugimg" src="https://upload.wikimedia.org/wikipedia/commons/9/93/European_wasp_white_bg.jpg" alt="Bees & Wasps" style="width:100%;height:140px;object-fit:cover;display:block;">
         <p style="padding:.6rem;font-size:.82rem;font-weight:700;color:var(--t1);">Bees &amp; Wasps</p>
       </div>
 
       <!-- Flea/Tick -->
       <div style="border-radius:12px;overflow:hidden;border:1px solid var(--b1);background:var(--s1);text-align:center;">
-        <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Flea_Scanning_Electron_Micrograph.jpg" alt="Fleas & Ticks" style="width:100%;height:140px;object-fit:cover;display:block;">
+        <img class="bugimg" src="https://upload.wikimedia.org/wikipedia/commons/2/28/Flea_Scanning_Electron_Micrograph.jpg" alt="Fleas & Ticks" style="width:100%;height:140px;object-fit:cover;display:block;">
         <p style="padding:.6rem;font-size:.82rem;font-weight:700;color:var(--t1);">Fleas &amp; Ticks</p>
       </div>
 
@@ -337,7 +334,7 @@
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
 
       <div class="scard fu" style="display:flex;flex-direction:column;">
-        <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Coptotermes_formosanus_shiraki_USGov_k8204-7.jpg" alt="Termite close-up" style="width:100%;height:175px;object-fit:cover;display:block;border-bottom:1px solid var(--b1);">
+        <img class="bugimg" src="https://upload.wikimedia.org/wikipedia/commons/d/d3/Coptotermes_formosanus_shiraki_USGov_k8204-7.jpg" alt="Termite close-up" style="width:100%;height:175px;object-fit:cover;display:block;border-bottom:1px solid var(--b1);">
         <div class="p-8">
           <div class="sicon mb-5">
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style="color:var(--red);"><path d="M10 2l6 3v5c0 3.5-2.5 6.7-6 8-3.5-1.3-6-4.5-6-8V5l6-3z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>
@@ -348,7 +345,7 @@
       </div>
 
       <div class="scard fu d1" style="display:flex;flex-direction:column;">
-        <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Aedes_aegypti_CDC-Gathany.jpg" alt="Mosquito close-up" style="width:100%;height:175px;object-fit:cover;display:block;border-bottom:1px solid var(--b1);">
+        <img class="bugimg" src="https://upload.wikimedia.org/wikipedia/commons/2/2c/Aedes_aegypti_CDC-Gathany.jpg" alt="Mosquito close-up" style="width:100%;height:175px;object-fit:cover;display:block;border-bottom:1px solid var(--b1);">
         <div class="p-8">
           <div class="sicon mb-5">
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style="color:var(--red);"><circle cx="10" cy="10" r="7" stroke="currentColor" stroke-width="1.7"/><path d="M10 3v3M10 14v3M3 10h3M14 10h3" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
@@ -359,7 +356,7 @@
       </div>
 
       <div class="scard fu d2" style="display:flex;flex-direction:column;">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/5/5a/Rattus_norvegicus_1.jpg" alt="Rodent close-up" style="width:100%;height:175px;object-fit:cover;display:block;border-bottom:1px solid var(--b1);">
+        <img class="bugimg" src="https://upload.wikimedia.org/wikipedia/commons/0/01/Rattus_norvegicus_1.jpg" alt="Rodent close-up" style="width:100%;height:175px;object-fit:cover;display:block;border-bottom:1px solid var(--b1);">
         <div class="p-8">
           <div class="sicon mb-5">
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style="color:var(--red);"><path d="M5 17l3-5m5 5l-3-5m-2 0h4m-2-8a3 3 0 100-6 3 3 0 000 6zm0 0v3" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -370,7 +367,7 @@
       </div>
 
       <div class="scard fu d3" style="display:flex;flex-direction:column;">
-        <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Bed_bug%2C_Cimex_lectularius.jpg" alt="Bed bug close-up" style="width:100%;height:175px;object-fit:cover;display:block;border-bottom:1px solid var(--b1);">
+        <img class="bugimg" src="https://upload.wikimedia.org/wikipedia/commons/8/87/Bed_bug%2C_Cimex_lectularius.jpg" alt="Bed bug close-up" style="width:100%;height:175px;object-fit:cover;display:block;border-bottom:1px solid var(--b1);">
         <div class="p-8">
           <div class="sicon mb-5">
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style="color:var(--red);"><rect x="3" y="3" width="14" height="14" rx="3" stroke="currentColor" stroke-width="1.7"/><path d="M7 10h6M10 7v6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
@@ -381,7 +378,7 @@
       </div>
 
       <div class="scard fu" style="display:flex;flex-direction:column;">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/3/3b/American-cockroach.jpg" alt="Cockroach close-up" style="width:100%;height:175px;object-fit:cover;display:block;border-bottom:1px solid var(--b1);">
+        <img class="bugimg" src="https://upload.wikimedia.org/wikipedia/commons/3/3b/American-cockroach.jpg" alt="Cockroach close-up" style="width:100%;height:175px;object-fit:cover;display:block;border-bottom:1px solid var(--b1);">
         <div class="p-8">
           <div class="sicon mb-5">
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style="color:var(--red);"><path d="M10 2C6 2 3 5 3 9c0 2.5 1.2 4.7 3 6l1 3h6l1-3c1.8-1.3 3-3.5 3-6 0-4-3-7-7-7z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>
@@ -392,7 +389,7 @@
       </div>
 
       <div class="scard fu d1" style="display:flex;flex-direction:column;">
-        <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Flea_Scanning_Electron_Micrograph.jpg" alt="Flea close-up" style="width:100%;height:175px;object-fit:cover;display:block;border-bottom:1px solid var(--b1);">
+        <img class="bugimg" src="https://upload.wikimedia.org/wikipedia/commons/2/28/Flea_Scanning_Electron_Micrograph.jpg" alt="Flea close-up" style="width:100%;height:175px;object-fit:cover;display:block;border-bottom:1px solid var(--b1);">
         <div class="p-8">
           <div class="sicon mb-5">
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style="color:var(--red);"><path d="M10 3a7 7 0 100 14A7 7 0 0010 3zm0 0V1m0 18v-2M3 10H1m18 0h-2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
@@ -558,6 +555,25 @@
 </footer>
 
 </div><!-- /page -->
+
+
+<!-- Graceful fallback for any bug photo that fails to load -->
+<script>
+document.querySelectorAll('img.bugimg').forEach(function(im){
+  im.addEventListener('error', function(){
+    if (im.dataset.fb) return; im.dataset.fb = '1';
+    var fb = document.createElement('div');
+    fb.style.cssText = 'display:flex;align-items:center;justify-content:center;width:100%;height:'
+      + (im.style.height || '150px')
+      + ';background:linear-gradient(135deg,#1C1C1C,#0E0E0E);';
+    fb.innerHTML = '<svg width="36" height="36" viewBox="0 0 20 20" fill="none" style="opacity:.5">'
+      + '<circle cx="10" cy="10" r="7" stroke="#D42B2B" stroke-width="1.3"/>'
+      + '<circle cx="10" cy="10" r="2.5" stroke="#D42B2B" stroke-width="1.3"/>'
+      + '<path d="M10 1v3M10 16v3M1 10h3M16 10h3" stroke="#D42B2B" stroke-width="1.3" stroke-linecap="round"/></svg>';
+    im.replaceWith(fb);
+  });
+});
+</script>
 
 
 <!-- THREE.JS: Precision Radar Scene -->
