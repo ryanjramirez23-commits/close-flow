@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Close Flow AI — Live Ops Dashboard</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #080810;
+    --surface: #10101C;
+    --card: #14141F;
+    --border: #1E1E32;
+    --border2: #2A2A42;
+    --green: #00E87A;
+    --green-dim: rgba(0,232,122,0.12);
+    --red: #FF4560;
+    --red-dim: rgba(255,69,96,0.12);
+    --yellow: #FFB300;
+    --yellow-dim: rgba(255,179,0,0.12);
+    --blue: #4F8EF7;
+    --blue-dim: rgba(79,142,247,0.12);
+    --purple: #9D6EF8;
+    --text: #E8EDF5;
+    --text2: #8892AA;
+    --text3: #4A5068;
+    --radius: 12px;
+    --radius-sm: 8px;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    min-height: 100vh;
+  }
+
+  /* TOP BAR */
+  .topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 24px;
+    height: 56px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .topbar-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .logo-text {
+    font-size: 17px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+    color: var(--text);
+  }
+  .logo-text span { color: var(--green); }
+  .live-pill {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--green-dim);
+    border: 1px solid rgba(0,232,122,0.25);
+    border-radius: 999px;
+    padding: 3px 10px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--green);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+  .live-dot {
+    width: 7px;
+    height: 7px;
+    background: var(--green);
+    border-radius: 50%;
+    animation: pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); box-shadow: 0 0 0 0 rgba(0,232,122,0.4); }
+    50% { opacity: 0.85; transform: scale(1.15); box-shadow: 0 0 0 5px rgba(0,232,122,0); }
+  }
+  .topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--text2);
+    font-size: 12px;
+  }
+  #last-update { color: var(--text3); }
+
+  /* TABS */
+  .tabs-bar {
+    display: flex;
+    gap: 2px;
+    padding: 0 24px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    overflow-x: auto;
+  }
+  .tabs-bar::-webkit-scrollbar { display: none; }
+  .tab-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 14px 18px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text2);
+    border-bottom: 2px solid transparent;
+    white-space: nowrap;
+    transition: color 0.15s, border-color 0.15s;
+  }
+  .tab-btn:hover { color: var(--text); }
+  .tab-btn.active { color: var(--green); border-bottom-color: var(--green); }
+
+  /* MAIN */
+  .main { padding: 28px 24px 48px; max-width: 1200px; margin: 0 auto; }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  /* SECTION TITLE */
+  .section-title {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--text3);
+    margin-bottom: 14px;
+  }
+
+  /* METRIC CARDS */
+  .metric-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin-bottom: 36px;
+  }
+  .metric-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px 22px;
+    position: relative;
+    overflow: hidden;
+  }
+  .metric-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+  }
+  .metric-card.green::before { background: linear-gradient(90deg, var(--green), transparent); }
+  .metric-card.blue::before { background: linear-gradient(90deg, var(--blue), transparent); }
+  .metric-card.yellow::before { background: linear-gradient(90deg, var(--yellow), transparent); }
+  .metric-card.purple::before { background: linear-gradient(90deg, var(--purple), transparent); }
+  .metric-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: var(--text2);
+    margin-bottom: 10px;
+  }
+  .metric-value {
+    font-size: 32px;
+    font-weight: 800;
+    letter-spacing: -1px;
+    color: var(--text);
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+  .metric-sub {
+    font-size: 12px;
+    color: var(--text3);
+  }
+  .metric-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 600;
+  }
+  .badge-green { background: var(--green-dim); color: var(--green); }
+  .badge-yellow { background: var(--yellow-dim); color: var(--yellow); }
+  .badge-red { background: var(--red-dim); color: var(--red); }
+  .badge-gray { background: rgba(130,140,170,0.1); color: var(--text2); }
+  .badge-blue { background: var(--blue-dim); color: var(--blue); }
+
+  /* TOOL TABLE */
+  .tool-table-wrap {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+  table { width: 100%; border-collapse: collapse; }
+  thead tr { background: rgba(30,30,50,0.6); }
+  th {
+    text-align: left;
+    padding: 12px 16px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    color: var(--text3);
+    border-bottom: 1px solid var(--border);
+  }
+  td {
+    padding: 13px 16px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text);
+  }
+  tr:last-child td { border-bottom: none; }
+  tbody tr:hover { background: rgba(255,255,255,0.02); }
+  .tool-name { font-weight: 600; font-size: 13px; }
+  .tool-category { color: var(--text2); font-size: 12px; }
+  .tool-desc { color: var(--text2); font-size: 12px; max-width: 320px; }
+
+  /* CLIENTS */
+  .client-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+  .client-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px 22px;
+  }
+  .client-name {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .client-name .dot {
+    width: 8px; height: 8px;
+    background: var(--green);
+    border-radius: 50%;
+    display: inline-block;
+  }
+  .client-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+  }
+  .client-row:last-child { border-bottom: none; }
+  .client-row-label { color: var(--text2); }
+  .client-row-val { font-weight: 600; color: var(--text); }
+  .client-row-val.green { color: var(--green); }
+
+  /* TOTALS BAR */
+  .totals-bar {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 12px;
+    margin-bottom: 32px;
+  }
+  .total-card {
+    background: var(--green-dim);
+    border: 1px solid rgba(0,232,122,0.2);
+    border-radius: var(--radius-sm);
+    padding: 16px 18px;
+  }
+  .total-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--green); font-weight: 600; margin-bottom: 6px; }
+  .total-val { font-size: 24px; font-weight: 800; color: var(--text); }
+
+  /* ADD CLIENT FORM */
+  .form-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+    max-width: 600px;
+  }
+  .form-title { font-size: 15px; font-weight: 700; margin-bottom: 20px; }
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 16px; }
+  .form-group { display: flex; flex-direction: column; gap: 6px; }
+  .form-group.full { grid-column: 1 / -1; }
+  label { font-size: 12px; font-weight: 600; color: var(--text2); letter-spacing: 0.3px; }
+  input[type="text"], input[type="number"] {
+    background: var(--surface);
+    border: 1px solid var(--border2);
+    border-radius: var(--radius-sm);
+    color: var(--text);
+    padding: 10px 12px;
+    font-size: 13px;
+    outline: none;
+    transition: border-color 0.15s;
+    width: 100%;
+  }
+  input:focus { border-color: var(--green); }
+  .btn-primary {
+    background: var(--green);
+    color: #060C10;
+    border: none;
+    border-radius: var(--radius-sm);
+    padding: 10px 22px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: opacity 0.15s;
+  }
+  .btn-primary:hover { opacity: 0.88; }
+  .btn-danger {
+    background: none;
+    border: 1px solid var(--border2);
+    border-radius: var(--radius-sm);
+    color: var(--red);
+    padding: 6px 12px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .btn-danger:hover { background: var(--red-dim); }
+
+  /* WEBSITE IFRAME */
+  .iframe-wrap {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    height: calc(100vh - 160px);
+    min-height: 500px;
+  }
+  .iframe-wrap iframe {
+    width: 100%; height: 100%;
+    border: none;
+    display: block;
+  }
+
+  /* TIPS */
+  .tips-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+  .tips-meta { font-size: 12px; color: var(--text3); }
+  .tip-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 32px; }
+  .tip-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 18px 20px;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+  }
+  .tip-card.critical { border-left: 3px solid var(--red); background: linear-gradient(90deg, rgba(255,69,96,0.05), transparent 60%); }
+  .tip-card.warning { border-left: 3px solid var(--yellow); background: linear-gradient(90deg, rgba(255,179,0,0.05), transparent 60%); }
+  .tip-card.info { border-left: 3px solid var(--blue); background: linear-gradient(90deg, rgba(79,142,247,0.05), transparent 60%); }
+  .tip-card.success { border-left: 3px solid var(--green); background: linear-gradient(90deg, rgba(0,232,122,0.05), transparent 60%); }
+  .tip-icon { font-size: 20px; line-height: 1; flex-shrink: 0; margin-top: 2px; }
+  .tip-body { flex: 1; }
+  .tip-title { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+  .tip-desc { font-size: 12px; color: var(--text2); line-height: 1.5; }
+  .tip-action {
+    margin-top: 8px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+  }
+  .tip-action.red { color: var(--red); }
+  .tip-action.yellow { color: var(--yellow); }
+  .tip-action.blue { color: var(--blue); }
+  .tip-action.green { color: var(--green); }
+
+  .projection-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+  }
+  .projection-title { font-size: 13px; font-weight: 700; margin-bottom: 16px; color: var(--text); }
+  .proj-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+  }
+  .proj-row:last-child { border-bottom: none; }
+  .proj-row-label { color: var(--text2); }
+  .proj-row-val { font-weight: 700; }
+  .proj-row-val.green { color: var(--green); }
+  .proj-row-val.big { font-size: 22px; letter-spacing: -0.5px; }
+
+  /* TOAST */
+  .toast {
+    position: fixed;
+    bottom: 24px; right: 24px;
+    background: var(--card);
+    border: 1px solid var(--green);
+    border-radius: var(--radius-sm);
+    padding: 12px 18px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--green);
+    transform: translateY(80px);
+    opacity: 0;
+    transition: transform 0.25s, opacity 0.25s;
+    z-index: 999;
+  }
+  .toast.show { transform: translateY(0); opacity: 1; }
+
+  /* RESPONSIVE */
+  @media (max-width: 640px) {
+    .main { padding: 16px 12px 48px; }
+    .topbar { padding: 0 12px; }
+    .tabs-bar { padding: 0 12px; }
+    .form-grid { grid-template-columns: 1fr; }
+    .metric-value { font-size: 26px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <div class="topbar-left">
+    <div class="logo-text">Close Flow <span>AI</span></div>
+    <div class="live-pill"><span class="live-dot"></span>Live</div>
+  </div>
+  <div class="topbar-right">
+    Updated <span id="last-update">—</span>
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="tabs-bar">
+  <button class="tab-btn active" onclick="switchTab('overview')">Overview</button>
+  <button class="tab-btn" onclick="switchTab('clients')">Clients</button>
+  <button class="tab-btn" onclick="switchTab('website')">Website</button>
+  <button class="tab-btn" onclick="switchTab('tips')">Optimization Tips</button>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- TAB 1: OVERVIEW -->
+  <div id="tab-overview" class="tab-panel active">
+
+    <div class="section-title">Key Metrics</div>
+    <div class="metric-grid">
+      <div class="metric-card green">
+        <div class="metric-label">Leads Enriched</div>
+        <div class="metric-value" id="m-leads">43</div>
+        <div class="metric-sub"><span class="metric-badge badge-green">Active</span></div>
+      </div>
+      <div class="metric-card blue">
+        <div class="metric-label">Emails Delivered</div>
+        <div class="metric-value"><span id="m-emails-sent">13</span><span style="font-size:18px;color:var(--text3)">/<span id="m-emails-total">24</span></span></div>
+        <div class="metric-sub" id="m-email-rate-label">54.2% delivery rate <span class="metric-badge badge-red">⚠ Low</span></div>
+      </div>
+      <div class="metric-card yellow">
+        <div class="metric-label">Investor Emails Sent</div>
+        <div class="metric-value" id="m-investor">3</div>
+        <div class="metric-sub">Active raise campaign</div>
+      </div>
+      <div class="metric-card purple">
+        <div class="metric-label">Raise Ask</div>
+        <div class="metric-value" id="m-raise">$20K</div>
+        <div class="metric-sub"><span class="metric-badge badge-yellow">In Progress</span></div>
+      </div>
+    </div>
+
+    <div class="section-title">Tool & Stack Tracker</div>
+    <div class="tool-table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Tool</th>
+            <th>Category</th>
+            <th>Status</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody id="tool-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- TAB 2: CLIENTS -->
+  <div id="tab-clients" class="tab-panel">
+
+    <div class="section-title">Active Clients</div>
+    <div class="client-grid" id="client-grid"></div>
+
+    <div class="section-title">Revenue Summary</div>
+    <div class="totals-bar">
+      <div class="total-card">
+        <div class="total-label">Active Clients</div>
+        <div class="total-val" id="total-count">—</div>
+      </div>
+      <div class="total-card">
+        <div class="total-label">Total MRR</div>
+        <div class="total-val" id="total-mrr">—</div>
+      </div>
+      <div class="total-card">
+        <div class="total-label">Total Setup Fees</div>
+        <div class="total-val" id="total-setup">—</div>
+      </div>
+    </div>
+
+    <div class="section-title">Add Client</div>
+    <div class="form-card">
+      <div class="form-title">New Client</div>
+      <div class="form-grid">
+        <div class="form-group full">
+          <label>CLIENT NAME</label>
+          <input type="text" id="f-name" placeholder="e.g. Smith HVAC">
+        </div>
+        <div class="form-group">
+          <label>SETUP FEE ($)</label>
+          <input type="number" id="f-setup" placeholder="0" min="0">
+        </div>
+        <div class="form-group">
+          <label>MONTHLY RETAINER ($/mo)</label>
+          <input type="number" id="f-mrr" placeholder="0" min="0">
+        </div>
+      </div>
+      <button class="btn-primary" onclick="addClient()">+ Add Client</button>
+    </div>
+  </div>
+
+  <!-- TAB 3: WEBSITE -->
+  <div id="tab-website" class="tab-panel">
+    <div class="section-title">Close Flow AI — Live Site</div>
+    <div class="iframe-wrap">
+      <iframe src="https://ryanjramirez23-commits.github.io/close-flow/" title="Close Flow AI Website" loading="lazy"></iframe>
+    </div>
+  </div>
+
+  <!-- TAB 4: TIPS -->
+  <div id="tab-tips" class="tab-panel">
+    <div class="tips-header">
+      <div>
+        <div class="section-title" style="margin-bottom:4px">Live Optimization Tips</div>
+        <div class="tips-meta">Rule engine re-evaluates every 5 seconds against live data</div>
+      </div>
+      <div class="live-pill"><span class="live-dot"></span>Auto-refresh</div>
+    </div>
+
+    <div class="tip-list" id="tips-list"></div>
+
+    <div class="section-title">MRR Projection</div>
+    <div class="projection-card">
+      <div class="projection-title">Revenue Forecast</div>
+      <div id="proj-rows"></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+/* ── DATA STORE ── */
+const STORE_KEY = 'cf_dashboard_v2';
+
+const TOOLS_DEFAULT = [
+  { name: 'Apollo.io',    category: 'Prospecting',  status: 'live',    desc: 'Lead prospecting & contact data enrichment' },
+  { name: 'Clay',         category: 'Enrichment',   status: 'live',    desc: 'Automated enrichment & personalized outreach flows' },
+  { name: 'Website',      category: 'Presence',     status: 'live',    desc: 'Close Flow AI site — deployed on GitHub Pages' },
+  { name: 'GoHighLevel',  category: 'CRM',          status: 'live',    desc: 'Pipeline, follow-ups, and automated sequences' },
+  { name: 'Synthflow',    category: 'AI Voice',     status: 'next',    desc: 'AI inbound/outbound voice calls for lead qualification' },
+  { name: 'Retell AI',    category: 'AI Voice',     status: 'planned', desc: 'Backup AI voice platform for redundancy' },
+  { name: 'Google LSA',   category: 'Paid Ads',     status: 'next',    desc: 'Local Service Ads — highest ROI for SMB lead gen' },
+  { name: 'Meta Ads',     category: 'Paid Ads',     status: 'planned', desc: 'Facebook/Instagram retargeting & awareness campaigns' },
+  { name: 'Canva',        category: 'Creative',     status: 'live',    desc: 'Brand assets, proposal decks, and social content' },
+  { name: 'Zapier',       category: 'Automation',   status: 'planned', desc: 'Connects tools for no-code automation workflows' },
+];
+
+const CLIENTS_DEFAULT = [
+  { id: 1, name: 'Client A', setup: 2000, mrr: 500 },
+  { id: 2, name: 'Client B', setup: 7000, mrr: 2000 },
+  { id: 3, name: 'Client C', setup: 5000, mrr: 1000 },
+];
+
+const METRICS_DEFAULT = {
+  leads: 43,
+  emailsSent: 13,
+  emailsTotal: 24,
+  investorEmails: 3,
+  raiseAsk: 20000,
+};
+
+function loadStore() {
+  try {
+    const raw = localStorage.getItem(STORE_KEY);
+    if (raw) return JSON.parse(raw);
+  } catch(e) {}
+  return null;
+}
+
+function saveStore(data) {
+  try { localStorage.setItem(STORE_KEY, JSON.stringify(data)); } catch(e) {}
+}
+
+function getStore() {
+  let d = loadStore();
+  if (!d) {
+    d = { metrics: METRICS_DEFAULT, tools: TOOLS_DEFAULT, clients: CLIENTS_DEFAULT, nextId: 4 };
+    saveStore(d);
+  }
+  return d;
+}
+
+/* ── TABS ── */
+function switchTab(id) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  const btns = document.querySelectorAll('.tab-btn');
+  const map = { overview: 0, clients: 1, website: 2, tips: 3 };
+  btns[map[id]].classList.add('active');
+}
+
+/* ── RENDER TOOLS ── */
+function renderTools() {
+  const d = getStore();
+  const tbody = document.getElementById('tool-tbody');
+  const statusBadge = s => {
+    if (s === 'live')    return '<span class="metric-badge badge-green">● Live</span>';
+    if (s === 'next')    return '<span class="metric-badge badge-yellow">◎ Next</span>';
+    if (s === 'planned') return '<span class="metric-badge badge-gray">○ Planned</span>';
+    return s;
+  };
+  tbody.innerHTML = d.tools.map(t => `
+    <tr>
+      <td><div class="tool-name">${t.name}</div></td>
+      <td><div class="tool-category">${t.category}</div></td>
+      <td>${statusBadge(t.status)}</td>
+      <td><div class="tool-desc">${t.desc}</div></td>
+    </tr>
+  `).join('');
+}
+
+/* ── RENDER METRICS ── */
+function renderMetrics() {
+  const d = getStore();
+  const m = d.metrics;
+  document.getElementById('m-leads').textContent = m.leads;
+  document.getElementById('m-emails-sent').textContent = m.emailsSent;
+  document.getElementById('m-emails-total').textContent = m.emailsTotal;
+  document.getElementById('m-investor').textContent = m.investorEmails;
+  document.getElementById('m-raise').textContent = '$' + (m.raiseAsk/1000).toFixed(0) + 'K';
+
+  const rate = m.emailsTotal > 0 ? (m.emailsSent / m.emailsTotal * 100).toFixed(1) : 0;
+  const rateBadge = rate < 70
+    ? `<span class="metric-badge badge-red">⚠ Low</span>`
+    : `<span class="metric-badge badge-green">✓ Good</span>`;
+  document.getElementById('m-email-rate-label').innerHTML = `${rate}% delivery rate ${rateBadge}`;
+}
+
+/* ── RENDER CLIENTS ── */
+function renderClients() {
+  const d = getStore();
+  const grid = document.getElementById('client-grid');
+  const fmt = n => '$' + Number(n).toLocaleString();
+
+  grid.innerHTML = d.clients.map(c => `
+    <div class="client-card">
+      <div class="client-name">
+        <span class="dot"></span>${c.name}
+        <button class="btn-danger" style="margin-left:auto;font-size:11px;padding:4px 9px" onclick="removeClient(${c.id})">Remove</button>
+      </div>
+      <div class="client-row">
+        <span class="client-row-label">Setup Fee</span>
+        <span class="client-row-val">${fmt(c.setup)}</span>
+      </div>
+      <div class="client-row">
+        <span class="client-row-label">Monthly Retainer</span>
+        <span class="client-row-val green">${fmt(c.mrr)}/mo</span>
+      </div>
+    </div>
+  `).join('');
+
+  const totalMrr  = d.clients.reduce((s, c) => s + Number(c.mrr), 0);
+  const totalSetup = d.clients.reduce((s, c) => s + Number(c.setup), 0);
+  document.getElementById('total-count').textContent = d.clients.length;
+  document.getElementById('total-mrr').textContent   = '$' + totalMrr.toLocaleString() + '/mo';
+  document.getElementById('total-setup').textContent  = '$' + totalSetup.toLocaleString();
+}
+
+/* ── ADD / REMOVE CLIENT ── */
+function addClient() {
+  const name  = document.getElementById('f-name').value.trim();
+  const setup = parseInt(document.getElementById('f-setup').value) || 0;
+  const mrr   = parseInt(document.getElementById('f-mrr').value) || 0;
+  if (!name) { showToast('Enter a client name.'); return; }
+  const d = getStore();
+  d.clients.push({ id: d.nextId++, name, setup, mrr });
+  saveStore(d);
+  document.getElementById('f-name').value  = '';
+  document.getElementById('f-setup').value = '';
+  document.getElementById('f-mrr').value   = '';
+  renderClients();
+  renderTips();
+  showToast('Client added!');
+}
+
+function removeClient(id) {
+  const d = getStore();
+  d.clients = d.clients.filter(c => c.id !== id);
+  saveStore(d);
+  renderClients();
+  renderTips();
+  showToast('Client removed.');
+}
+
+/* ── RENDER TIPS (RULE ENGINE) ── */
+function renderTips() {
+  const d = getStore();
+  const m = d.metrics;
+  const tips = [];
+
+  // Rule 1: Email delivery rate
+  const rate = m.emailsTotal > 0 ? m.emailsSent / m.emailsTotal : 0;
+  if (rate < 0.70) {
+    tips.push({
+      type: 'critical',
+      icon: '🚨',
+      title: `Email Delivery Rate is ${(rate*100).toFixed(1)}% — Below 70% Threshold`,
+      desc: `Only ${m.emailsSent} of ${m.emailsTotal} emails were delivered. This indicates a domain reputation or authentication issue.`,
+      action: 'ACTION REQUIRED: Audit SPF, DKIM, and DMARC records. Warm up your sending domain before scaling.',
+      actionClass: 'red',
+    });
+  } else {
+    tips.push({
+      type: 'success',
+      icon: '✅',
+      title: `Email Delivery Rate is ${(rate*100).toFixed(1)}% — Healthy`,
+      desc: 'Your email deliverability looks solid. Keep monitoring as you scale volume.',
+      action: null,
+    });
+  }
+
+  // Rule 2: Synthflow status
+  const synthflow = d.tools.find(t => t.name === 'Synthflow');
+  if (synthflow && synthflow.status !== 'live') {
+    tips.push({
+      type: 'warning',
+      icon: '📞',
+      title: 'Synthflow AI Voice is Not Yet Live — Top Priority',
+      desc: 'AI voice calling is your highest-leverage undeployed tool. It automates lead qualification and follow-up, freeing you to close.',
+      action: `PRIORITY: Activate Synthflow next — currently marked "${synthflow.status}".`,
+      actionClass: 'yellow',
+    });
+  }
+
+  // Rule 3: Zapier status
+  const zapier = d.tools.find(t => t.name === 'Zapier');
+  if (zapier && zapier.status === 'planned') {
+    tips.push({
+      type: 'warning',
+      icon: '⚙️',
+      title: 'Zapier Not Deployed — Manual Replies Are Costing Time',
+      desc: 'Without Zapier, you\'re handling cross-tool triggers manually. Every hour saved on ops is an hour you can spend on growth.',
+      action: 'RECOMMENDATION: Connect GHL → Apollo → Zapier before scaling outreach beyond 100 leads/week.',
+      actionClass: 'yellow',
+    });
+  }
+
+  // Rule 4: Paid ads
+  const livePaidAds = d.tools.filter(t => t.category === 'Paid Ads' && t.status === 'live');
+  if (livePaidAds.length === 0) {
+    tips.push({
+      type: 'info',
+      icon: '📣',
+      title: 'No Paid Ads Live — Start with Google LSA for Best ROI',
+      desc: 'Google Local Service Ads deliver the highest ROI for SMB clients in your niche. They\'re pay-per-lead and show up at the top of search.',
+      action: 'NEXT STEP: Launch Google LSA before Meta Ads — lower CPA and faster conversion for local services.',
+      actionClass: 'blue',
+    });
+  }
+
+  // Rule 5: Client MRR upsell
+  const clients = d.clients;
+  if (clients.length > 0) {
+    const totalMrr = clients.reduce((s, c) => s + Number(c.mrr), 0);
+    const avgMrr   = totalMrr / clients.length;
+    const lowClients = clients.filter(c => Number(c.mrr) < avgMrr * 0.6);
+    if (lowClients.length > 0) {
+      const names = lowClients.map(c => c.name).join(', ');
+      tips.push({
+        type: 'info',
+        icon: '📈',
+        title: `Upsell Opportunity: ${names}`,
+        desc: `${names} ${lowClients.length === 1 ? 'is' : 'are'} paying significantly below your avg retainer of $${avgMrr.toLocaleString()}/mo. They may be ready for an expanded service scope.`,
+        action: 'OPPORTUNITY: Present a performance review + upsell proposal to increase retainer.',
+        actionClass: 'blue',
+      });
+    }
+  }
+
+  // Build HTML
+  const list = document.getElementById('tips-list');
+  list.innerHTML = tips.map(t => `
+    <div class="tip-card ${t.type}">
+      <div class="tip-icon">${t.icon}</div>
+      <div class="tip-body">
+        <div class="tip-title">${t.title}</div>
+        <div class="tip-desc">${t.desc}</div>
+        ${t.action ? `<div class="tip-action ${t.actionClass}">${t.action}</div>` : ''}
+      </div>
+    </div>
+  `).join('');
+
+  // Projection
+  const totalMrr = d.clients.reduce((s, c) => s + Number(c.mrr), 0);
+  const avgRetainer = d.clients.length > 0 ? totalMrr / d.clients.length : 0;
+  const proj1 = totalMrr + avgRetainer;
+  const projRows = document.getElementById('proj-rows');
+  projRows.innerHTML = `
+    <div class="proj-row">
+      <span class="proj-row-label">Current MRR</span>
+      <span class="proj-row-val">$${totalMrr.toLocaleString()}<span style="font-size:13px;color:var(--text3)">/mo</span></span>
+    </div>
+    <div class="proj-row">
+      <span class="proj-row-label">Avg Retainer per Client</span>
+      <span class="proj-row-val">$${Math.round(avgRetainer).toLocaleString()}<span style="font-size:13px;color:var(--text3)">/mo</span></span>
+    </div>
+    <div class="proj-row">
+      <span class="proj-row-label">+1 Avg Client Projection</span>
+      <span class="proj-row-val green big">$${Math.round(proj1).toLocaleString()}<span style="font-size:13px;color:var(--text3)">/mo</span></span>
+    </div>
+    <div class="proj-row">
+      <span class="proj-row-label">Annual Run Rate (current)</span>
+      <span class="proj-row-val">$${(totalMrr*12).toLocaleString()}<span style="font-size:13px;color:var(--text3)">/yr</span></span>
+    </div>
+    <div class="proj-row">
+      <span class="proj-row-label">Annual Run Rate (+1 client)</span>
+      <span class="proj-row-val green">$${(Math.round(proj1)*12).toLocaleString()}<span style="font-size:13px;color:var(--text3)">/yr</span></span>
+    </div>
+  `;
+}
+
+/* ── TOAST ── */
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+/* ── CLOCK ── */
+function updateClock() {
+  const now = new Date();
+  document.getElementById('last-update').textContent =
+    now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+}
+
+/* ── INIT & POLL ── */
+function fullRender() {
+  renderMetrics();
+  renderTools();
+  renderClients();
+  renderTips();
+  updateClock();
+}
+
+fullRender();
+setInterval(fullRender, 5000);
+</script>
+</body>
+</html>
