@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Precision Pest Control — Rockport, TX | Veteran-Owned</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            display: ['"Plus Jakarta Sans"', 'sans-serif'],
+            sans: ['Inter', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --red:      #D42B2B;
+      --red-2:    #B01F1F;
+      --red-dim:  rgba(212,43,43,0.08);
+      --red-glow: rgba(212,43,43,0.25);
+      --bg:       #080808;
+      --s1:       #0E0E0E;
+      --s2:       #141414;
+      --s3:       #1C1C1C;
+      --b1:       #222222;
+      --b2:       #2E2E2E;
+      --t1:       #F9F9F9;
+      --t2:       #A0A0A0;
+      --t3:       #686868;
+      --t4:       #444444;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { background: var(--bg); scroll-behavior: smooth; }
+    body { background: var(--bg); color: var(--t1); font-family: 'Inter', sans-serif; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+
+    #scene-canvas { position: fixed; inset: 0; z-index: 0; width: 100%; height: 100%; }
+    #page { position: relative; z-index: 10; }
+
+    .t-display { font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 900; letter-spacing: -0.05em; line-height: 1.02; }
+    .t-h2 { font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 800; letter-spacing: -0.04em; line-height: 1.08; }
+    .t-h3 { font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 700; letter-spacing: -0.025em; line-height: 1.3; }
+    .eyebrow { font-size: 0.67rem; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--red); }
+
+    .grad { background: linear-gradient(130deg, var(--red) 0%, #FF7B7B 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+
+    #nav { position: fixed; top: 0; left: 0; right: 0; z-index: 200; background: rgba(8,8,8,0.82); backdrop-filter: blur(24px); border-bottom: 1px solid rgba(255,255,255,0.04); transition: border-color .25s, box-shadow .25s; }
+    #nav.scrolled { border-bottom-color: var(--b1); box-shadow: 0 1px 40px rgba(0,0,0,0.7); }
+    @media(max-width:640px){ .nav-links{display:none;} }
+
+    .btn { display:inline-flex; align-items:center; gap:6px; font-weight:700; border-radius:9px; text-decoration:none; cursor:pointer; transition:all .22s; position:relative; overflow:hidden; }
+    .btn-primary { background: var(--red); color: #F9F9F9; padding: 13px 26px; font-size: 0.925rem; }
+    .btn-primary::after { content:''; position:absolute; inset:0; background:linear-gradient(105deg,transparent 40%,rgba(255,255,255,0.18) 50%,transparent 60%); transform:translateX(-100%); transition:transform .5s ease; }
+    .btn-primary:hover::after { transform:translateX(100%); }
+    .btn-primary:hover { background: #E83535; transform: translateY(-2px); box-shadow: 0 12px 40px rgba(212,43,43,0.45); }
+    .btn-ghost { color: var(--t3); border: 1px solid var(--b2); padding: 12px 22px; font-size: .875rem; }
+    .btn-ghost:hover { border-color: var(--t4); color: var(--t2); }
+    .btn-lg { padding: 16px 36px; font-size: 1rem; }
+    .btn-outline-red { border: 1px solid rgba(212,43,43,0.35); color: var(--red); padding: 12px 22px; font-size: .875rem; border-radius: 9px; display:inline-flex; align-items:center; gap:6px; font-weight:600; text-decoration:none; transition:all .2s; }
+    .btn-outline-red:hover { background: var(--red-dim); border-color: var(--red); }
+
+    #hero { min-height: 100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding: 7rem 1.5rem 4rem; }
+
+    .badge { display:inline-flex; align-items:center; gap:10px; background:linear-gradient(135deg,rgba(212,43,43,0.12),rgba(212,43,43,0.04)); border:1px solid rgba(212,43,43,0.3); border-radius:100px; padding:8px 20px; font-size:.76rem; font-weight:600; letter-spacing:.05em; color:rgba(255,160,160,0.9); }
+    .pulse { width:6px; height:6px; border-radius:50%; background:var(--red); animation:pulse 2.2s ease-in-out infinite; }
+    @keyframes pulse { 0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(212,43,43,0.5);} 50%{opacity:.6;box-shadow:0 0 0 5px rgba(212,43,43,0);} }
+
+    .frost { background: rgba(8,8,8,0.88); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-top: 1px solid rgba(255,255,255,0.03); border-bottom: 1px solid rgba(255,255,255,0.03); }
+
+    .card { background: rgba(14,14,14,0.9); border: 1px solid var(--b1); border-radius: 14px; backdrop-filter: blur(12px); transition: border-color .25s, transform .25s, box-shadow .25s; }
+    .card:hover { border-color: rgba(212,43,43,0.3); transform:translateY(-3px); box-shadow:0 20px 60px rgba(0,0,0,0.5),0 0 0 1px rgba(212,43,43,0.08); }
+
+    .scard { background: rgba(14,14,14,0.9); border: 1px solid var(--b1); border-radius: 14px; position:relative; overflow:hidden; backdrop-filter:blur(12px); transition:transform .25s,border-color .25s; }
+    .scard::before { content:''; position:absolute; top:0;left:0;bottom:0; width:3px; background:linear-gradient(to bottom,var(--red),var(--red-2)); opacity:0; transition:opacity .25s; }
+    .scard:hover { transform:translateY(-3px); border-color:var(--b2); }
+    .scard:hover::before { opacity:1; }
+
+    .wcard { background: rgba(14,14,14,0.9); border: 1px solid var(--b1); border-radius: 14px; position:relative; overflow:hidden; backdrop-filter:blur(12px); transition:transform .25s,border-color .25s; }
+    .wcard::after { content:''; position:absolute; top:-50px;left:-50px; width:160px;height:160px; background:radial-gradient(circle,rgba(212,43,43,0.07),transparent 70%); opacity:0; pointer-events:none; transition:opacity .4s; }
+    .wcard:hover { transform:translateY(-3px); border-color:rgba(212,43,43,0.2); }
+    .wcard:hover::after { opacity:1; }
+
+    .sicon { width:44px;height:44px;border-radius:11px;flex-shrink:0; background:var(--red-dim); border:1px solid rgba(212,43,43,0.2); display:flex;align-items:center;justify-content:center; }
+
+    .stat-num { font-family:'Plus Jakarta Sans',sans-serif; font-size:2.2rem; font-weight:900; letter-spacing:-0.04em; background:linear-gradient(130deg,var(--red),#FF8080); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+
+    .check-list li { display:flex; align-items:flex-start; gap:.75rem; font-size:.9rem; line-height:1.7; color:var(--t2); margin-bottom:.65rem; }
+    .check-list li::before { content:''; width:18px;height:18px; border-radius:50%; background:var(--red-dim); border:1px solid rgba(212,43,43,0.3); flex-shrink:0; margin-top:2px; background-image:url("data:image/svg+xml,%3Csvg width='10' height='8' viewBox='0 0 10 8' fill='none'%3E%3Cpath d='M1 4l3 3 5-6' stroke='%23D42B2B' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:center; }
+
+    .clabel { font-size:.63rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--t4);margin-bottom:4px; }
+    .hr { height:1px; background:linear-gradient(90deg,transparent,var(--b2) 30%,var(--b2) 70%,transparent); }
+
+    .fu { opacity:0; transform:translateY(28px); transition:opacity .65s ease,transform .65s ease; }
+    .fu.in { opacity:1; transform:none; }
+    .d1{transition-delay:.08s} .d2{transition-delay:.16s} .d3{transition-delay:.24s} .d4{transition-delay:.32s}
+    .ha1{animation:hIn .8s ease both} .ha2{animation:hIn .8s ease .12s both} .ha3{animation:hIn .8s ease .24s both} .ha4{animation:hIn .8s ease .38s both}
+    @keyframes hIn { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:none} }
+
+    #drag-hint { position:fixed; bottom:2rem;left:50%; transform:translateX(-50%); z-index:20; font-size:.68rem;letter-spacing:.14em;text-transform:uppercase; color:rgba(212,43,43,0.3); pointer-events:none; transition:opacity .5s; }
+    #drag-hint.hide { opacity:0; }
+
+    .area-tag { display:inline-flex;align-items:center;gap:.5rem; background:var(--s1); border:1px solid var(--b1); border-radius:8px; padding:.5rem 1.1rem; font-size:.84rem;font-weight:600;color:var(--t2); transition:all .2s; }
+    .area-tag:hover { border-color:rgba(212,43,43,0.3); color:var(--t1); }
+  </style>
+</head>
+<body>
+
+<canvas id="scene-canvas"></canvas>
+<div id="drag-hint">drag to rotate · scroll to explore</div>
+
+<div id="page">
+
+<!-- NAV -->
+<nav id="nav">
+  <div class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between gap-8">
+    <a href="#" style="text-decoration:none;display:flex;align-items:center;gap:10px;flex-shrink:0;">
+      <div style="width:32px;height:32px;background:var(--red);border-radius:7px;display:flex;align-items:center;justify-content:center;">
+        <svg width="17" height="17" viewBox="0 0 20 20" fill="none">
+          <circle cx="10" cy="10" r="7" stroke="#F9F9F9" stroke-width="1.8"/>
+          <circle cx="10" cy="10" r="3" stroke="#F9F9F9" stroke-width="1.8"/>
+          <path d="M10 3V1M10 19v-2M3 10H1M19 10h-2" stroke="#F9F9F9" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <span style="font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:1.05rem;letter-spacing:-.03em;color:var(--t1);">Precision <span style="color:var(--red);">Pest</span></span>
+    </a>
+    <div class="nav-links flex items-center gap-7">
+      <a href="#services" style="font-size:.875rem;font-weight:500;color:var(--t3);text-decoration:none;transition:color .2s;" onmouseover="this.style.color='var(--t1)'" onmouseout="this.style.color='var(--t3)'">Services</a>
+      <a href="#why" style="font-size:.875rem;font-weight:500;color:var(--t3);text-decoration:none;transition:color .2s;" onmouseover="this.style.color='var(--t1)'" onmouseout="this.style.color='var(--t3)'">Why Us</a>
+      <a href="#areas" style="font-size:.875rem;font-weight:500;color:var(--t3);text-decoration:none;transition:color .2s;" onmouseover="this.style.color='var(--t1)'" onmouseout="this.style.color='var(--t3)'">Service Areas</a>
+    </div>
+    <a href="tel:3617297722" class="btn btn-primary shrink-0" style="padding:10px 20px;font-size:.85rem;">
+      <svg width="14" height="14" viewBox="0 0 20 20" fill="none"><path d="M6.5 3.5c.5 1.5 1 2.5 1.5 3L6 8c1 2 3.5 4.5 5.5 5.5l1.5-2c.5.5 1.5 1 3 1.5 0 2.5-1.5 4-4 3C8 15 5 12 3.5 8.5c-1-2.5.5-5 3-5z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      (361) 729-7722
+    </a>
+  </div>
+</nav>
+
+
+<!-- HERO -->
+<section id="hero">
+  <div class="max-w-4xl mx-auto">
+    <div class="badge ha1 mb-6 mx-auto" style="width:fit-content;">
+      <span class="pulse"></span>
+      Veteran-Owned &amp; Operated · Rockport, TX Since 2014
+    </div>
+
+    <h1 class="t-display ha2 text-white mb-3" style="font-size:clamp(2.8rem,7vw,5.8rem);">
+      Pests Don't Stand
+    </h1>
+    <h1 class="t-display ha3 mb-8" style="font-size:clamp(2.8rem,7vw,5.8rem);">
+      a <span class="grad">Chance.</span>
+    </h1>
+
+    <p class="ha4 mx-auto mb-10" style="font-size:1.1rem;line-height:1.85;max-width:520px;color:var(--t3);">
+      Precision Pest Control delivers complete pest elimination for homes and businesses across the Coastal Bend — state-of-the-art technology, pet-safe treatments, and the precision only veterans bring.
+    </p>
+
+    <div class="ha4 flex flex-col sm:flex-row items-center justify-center gap-3">
+      <a href="tel:3617297722" class="btn btn-primary btn-lg">
+        <svg width="16" height="16" viewBox="0 0 20 20" fill="none"><path d="M6.5 3.5c.5 1.5 1 2.5 1.5 3L6 8c1 2 3.5 4.5 5.5 5.5l1.5-2c.5.5 1.5 1 3 1.5 0 2.5-1.5 4-4 3C8 15 5 12 3.5 8.5c-1-2.5.5-5 3-5z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Call Now — Free Inspection
+      </a>
+      <a href="#services" class="btn btn-ghost">See what we handle</a>
+    </div>
+
+    <div class="ha4 mt-14">
+      <p style="font-size:.65rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--t4);margin-bottom:1rem;">Trusted across the Coastal Bend</p>
+      <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:1.25rem 2rem;">
+        <span style="font-weight:600;color:var(--t3);font-size:.9rem;">Rockport</span>
+        <span style="width:3px;height:3px;border-radius:50%;background:var(--red);opacity:.4;flex-shrink:0;"></span>
+        <span style="font-weight:600;color:var(--t3);font-size:.9rem;">Corpus Christi</span>
+        <span style="width:3px;height:3px;border-radius:50%;background:var(--red);opacity:.4;flex-shrink:0;"></span>
+        <span style="font-weight:600;color:var(--t3);font-size:.9rem;">Aransas Pass</span>
+        <span style="width:3px;height:3px;border-radius:50%;background:var(--red);opacity:.4;flex-shrink:0;"></span>
+        <span style="font-weight:600;color:var(--t3);font-size:.9rem;">Port Aransas</span>
+        <span style="width:3px;height:3px;border-radius:50%;background:var(--red);opacity:.4;flex-shrink:0;"></span>
+        <span style="font-weight:600;color:var(--t3);font-size:.9rem;">Portland</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- STATS -->
+<div class="frost py-1">
+  <div class="max-w-3xl mx-auto px-6">
+    <div class="fu" style="display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--b1);border-radius:14px;overflow:hidden;margin:2.5rem 0;">
+      <div style="background:var(--s1);padding:2rem 1.5rem;text-align:center;">
+        <div class="stat-num">2014</div>
+        <p style="font-size:.78rem;color:var(--t4);margin-top:5px;letter-spacing:.03em;">Serving Texas Since</p>
+      </div>
+      <div style="background:var(--s1);padding:2rem 1.5rem;text-align:center;">
+        <div class="stat-num">100%</div>
+        <p style="font-size:.78rem;color:var(--t4);margin-top:5px;letter-spacing:.03em;">Pet &amp; Family Safe</p>
+      </div>
+      <div style="background:var(--s1);padding:2rem 1.5rem;text-align:center;">
+        <div class="stat-num">5+</div>
+        <p style="font-size:.78rem;color:var(--t4);margin-top:5px;letter-spacing:.03em;">Cities Covered</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- SERVICES -->
+<section id="services" class="frost px-6 py-28">
+  <div class="max-w-5xl mx-auto">
+    <div class="text-center mb-16 fu">
+      <p class="eyebrow mb-4">Services</p>
+      <h2 class="t-h2 text-white mb-5" style="font-size:clamp(1.9rem,4vw,3.2rem);">Complete Pest Elimination.<br class="hidden md:block">For Every Threat.</h2>
+      <p style="font-size:.95rem;line-height:1.8;max-width:460px;margin:0 auto;color:var(--t3);">From termites to mosquitoes, we handle every pest threatening your home, business, or peace of mind.</p>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+      <div class="scard p-8 fu">
+        <div class="sicon mb-5">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style="color:var(--red);"><path d="M10 2l6 3v5c0 3.5-2.5 6.7-6 8-3.5-1.3-6-4.5-6-8V5l6-3z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>
+        </div>
+        <h3 class="t-h3 text-white mb-3">Termite Control</h3>
+        <p style="font-size:.9rem;line-height:1.8;color:var(--t3);">Free termite inspection using Termatrac technology — we pinpoint infestations without tearing into your walls. Then we eliminate them completely.</p>
+      </div>
+
+      <div class="scard p-8 fu d1">
+        <div class="sicon mb-5">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style="color:var(--red);"><circle cx="10" cy="10" r="7" stroke="currentColor" stroke-width="1.7"/><path d="M10 3v3M10 14v3M3 10h3M14 10h3" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+        </div>
+        <h3 class="t-h3 text-white mb-3">Mosquito Control</h3>
+        <p style="font-size:.9rem;line-height:1.8;color:var(--t3);">Reclaim your yard. We treat the areas where mosquitoes breed and rest — giving you back your outdoor space all season long.</p>
+      </div>
+
+      <div class="scard p-8 fu d2">
+        <div class="sicon mb-5">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style="color:var(--red);"><path d="M5 17l3-5m5 5l-3-5m-2 0h4m-2-8a3 3 0 100-6 3 3 0 000 6zm0 0v3" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <h3 class="t-h3 text-white mb-3">Rodent &amp; Wildlife Removal</h3>
+        <p style="font-size:.9rem;line-height:1.8;color:var(--t3);">Safe, humane removal and exclusion work to make sure they don't come back. We seal entry points and protect your property long-term.</p>
+      </div>
+
+      <div class="scard p-8 fu d3">
+        <div class="sicon mb-5">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style="color:var(--red);"><rect x="3" y="3" width="14" height="14" rx="3" stroke="currentColor" stroke-width="1.7"/><path d="M7 10h6M10 7v6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+        </div>
+        <h3 class="t-h3 text-white mb-3">Bed Bug Treatment</h3>
+        <p style="font-size:.9rem;line-height:1.8;color:var(--t3);">Complete bed bug elimination using proven treatment methods. We don't stop until every last one is gone and you're sleeping soundly again.</p>
+      </div>
+
+      <div class="scard p-8 fu">
+        <div class="sicon mb-5">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style="color:var(--red);"><path d="M10 2C6 2 3 5 3 9c0 2.5 1.2 4.7 3 6l1 3h6l1-3c1.8-1.3 3-3.5 3-6 0-4-3-7-7-7z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>
+        </div>
+        <h3 class="t-h3 text-white mb-3">Roaches &amp; Ants</h3>
+        <p style="font-size:.9rem;line-height:1.8;color:var(--t3);">Interior and exterior treatment that hits the colony — not just what you can see. We stop infestations at the source.</p>
+      </div>
+
+      <div class="scard p-8 fu d1">
+        <div class="sicon mb-5">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style="color:var(--red);"><path d="M10 3a7 7 0 100 14A7 7 0 0010 3zm0 0V1m0 18v-2M3 10H1m18 0h-2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+        </div>
+        <h3 class="t-h3 text-white mb-3">Fleas, Ticks &amp; Bees</h3>
+        <p style="font-size:.9rem;line-height:1.8;color:var(--t3);">Pet-safe flea and tick treatments, plus safe bee and wasp removal. Protect your family and animals without harsh chemicals.</p>
+      </div>
+
+      <div class="scard p-8 fu d2" style="grid-column: 1 / -1;">
+        <div style="display:flex;flex-wrap:wrap;gap:2rem;align-items:flex-start;">
+          <div style="flex:1;min-width:220px;">
+            <div class="sicon mb-5">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style="color:var(--red);"><rect x="2" y="6" width="16" height="12" rx="2" stroke="currentColor" stroke-width="1.7"/><path d="M6 6V4a4 4 0 018 0v2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+            </div>
+            <h3 class="t-h3 text-white mb-3">Commercial Pest Control</h3>
+            <p style="font-size:.9rem;line-height:1.8;color:var(--t3);">Restaurants, warehouses, offices, retail — we keep your business compliant, clean, and pest-free. Discretely. Reliably. Every time.</p>
+          </div>
+          <ul class="check-list" style="list-style:none;flex:1;min-width:200px;margin-top:4px;">
+            <li>Restaurants &amp; food service</li>
+            <li>Warehouses &amp; storage facilities</li>
+            <li>Office buildings</li>
+            <li>Retail &amp; hospitality</li>
+            <li>Scheduled maintenance plans</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<div class="hr"></div>
+
+
+<!-- WHY PRECISION -->
+<section id="why" class="frost px-6 py-28">
+  <div class="max-w-5xl mx-auto">
+    <div class="text-center mb-16 fu">
+      <p class="eyebrow mb-4">Why Precision</p>
+      <h2 class="t-h2 text-white mb-5" style="font-size:clamp(1.9rem,4vw,3.2rem);">The Standard Isn't<br class="hidden md:block">Good Enough. Precision Is.</h2>
+      <p style="font-size:.925rem;line-height:1.8;max-width:440px;margin:0 auto;color:var(--t3);">Veteran-owned and operated since 2014. We apply the same discipline and precision we learned in service to protecting your home and business.</p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+      <div class="wcard p-8 fu">
+        <div class="sicon mb-6">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style="color:var(--red);"><path d="M10 2l2.4 5.4 5.6.8-4 4 .9 5.8L10 15.4l-4.9 2.6.9-5.8-4-4 5.6-.8L10 2z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>
+        </div>
+        <h3 class="t-h3 text-white mb-3">Veteran-Owned Since 2014</h3>
+        <p style="font-size:.875rem;line-height:1.8;color:var(--t3);">Founded by the Stewart family — veterans who built this company on discipline, integrity, and doing the job right the first time. That standard hasn't changed.</p>
+      </div>
+      <div class="wcard p-8 fu d1">
+        <div class="sicon mb-6">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style="color:var(--red);"><path d="M10 2l6 3v5c0 3.5-2.5 6.7-6 8-3.5-1.3-6-4.5-6-8V5l6-3z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M7 10l2 2 4-4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <h3 class="t-h3 text-white mb-3">Pet &amp; Family Safe</h3>
+        <p style="font-size:.875rem;line-height:1.8;color:var(--t3);">Every product we use is carefully selected to be safe for your children and pets. Effective pest elimination doesn't have to put your family at risk.</p>
+      </div>
+      <div class="wcard p-8 fu d2">
+        <div class="sicon mb-6">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style="color:var(--red);"><circle cx="10" cy="10" r="7" stroke="currentColor" stroke-width="1.7"/><circle cx="10" cy="10" r="2.5" stroke="currentColor" stroke-width="1.7"/><path d="M10 3V1M10 19v-2M3 10H1M19 10h-2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+        </div>
+        <h3 class="t-h3 text-white mb-3">Termatrac Technology</h3>
+        <p style="font-size:.875rem;line-height:1.8;color:var(--t3);">We use Termatrac to detect termite activity without tearing into your walls. Find it first. Eliminate it completely. No guesswork, no unnecessary damage.</p>
+      </div>
+      <div class="wcard p-8 fu d3">
+        <div class="sicon mb-6">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style="color:var(--red);"><path d="M3 10h14M10 3l7 7-7 7" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <h3 class="t-h3 text-white mb-3">Free Termite Inspection</h3>
+        <p style="font-size:.875rem;line-height:1.8;color:var(--t3);">Not sure if you have termites? We'll come out and inspect at no charge. Catch it early and you save thousands. That's not a sales tactic — it's how we operate.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="hr"></div>
+
+
+<!-- SERVICE AREAS -->
+<section id="areas" class="frost px-6 py-28">
+  <div class="max-w-4xl mx-auto text-center">
+    <div class="fu">
+      <p class="eyebrow mb-4">Service Areas</p>
+      <h2 class="t-h2 text-white mb-5" style="font-size:clamp(1.9rem,4vw,3.2rem);">Covering the Entire<br class="hidden md:block">Coastal Bend, TX</h2>
+      <p style="font-size:.925rem;line-height:1.8;max-width:420px;margin:0 auto 2.5rem;color:var(--t3);">Based in Rockport, we serve homes and businesses across South Texas. If you're on the Coastal Bend, we've got you covered.</p>
+    </div>
+    <div class="fu flex flex-wrap justify-center gap-3 mb-10">
+      <div class="area-tag"><span style="color:var(--red);">●</span> Rockport</div>
+      <div class="area-tag"><span style="color:var(--red);">●</span> Corpus Christi</div>
+      <div class="area-tag"><span style="color:var(--red);">●</span> Aransas Pass</div>
+      <div class="area-tag"><span style="color:var(--red);">●</span> Port Aransas</div>
+      <div class="area-tag"><span style="color:var(--red);">●</span> Portland</div>
+      <div class="area-tag"><span style="color:var(--red);">●</span> Surrounding Areas</div>
+    </div>
+    <div class="fu" style="background:var(--s1);border:1px solid var(--b1);border-radius:14px;padding:1.5rem 2rem;display:inline-flex;align-items:center;gap:1.5rem;flex-wrap:wrap;justify-content:center;">
+      <svg width="18" height="18" viewBox="0 0 20 20" fill="none" style="color:var(--red);flex-shrink:0;"><path d="M10 2C7.2 2 5 4.2 5 7c0 4 5 11 5 11s5-7 5-11c0-2.8-2.2-5-5-5zm0 6.5a1.5 1.5 0 110-3 1.5 1.5 0 010 3z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>
+      <span style="font-size:.875rem;color:var(--t2);">1821 Broadway St, Rockport, TX 78382 &nbsp;·&nbsp; Mon–Fri 8:00 AM – 5:00 PM</span>
+    </div>
+  </div>
+</section>
+
+<div class="hr"></div>
+
+
+<!-- FINAL CTA -->
+<section id="book" class="frost px-6 py-32" style="background:radial-gradient(ellipse 70% 45% at 50% 100%,rgba(212,43,43,0.05) 0%,transparent 65%);">
+  <div class="max-w-xl mx-auto text-center fu">
+    <p class="eyebrow mb-5">Get Started Today</p>
+    <h2 class="t-display text-white mb-6" style="font-size:clamp(2.4rem,5.5vw,4.4rem);">One Call.<br><span class="grad">We Handle the Rest.</span></h2>
+    <p style="font-size:.975rem;line-height:1.8;max-width:380px;margin:0 auto 3rem;color:var(--t3);">Free inspection, honest quote, fast scheduling. No pressure — just results.</p>
+
+    <div class="card p-8 text-left mb-6">
+      <p style="font-size:.875rem;line-height:1.65;margin-bottom:1.75rem;color:var(--t3);">Reach us directly:</p>
+      <div style="display:flex;flex-direction:column;gap:1.25rem;">
+        <div>
+          <p class="clabel">Phone / Text</p>
+          <a href="tel:3617297722" style="font-size:1.3rem;font-weight:800;color:var(--t1);text-decoration:none;transition:color .2s;font-family:'Plus Jakarta Sans',sans-serif;letter-spacing:-.02em;" onmouseover="this.style.color='var(--red)'" onmouseout="this.style.color='var(--t1)'">(361) 729-7722</a>
+        </div>
+        <div style="height:1px;background:var(--b1);"></div>
+        <div>
+          <p class="clabel">Address</p>
+          <p style="font-size:.95rem;font-weight:600;color:var(--t1);">1821 Broadway St, Rockport, TX 78382</p>
+        </div>
+        <div style="height:1px;background:var(--b1);"></div>
+        <div>
+          <p class="clabel">Hours</p>
+          <p style="font-size:.95rem;font-weight:600;color:var(--t1);">Monday – Friday &nbsp;·&nbsp; 8:00 AM – 5:00 PM</p>
+        </div>
+      </div>
+    </div>
+
+    <a href="tel:3617297722" class="btn btn-primary btn-lg w-full justify-center" style="font-size:.975rem;">
+      <svg width="16" height="16" viewBox="0 0 20 20" fill="none"><path d="M6.5 3.5c.5 1.5 1 2.5 1.5 3L6 8c1 2 3.5 4.5 5.5 5.5l1.5-2c.5.5 1.5 1 3 1.5 0 2.5-1.5 4-4 3C8 15 5 12 3.5 8.5c-1-2.5.5-5 3-5z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Call (361) 729-7722 — Free Inspection
+    </a>
+  </div>
+</section>
+
+
+<!-- FOOTER -->
+<footer style="background:rgba(8,8,8,0.97);border-top:1px solid var(--b1);padding:2rem 1.5rem;">
+  <div class="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-5">
+    <a href="#" style="text-decoration:none;display:flex;align-items:center;gap:8px;">
+      <div style="width:28px;height:28px;background:var(--red);border-radius:6px;display:flex;align-items:center;justify-content:center;">
+        <svg width="13" height="13" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="6" stroke="#F9F9F9" stroke-width="1.8"/><circle cx="10" cy="10" r="2.5" stroke="#F9F9F9" stroke-width="1.8"/></svg>
+      </div>
+      <span style="font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:.9rem;letter-spacing:-.025em;color:var(--t1);">Precision <span style="color:var(--red);">Pest</span> Control</span>
+    </a>
+    <nav style="display:flex;align-items:center;gap:1.5rem;">
+      <a href="#services" style="font-size:.82rem;color:var(--t3);text-decoration:none;" onmouseover="this.style.color='var(--t1)'" onmouseout="this.style.color='var(--t3)'">Services</a>
+      <a href="#why" style="font-size:.82rem;color:var(--t3);text-decoration:none;" onmouseover="this.style.color='var(--t1)'" onmouseout="this.style.color='var(--t3)'">Why Us</a>
+      <a href="#areas" style="font-size:.82rem;color:var(--t3);text-decoration:none;" onmouseover="this.style.color='var(--t1)'" onmouseout="this.style.color='var(--t3)'">Areas</a>
+      <a href="tel:3617297722" style="font-size:.82rem;color:var(--red);text-decoration:none;font-weight:600;">(361) 729-7722</a>
+    </nav>
+    <p style="font-size:.78rem;color:var(--t4);">© 2026 Precision Pest Control · Rockport, TX · Veteran-Owned</p>
+  </div>
+</footer>
+
+</div><!-- /page -->
+
+
+<!-- THREE.JS: Precision Radar Scene -->
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+  }
+}
+</script>
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+
+const canvas = document.getElementById('scene-canvas');
+const W = () => window.innerWidth, H = () => window.innerHeight;
+
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.setSize(W(), H());
+renderer.setClearColor(0x080808, 1);
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.0;
+
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(52, W()/H(), 0.1, 2000);
+camera.position.set(0, 22, 30);
+
+// Bloom
+const composer = new EffectComposer(renderer);
+composer.addPass(new RenderPass(scene, camera));
+const bloom = new UnrealBloomPass(new THREE.Vector2(W(), H()), 1.4, 0.5, 0.75);
+composer.addPass(bloom);
+
+// Controls
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;
+controls.dampingFactor = 0.05;
+controls.autoRotate = true;
+controls.autoRotateSpeed = 0.25;
+controls.enableZoom = true;
+controls.minDistance = 14;
+controls.maxDistance = 55;
+controls.maxPolarAngle = Math.PI * 0.72;
+controls.target.set(0, -2, 0);
+
+// Lighting
+scene.add(new THREE.AmbientLight(0x110808, 0.5));
+const key = new THREE.DirectionalLight(0xff4444, 0.6);
+key.position.set(10, 20, 10); scene.add(key);
+const pl1 = new THREE.PointLight(0xD42B2B, 5, 25);
+pl1.position.set(0, 1, 0); scene.add(pl1);
+const pl2 = new THREE.PointLight(0xFF6060, 2, 18);
+pl2.position.set(12, 4, -8); scene.add(pl2);
+const pl3 = new THREE.PointLight(0xD42B2B, 1.5, 18);
+pl3.position.set(-10, -2, 6); scene.add(pl3);
+
+// ── Materials ──────────────────────────────────────────────
+const redMat = new THREE.MeshStandardMaterial({
+  color: 0xD42B2B, emissive: 0xD42B2B, emissiveIntensity: 1.2, roughness: 0.1, metalness: 0.9
+});
+
+// ── Radar ground circles ───────────────────────────────────
+const radii = [4, 7, 10, 13, 16];
+radii.forEach((r, i) => {
+  const ring = new THREE.Mesh(
+    new THREE.TorusGeometry(r, 0.045 - i * 0.006, 6, 120),
+    new THREE.MeshStandardMaterial({
+      color: 0xD42B2B, emissive: 0xD42B2B,
+      emissiveIntensity: 0.6 - i * 0.1,
+      transparent: true, opacity: 0.4 - i * 0.06
+    })
+  );
+  ring.rotation.x = Math.PI / 2;
+  ring.position.y = -4;
+  scene.add(ring);
+});
+
+// ── Crosshair lines ────────────────────────────────────────
+const crossMat = new THREE.LineBasicMaterial({ color: 0xD42B2B, transparent: true, opacity: 0.18 });
+[
+  [new THREE.Vector3(-18, -4, 0), new THREE.Vector3(18, -4, 0)],
+  [new THREE.Vector3(0, -4, -18), new THREE.Vector3(0, -4, 18)],
+].forEach(pts => {
+  scene.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), crossMat));
+});
+
+// ── Central targeting hub ──────────────────────────────────
+const hub = new THREE.Mesh(new THREE.OctahedronGeometry(1.2, 0), redMat);
+hub.position.y = 1;
+scene.add(hub);
+
+const hubWire = new THREE.Mesh(
+  new THREE.OctahedronGeometry(1.28, 0),
+  new THREE.MeshBasicMaterial({ color: 0xFF5555, wireframe: true, transparent: true, opacity: 0.22 })
+);
+hubWire.position.y = 1;
+scene.add(hubWire);
+
+const halo = new THREE.Mesh(
+  new THREE.SphereGeometry(2.5, 12, 12),
+  new THREE.MeshBasicMaterial({ color: 0xD42B2B, transparent: true, opacity: 0.025, side: THREE.BackSide })
+);
+halo.position.y = 1;
+scene.add(halo);
+
+// ── Rotating sweep arm ────────────────────────────────────
+const SWEEP_LEN = 17;
+const sweepPts = [];
+for (let i = 0; i <= 64; i++) {
+  const t = i / 64;
+  sweepPts.push(t * SWEEP_LEN, -4, 0);
+}
+const sweepGeo = new THREE.BufferGeometry();
+sweepGeo.setAttribute('position', new THREE.Float32BufferAttribute(sweepPts, 3));
+const sweepCols = new Float32Array(65 * 3);
+for (let i = 0; i <= 64; i++) {
+  const t = i / 64;
+  sweepCols[i*3]   = 0.83 * t;
+  sweepCols[i*3+1] = 0.17 * t * 0.4;
+  sweepCols[i*3+2] = 0.17 * t * 0.4;
+}
+sweepGeo.setAttribute('color', new THREE.BufferAttribute(sweepCols, 3));
+const sweepArm = new THREE.Line(
+  sweepGeo,
+  new THREE.LineBasicMaterial({ vertexColors: true, transparent: true, opacity: 0.95 })
+);
+sweepArm.position.y = -4;
+scene.add(sweepArm);
+
+// Sweep fan fill
+const SF = 350;
+const sfGeo = new THREE.BufferGeometry();
+const sfPos = new Float32Array(SF * 3);
+sfGeo.setAttribute('position', new THREE.BufferAttribute(sfPos, 3));
+const sweepFill = new THREE.Points(sfGeo, new THREE.PointsMaterial({
+  color: 0xD42B2B, size: 0.1, transparent: true, opacity: 0.18, sizeAttenuation: true
+}));
+sweepFill.position.y = -4;
+scene.add(sweepFill);
+
+// ── Radar blips ───────────────────────────────────────────
+const BLIPS = 30;
+const blipData = Array.from({ length: BLIPS }, () => ({
+  r: 3.5 + Math.random() * 12.5,
+  angle: Math.random() * Math.PI * 2,
+  alpha: 0,
+  lastHit: -99,
+}));
+const blipGeo = new THREE.BufferGeometry();
+const blipPos = new Float32Array(BLIPS * 3);
+const blipCols = new Float32Array(BLIPS * 3);
+blipGeo.setAttribute('position', new THREE.BufferAttribute(blipPos, 3));
+blipGeo.setAttribute('color', new THREE.BufferAttribute(blipCols, 3));
+const blips = new THREE.Points(blipGeo, new THREE.PointsMaterial({
+  size: 0.55, vertexColors: true, transparent: true, sizeAttenuation: true
+}));
+blips.position.y = -4;
+scene.add(blips);
+
+// ── 3D pest cloud above radar ─────────────────────────────
+const PESTS = 65;
+const pestGeo = new THREE.BufferGeometry();
+const pestBase = new Float32Array(PESTS * 3);
+const pestPhase = Array.from({ length: PESTS }, () => Math.random() * Math.PI * 2);
+const pestSpd   = Array.from({ length: PESTS }, () => 0.2 + Math.random() * 0.35);
+for (let i = 0; i < PESTS; i++) {
+  const theta = Math.random() * Math.PI * 2;
+  const r = 4 + Math.random() * 13;
+  pestBase[i*3]   = Math.cos(theta) * r;
+  pestBase[i*3+1] = 1 + Math.random() * 13;
+  pestBase[i*3+2] = Math.sin(theta) * r;
+}
+const pestPos2 = new Float32Array(pestBase);
+pestGeo.setAttribute('position', new THREE.BufferAttribute(pestPos2, 3));
+const pests = new THREE.Points(pestGeo, new THREE.PointsMaterial({
+  color: 0x550000, size: 0.17, transparent: true, opacity: 0.7, sizeAttenuation: true
+}));
+scene.add(pests);
+
+// ── Elimination beams ─────────────────────────────────────
+const elimLines = Array.from({ length: 10 }, () => {
+  const g = new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(), new THREE.Vector3()]);
+  const l = new THREE.Line(g, new THREE.LineBasicMaterial({ color: 0xFF4444, transparent: true, opacity: 0 }));
+  scene.add(l);
+  return { line: l, t: 0, active: false, speed: 0.013 + Math.random() * 0.01, targetIdx: 0 };
+});
+
+// ── Background grid dots ──────────────────────────────────
+const gridArr = [];
+for (let x = -32; x <= 32; x += 3.5) {
+  for (let z = -32; z <= 32; z += 3.5) {
+    gridArr.push(x, -4 + Math.random() * 0.3, z);
+  }
+}
+const gridGeo = new THREE.BufferGeometry();
+gridGeo.setAttribute('position', new THREE.Float32BufferAttribute(gridArr, 3));
+scene.add(new THREE.Points(gridGeo, new THREE.PointsMaterial({
+  color: 0x2A0808, size: 0.5, sizeAttenuation: true, transparent: true, opacity: 0.55
+})));
+
+// ── Resize ─────────────────────────────────────────────────
+window.addEventListener('resize', () => {
+  camera.aspect = W() / H(); camera.updateProjectionMatrix();
+  renderer.setSize(W(), H()); composer.setSize(W(), H());
+});
+
+// ── Animate ────────────────────────────────────────────────
+const clock = new THREE.Clock();
+let sweepAngle = 0;
+
+function animate() {
+  requestAnimationFrame(animate);
+  const t = clock.getElapsedTime();
+
+  // Hub pulse
+  hub.rotation.y = t * 0.25;
+  hub.rotation.x = t * 0.14;
+  hubWire.rotation.y = -t * 0.19;
+  const s = 1 + Math.sin(t * 2.2) * 0.06;
+  hub.scale.set(s, s, s); hubWire.scale.set(s, s, s);
+  pl1.intensity = 5 + Math.sin(t * 2.5) * 1.5;
+
+  // Sweep
+  sweepAngle += 0.009;
+  sweepArm.rotation.y = sweepAngle;
+  sweepFill.rotation.y = sweepAngle;
+
+  const sfArr = sweepFill.geometry.attributes.position.array;
+  const fanAngle = Math.PI * 0.16;
+  for (let i = 0; i < SF; i++) {
+    const a = -Math.random() * fanAngle;
+    const r = Math.random() * SWEEP_LEN;
+    sfArr[i*3]   = Math.cos(a) * r;
+    sfArr[i*3+1] = 0;
+    sfArr[i*3+2] = Math.sin(a) * r;
+  }
+  sweepFill.geometry.attributes.position.needsUpdate = true;
+
+  // Blips
+  const bp = blips.geometry.attributes.position.array;
+  const bc = blips.geometry.attributes.color.array;
+  blipData.forEach((b, i) => {
+    const ns = ((sweepAngle % (Math.PI*2)) + Math.PI*2) % (Math.PI*2);
+    const nb = ((b.angle    % (Math.PI*2)) + Math.PI*2) % (Math.PI*2);
+    const diff = Math.abs(ns - nb);
+    if (diff < 0.11 || diff > Math.PI*2 - 0.11) { b.lastHit = t; b.alpha = 1.0; }
+    b.alpha = Math.max(0, 1 - (t - b.lastHit) / 3.2);
+    bp[i*3]   = Math.cos(b.angle) * b.r;
+    bp[i*3+1] = 0;
+    bp[i*3+2] = Math.sin(b.angle) * b.r;
+    bc[i*3]   = b.alpha * 0.84;
+    bc[i*3+1] = b.alpha * 0.18;
+    bc[i*3+2] = b.alpha * 0.18;
+  });
+  blips.geometry.attributes.position.needsUpdate = true;
+  blips.geometry.attributes.color.needsUpdate = true;
+
+  // Pest cloud drift
+  const pp = pests.geometry.attributes.position.array;
+  for (let i = 0; i < PESTS; i++) {
+    pp[i*3]   = pestBase[i*3]   + Math.sin(t * pestSpd[i]       + pestPhase[i]) * 0.8;
+    pp[i*3+1] = pestBase[i*3+1] + Math.cos(t * pestSpd[i] * 0.7 + pestPhase[i]) * 0.65;
+    pp[i*3+2] = pestBase[i*3+2] + Math.sin(t * pestSpd[i] * 0.5 + pestPhase[i] + 1) * 0.6;
+  }
+  pests.geometry.attributes.position.needsUpdate = true;
+
+  // Elimination beams
+  elimLines.forEach(el => {
+    if (!el.active) {
+      if (Math.random() < 0.006) {
+        el.active = true; el.t = 0;
+        el.targetIdx = Math.floor(Math.random() * PESTS);
+        el.line.material.opacity = 0.6;
+      }
+      return;
+    }
+    el.t += el.speed;
+    if (el.t >= 1) { el.active = false; el.line.material.opacity = 0; return; }
+    const ti = el.targetIdx;
+    const tx = pp[ti*3], ty = pp[ti*3+1], tz = pp[ti*3+2];
+    const pts = el.line.geometry.attributes.position;
+    pts.setXYZ(0, 0, 1, 0);
+    pts.setXYZ(1, tx * el.t, 1 + (ty - 1) * el.t, tz * el.t);
+    pts.needsUpdate = true;
+    el.line.material.opacity = (1 - el.t) * 0.6;
+  });
+
+  controls.update();
+  composer.render();
+}
+animate();
+</script>
+
+<script>
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (!e.isIntersecting) return;
+      e.target.classList.add('in');
+      e.target.parentElement.querySelectorAll('.fu:not(.in)').forEach((el, i) => {
+        setTimeout(() => el.classList.add('in'), (i + 1) * 85);
+      });
+      io.unobserve(e.target);
+    });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.fu').forEach(el => io.observe(el));
+
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', () => nav.classList.toggle('scrolled', scrollY > 20), { passive: true });
+
+  const hint = document.getElementById('drag-hint');
+  let gone = false;
+  const hideHint = () => { if (!gone) { hint.classList.add('hide'); gone = true; } };
+  window.addEventListener('scroll', hideHint, { passive: true, once: true });
+  document.getElementById('scene-canvas').addEventListener('pointerdown', hideHint, { once: true });
+</script>
+</body>
+</html>
