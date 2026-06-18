@@ -122,14 +122,19 @@
 <nav id="nav">
   <div class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between gap-8">
     <a href="#" style="text-decoration:none;display:flex;align-items:center;gap:10px;flex-shrink:0;">
-      <div style="width:32px;height:32px;background:var(--red);border-radius:7px;display:flex;align-items:center;justify-content:center;">
-        <svg width="17" height="17" viewBox="0 0 20 20" fill="none">
-          <circle cx="10" cy="10" r="7" stroke="#F9F9F9" stroke-width="1.8"/>
-          <circle cx="10" cy="10" r="3" stroke="#F9F9F9" stroke-width="1.8"/>
-          <path d="M10 3V1M10 19v-2M3 10H1M19 10h-2" stroke="#F9F9F9" stroke-width="1.8" stroke-linecap="round"/>
-        </svg>
-      </div>
-      <span style="font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:1.05rem;letter-spacing:-.03em;color:var(--t1);">Precision <span style="color:var(--red);">Pest</span></span>
+      <img src="./images/logo.png" alt="Precision Pest Control"
+           style="height:40px;width:auto;display:block;"
+           onerror="this.style.display='none';document.getElementById('navFallback').style.display='flex';">
+      <span id="navFallback" style="display:none;align-items:center;gap:10px;">
+        <span style="width:32px;height:32px;background:var(--red);border-radius:7px;display:flex;align-items:center;justify-content:center;">
+          <svg width="17" height="17" viewBox="0 0 20 20" fill="none">
+            <circle cx="10" cy="10" r="7" stroke="#F9F9F9" stroke-width="1.8"/>
+            <circle cx="10" cy="10" r="3" stroke="#F9F9F9" stroke-width="1.8"/>
+            <path d="M10 3V1M10 19v-2M3 10H1M19 10h-2" stroke="#F9F9F9" stroke-width="1.8" stroke-linecap="round"/>
+          </svg>
+        </span>
+        <span style="font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:1.05rem;letter-spacing:-.03em;color:var(--t1);">Precision <span style="color:var(--red);">Pest</span></span>
+      </span>
     </a>
     <div class="nav-links flex items-center gap-7">
       <a href="#services" style="font-size:.875rem;font-weight:500;color:var(--t3);text-decoration:none;transition:color .2s;" onmouseover="this.style.color='var(--t1)'" onmouseout="this.style.color='var(--t3)'">Services</a>
@@ -147,6 +152,9 @@
 <!-- HERO -->
 <section id="hero">
   <div class="max-w-4xl mx-auto">
+    <img src="./images/logo.png" alt="Precision Pest Control" class="ha1 mx-auto mb-7"
+         style="height:92px;width:auto;display:block;filter:drop-shadow(0 8px 30px rgba(212,43,43,0.25));"
+         onerror="this.style.display='none';">
     <div class="badge ha1 mb-6 mx-auto" style="width:fit-content;">
       <span class="pulse"></span>
       Veteran-Owned &amp; Operated · Rockport, TX Since 2014
@@ -219,19 +227,27 @@
       <p style="font-size:.9rem;line-height:1.8;max-width:400px;margin:0 auto;color:var(--t3);">Proudly serving the Coastal Bend since 2014 — the same family, the same integrity, the same mission.</p>
     </div>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 fu">
-      <div style="position:relative;border-radius:16px;overflow:hidden;border:1px solid var(--b1);">
+      <div style="position:relative;border-radius:16px;overflow:hidden;border:1px solid var(--b1);min-height:340px;background:linear-gradient(135deg,var(--s2),var(--s1));display:flex;align-items:center;justify-content:center;">
         <img src="./images/team.jpg" alt="Precision Pest Control team with truck and American flag"
-             style="width:100%;height:340px;object-fit:cover;display:block;"
-             onerror="this.parentElement.style.background='var(--s2)';this.style.display='none';">
+             style="width:100%;height:340px;object-fit:cover;display:block;position:absolute;inset:0;"
+             onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+        <div style="display:none;flex-direction:column;align-items:center;gap:12px;color:var(--t3);text-align:center;padding:1.5rem;">
+          <svg width="36" height="36" viewBox="0 0 20 20" fill="none" style="opacity:.6;"><circle cx="10" cy="10" r="7" stroke="#D42B2B" stroke-width="1.3"/><circle cx="10" cy="10" r="2.5" stroke="#D42B2B" stroke-width="1.3"/><path d="M10 1v3M10 16v3M1 10h3M16 10h3" stroke="#D42B2B" stroke-width="1.3" stroke-linecap="round"/></svg>
+          <span style="font-size:.78rem;letter-spacing:.04em;">Upload <strong style="color:var(--t2);">team.jpg</strong> to show your photo here</span>
+        </div>
         <div style="position:absolute;bottom:0;left:0;right:0;padding:1.25rem 1.5rem;background:linear-gradient(to top,rgba(8,8,8,0.9),transparent);">
           <p style="font-size:.8rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--red);">Veteran-Owned &amp; Family-Operated</p>
           <p style="font-size:.88rem;color:var(--t2);margin-top:2px;">Proudly serving Rockport &amp; the Coastal Bend</p>
         </div>
       </div>
-      <div style="position:relative;border-radius:16px;overflow:hidden;border:1px solid var(--b1);">
+      <div style="position:relative;border-radius:16px;overflow:hidden;border:1px solid var(--b1);min-height:340px;background:linear-gradient(135deg,var(--s2),var(--s1));display:flex;align-items:center;justify-content:center;">
         <img src="./images/worker.jpg" alt="Precision Pest Control technician on the job"
-             style="width:100%;height:340px;object-fit:cover;display:block;"
-             onerror="this.parentElement.style.background='var(--s2)';this.style.display='none';">
+             style="width:100%;height:340px;object-fit:cover;display:block;position:absolute;inset:0;"
+             onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+        <div style="display:none;flex-direction:column;align-items:center;gap:12px;color:var(--t3);text-align:center;padding:1.5rem;">
+          <svg width="36" height="36" viewBox="0 0 20 20" fill="none" style="opacity:.6;"><circle cx="10" cy="10" r="7" stroke="#D42B2B" stroke-width="1.3"/><circle cx="10" cy="10" r="2.5" stroke="#D42B2B" stroke-width="1.3"/><path d="M10 1v3M10 16v3M1 10h3M16 10h3" stroke="#D42B2B" stroke-width="1.3" stroke-linecap="round"/></svg>
+          <span style="font-size:.78rem;letter-spacing:.04em;">Upload <strong style="color:var(--t2);">worker.jpg</strong> to show your photo here</span>
+        </div>
         <div style="position:absolute;bottom:0;left:0;right:0;padding:1.25rem 1.5rem;background:linear-gradient(to top,rgba(8,8,8,0.9),transparent);">
           <p style="font-size:.8rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--red);">Precision In Every Job</p>
           <p style="font-size:.88rem;color:var(--t2);margin-top:2px;">We treat every property like it's our own</p>
@@ -320,52 +336,70 @@
     </div>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
 
-      <div class="scard p-8 fu">
-        <div class="sicon mb-5">
-          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style="color:var(--red);"><path d="M10 2l6 3v5c0 3.5-2.5 6.7-6 8-3.5-1.3-6-4.5-6-8V5l6-3z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>
+      <div class="scard fu" style="display:flex;flex-direction:column;">
+        <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Coptotermes_formosanus_shiraki_USGov_k8204-7.jpg" alt="Termite close-up" style="width:100%;height:175px;object-fit:cover;display:block;border-bottom:1px solid var(--b1);">
+        <div class="p-8">
+          <div class="sicon mb-5">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style="color:var(--red);"><path d="M10 2l6 3v5c0 3.5-2.5 6.7-6 8-3.5-1.3-6-4.5-6-8V5l6-3z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>
+          </div>
+          <h3 class="t-h3 text-white mb-3">Termite Control</h3>
+          <p style="font-size:.9rem;line-height:1.8;color:var(--t3);">Free termite inspection using Termatrac technology — we pinpoint infestations without tearing into your walls. Then we eliminate them completely.</p>
         </div>
-        <h3 class="t-h3 text-white mb-3">Termite Control</h3>
-        <p style="font-size:.9rem;line-height:1.8;color:var(--t3);">Free termite inspection using Termatrac technology — we pinpoint infestations without tearing into your walls. Then we eliminate them completely.</p>
       </div>
 
-      <div class="scard p-8 fu d1">
-        <div class="sicon mb-5">
-          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style="color:var(--red);"><circle cx="10" cy="10" r="7" stroke="currentColor" stroke-width="1.7"/><path d="M10 3v3M10 14v3M3 10h3M14 10h3" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+      <div class="scard fu d1" style="display:flex;flex-direction:column;">
+        <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Aedes_aegypti_CDC-Gathany.jpg" alt="Mosquito close-up" style="width:100%;height:175px;object-fit:cover;display:block;border-bottom:1px solid var(--b1);">
+        <div class="p-8">
+          <div class="sicon mb-5">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style="color:var(--red);"><circle cx="10" cy="10" r="7" stroke="currentColor" stroke-width="1.7"/><path d="M10 3v3M10 14v3M3 10h3M14 10h3" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+          </div>
+          <h3 class="t-h3 text-white mb-3">Mosquito Control</h3>
+          <p style="font-size:.9rem;line-height:1.8;color:var(--t3);">Reclaim your yard. We treat the areas where mosquitoes breed and rest — giving you back your outdoor space all season long.</p>
         </div>
-        <h3 class="t-h3 text-white mb-3">Mosquito Control</h3>
-        <p style="font-size:.9rem;line-height:1.8;color:var(--t3);">Reclaim your yard. We treat the areas where mosquitoes breed and rest — giving you back your outdoor space all season long.</p>
       </div>
 
-      <div class="scard p-8 fu d2">
-        <div class="sicon mb-5">
-          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style="color:var(--red);"><path d="M5 17l3-5m5 5l-3-5m-2 0h4m-2-8a3 3 0 100-6 3 3 0 000 6zm0 0v3" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <div class="scard fu d2" style="display:flex;flex-direction:column;">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/5/5a/Rattus_norvegicus_1.jpg" alt="Rodent close-up" style="width:100%;height:175px;object-fit:cover;display:block;border-bottom:1px solid var(--b1);">
+        <div class="p-8">
+          <div class="sicon mb-5">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style="color:var(--red);"><path d="M5 17l3-5m5 5l-3-5m-2 0h4m-2-8a3 3 0 100-6 3 3 0 000 6zm0 0v3" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <h3 class="t-h3 text-white mb-3">Rodent &amp; Wildlife Removal</h3>
+          <p style="font-size:.9rem;line-height:1.8;color:var(--t3);">Safe, humane removal and exclusion work to make sure they don't come back. We seal entry points and protect your property long-term.</p>
         </div>
-        <h3 class="t-h3 text-white mb-3">Rodent &amp; Wildlife Removal</h3>
-        <p style="font-size:.9rem;line-height:1.8;color:var(--t3);">Safe, humane removal and exclusion work to make sure they don't come back. We seal entry points and protect your property long-term.</p>
       </div>
 
-      <div class="scard p-8 fu d3">
-        <div class="sicon mb-5">
-          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style="color:var(--red);"><rect x="3" y="3" width="14" height="14" rx="3" stroke="currentColor" stroke-width="1.7"/><path d="M7 10h6M10 7v6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+      <div class="scard fu d3" style="display:flex;flex-direction:column;">
+        <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Bed_bug%2C_Cimex_lectularius.jpg" alt="Bed bug close-up" style="width:100%;height:175px;object-fit:cover;display:block;border-bottom:1px solid var(--b1);">
+        <div class="p-8">
+          <div class="sicon mb-5">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style="color:var(--red);"><rect x="3" y="3" width="14" height="14" rx="3" stroke="currentColor" stroke-width="1.7"/><path d="M7 10h6M10 7v6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+          </div>
+          <h3 class="t-h3 text-white mb-3">Bed Bug Treatment</h3>
+          <p style="font-size:.9rem;line-height:1.8;color:var(--t3);">Complete bed bug elimination using proven treatment methods. We don't stop until every last one is gone and you're sleeping soundly again.</p>
         </div>
-        <h3 class="t-h3 text-white mb-3">Bed Bug Treatment</h3>
-        <p style="font-size:.9rem;line-height:1.8;color:var(--t3);">Complete bed bug elimination using proven treatment methods. We don't stop until every last one is gone and you're sleeping soundly again.</p>
       </div>
 
-      <div class="scard p-8 fu">
-        <div class="sicon mb-5">
-          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style="color:var(--red);"><path d="M10 2C6 2 3 5 3 9c0 2.5 1.2 4.7 3 6l1 3h6l1-3c1.8-1.3 3-3.5 3-6 0-4-3-7-7-7z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>
+      <div class="scard fu" style="display:flex;flex-direction:column;">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/3/3b/American-cockroach.jpg" alt="Cockroach close-up" style="width:100%;height:175px;object-fit:cover;display:block;border-bottom:1px solid var(--b1);">
+        <div class="p-8">
+          <div class="sicon mb-5">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style="color:var(--red);"><path d="M10 2C6 2 3 5 3 9c0 2.5 1.2 4.7 3 6l1 3h6l1-3c1.8-1.3 3-3.5 3-6 0-4-3-7-7-7z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>
+          </div>
+          <h3 class="t-h3 text-white mb-3">Roaches &amp; Ants</h3>
+          <p style="font-size:.9rem;line-height:1.8;color:var(--t3);">Interior and exterior treatment that hits the colony — not just what you can see. We stop infestations at the source.</p>
         </div>
-        <h3 class="t-h3 text-white mb-3">Roaches &amp; Ants</h3>
-        <p style="font-size:.9rem;line-height:1.8;color:var(--t3);">Interior and exterior treatment that hits the colony — not just what you can see. We stop infestations at the source.</p>
       </div>
 
-      <div class="scard p-8 fu d1">
-        <div class="sicon mb-5">
-          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style="color:var(--red);"><path d="M10 3a7 7 0 100 14A7 7 0 0010 3zm0 0V1m0 18v-2M3 10H1m18 0h-2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+      <div class="scard fu d1" style="display:flex;flex-direction:column;">
+        <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Flea_Scanning_Electron_Micrograph.jpg" alt="Flea close-up" style="width:100%;height:175px;object-fit:cover;display:block;border-bottom:1px solid var(--b1);">
+        <div class="p-8">
+          <div class="sicon mb-5">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style="color:var(--red);"><path d="M10 3a7 7 0 100 14A7 7 0 0010 3zm0 0V1m0 18v-2M3 10H1m18 0h-2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+          </div>
+          <h3 class="t-h3 text-white mb-3">Fleas, Ticks &amp; Bees</h3>
+          <p style="font-size:.9rem;line-height:1.8;color:var(--t3);">Pet-safe flea and tick treatments, plus safe bee and wasp removal. Protect your family and animals without harsh chemicals.</p>
         </div>
-        <h3 class="t-h3 text-white mb-3">Fleas, Ticks &amp; Bees</h3>
-        <p style="font-size:.9rem;line-height:1.8;color:var(--t3);">Pet-safe flea and tick treatments, plus safe bee and wasp removal. Protect your family and animals without harsh chemicals.</p>
       </div>
 
       <div class="scard p-8 fu d2" style="grid-column: 1 / -1;">
@@ -504,10 +538,14 @@
 <footer style="background:rgba(8,8,8,0.97);border-top:1px solid var(--b1);padding:2rem 1.5rem;">
   <div class="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-5">
     <a href="#" style="text-decoration:none;display:flex;align-items:center;gap:8px;">
-      <div style="width:28px;height:28px;background:var(--red);border-radius:6px;display:flex;align-items:center;justify-content:center;">
-        <svg width="13" height="13" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="6" stroke="#F9F9F9" stroke-width="1.8"/><circle cx="10" cy="10" r="2.5" stroke="#F9F9F9" stroke-width="1.8"/></svg>
-      </div>
-      <span style="font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:.9rem;letter-spacing:-.025em;color:var(--t1);">Precision <span style="color:var(--red);">Pest</span> Control</span>
+      <img src="./images/logo.png" alt="Precision Pest Control" style="height:36px;width:auto;display:block;"
+           onerror="this.style.display='none';document.getElementById('footFallback').style.display='flex';">
+      <span id="footFallback" style="display:none;align-items:center;gap:8px;">
+        <span style="width:28px;height:28px;background:var(--red);border-radius:6px;display:flex;align-items:center;justify-content:center;">
+          <svg width="13" height="13" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="6" stroke="#F9F9F9" stroke-width="1.8"/><circle cx="10" cy="10" r="2.5" stroke="#F9F9F9" stroke-width="1.8"/></svg>
+        </span>
+        <span style="font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:.9rem;letter-spacing:-.025em;color:var(--t1);">Precision <span style="color:var(--red);">Pest</span> Control</span>
+      </span>
     </a>
     <nav style="display:flex;align-items:center;gap:1.5rem;">
       <a href="#services" style="font-size:.82rem;color:var(--t3);text-decoration:none;" onmouseover="this.style.color='var(--t1)'" onmouseout="this.style.color='var(--t3)'">Services</a>
