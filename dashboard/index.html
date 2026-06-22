@@ -473,16 +473,6 @@
         <div class="metric-value"><span id="m-emails-sent">13</span><span style="font-size:18px;color:var(--text3)">/<span id="m-emails-total">24</span></span></div>
         <div class="metric-sub" id="m-email-rate-label">54.2% delivery rate <span class="metric-badge badge-red">⚠ Low</span></div>
       </div>
-      <div class="metric-card yellow">
-        <div class="metric-label">Investor Emails Sent</div>
-        <div class="metric-value" id="m-investor">3</div>
-        <div class="metric-sub">Active raise campaign</div>
-      </div>
-      <div class="metric-card purple">
-        <div class="metric-label">Raise Ask</div>
-        <div class="metric-value" id="m-raise">$20K</div>
-        <div class="metric-sub"><span class="metric-badge badge-yellow">In Progress</span></div>
-      </div>
     </div>
 
     <div class="section-title">Tool & Stack Tracker</div>
@@ -603,8 +593,6 @@ const METRICS_DEFAULT = {
   leads: 43,
   emailsSent: 13,
   emailsTotal: 24,
-  investorEmails: 3,
-  raiseAsk: 20000,
 };
 
 function loadStore() {
@@ -665,8 +653,6 @@ function renderMetrics() {
   document.getElementById('m-leads').textContent = m.leads;
   document.getElementById('m-emails-sent').textContent = m.emailsSent;
   document.getElementById('m-emails-total').textContent = m.emailsTotal;
-  document.getElementById('m-investor').textContent = m.investorEmails;
-  document.getElementById('m-raise').textContent = '$' + (m.raiseAsk/1000).toFixed(0) + 'K';
 
   const rate = m.emailsTotal > 0 ? (m.emailsSent / m.emailsTotal * 100).toFixed(1) : 0;
   const rateBadge = rate < 70
